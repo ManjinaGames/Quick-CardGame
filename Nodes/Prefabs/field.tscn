@@ -1,0 +1,19 @@
+[gd_scene load_steps=2 format=3 uid="uid://cxkn57phelxmp"]
+
+[ext_resource type="PackedScene" uid="uid://lvkosjxhgre1" path="res://Nodes/Prefabs/card_slot.tscn" id="1_qw23d"]
+
+[node name="Field" type="Node2D"]
+
+[node name="CardSlot" parent="." instance=ExtResource("1_qw23d")]
+position = Vector2(-236, 0)
+
+[node name="CardSlot2" parent="." instance=ExtResource("1_qw23d")]
+position = Vector2(-118, 0)
+
+[node name="CardSlot3" parent="." instance=ExtResource("1_qw23d")]
+
+[node name="CardSlot4" parent="." instance=ExtResource("1_qw23d")]
+position = Vector2(118, 0)
+
+[node name="CardSlot5" parent="." instance=ExtResource("1_qw23d")]
+position = Vector2(236, 0)

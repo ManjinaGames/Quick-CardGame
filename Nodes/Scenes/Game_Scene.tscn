@@ -1,0 +1,83 @@
+[gd_scene load_steps=11 format=3 uid="uid://dlfgbqjvq7ybh"]
+
+[ext_resource type="PackedScene" uid="uid://dfb2i4o7cr1k1" path="res://Nodes/Prefabs/card.tscn" id="1_c0q3d"]
+[ext_resource type="Script" path="res://Scripts/Scenes/game_scene.gd" id="1_txxkl"]
+[ext_resource type="Script" path="res://Cards/Scripts/a1_c1.gd" id="2_qwwp1"]
+[ext_resource type="Resource" uid="uid://b8chr0up3hjdd" path="res://Cards/Resources/a1_c1.tres" id="3_8sa80"]
+[ext_resource type="Script" path="res://Scripts/Prefabs/player_hand.gd" id="4_4r13x"]
+[ext_resource type="PackedScene" uid="uid://cxkn57phelxmp" path="res://Nodes/Prefabs/field.tscn" id="4_73rpg"]
+[ext_resource type="Texture2D" uid="uid://cc152q6tuxnfr" path="res://Assets/Images/Deck.png" id="5_35u6i"]
+[ext_resource type="Script" path="res://Scripts/Prefabs/deck.gd" id="5_epbpp"]
+[ext_resource type="Texture2D" uid="uid://rfrid568vffs" path="res://Assets/Images/CardSlot.png" id="6_6537d"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_5mofp"]
+size = Vector2(74, 110)
+
+[node name="GameScene" type="Node2D" node_paths=PackedStringArray("playerHand", "playerDeck")]
+script = ExtResource("1_txxkl")
+playerHand = NodePath("playerHand")
+playerDeck = NodePath("Deck")
+collision_mask_card = 1
+collision_mask_cardslot = 2
+collision_mask_deck = 4
+cardDatabase = {
+"a1_c1": ExtResource("2_qwwp1"),
+ExtResource("3_8sa80"): ExtResource("2_qwwp1")
+}
+
+[node name="Field" parent="." instance=ExtResource("4_73rpg")]
+position = Vector2(576, 504)
+
+[node name="Field2" parent="." instance=ExtResource("4_73rpg")]
+position = Vector2(576, 383)
+
+[node name="Field3" parent="." instance=ExtResource("4_73rpg")]
+position = Vector2(576, 262)
+
+[node name="Field4" parent="." instance=ExtResource("4_73rpg")]
+position = Vector2(576, 142)
+
+[node name="Deck" type="Node2D" parent="." node_paths=PackedStringArray("gameScene", "collisionShape", "sprite", "label")]
+position = Vector2(912, 505)
+script = ExtResource("5_epbpp")
+gameScene = NodePath("..")
+collisionShape = NodePath("Area2D/CollisionShape2D")
+sprite = NodePath("Sprite2D")
+label = NodePath("Label")
+
+[node name="Sprite2D2" type="Sprite2D" parent="Deck"]
+position = Vector2(-9.73143e-06, 1.99676e-06)
+scale = Vector2(0.433333, 0.430189)
+texture = ExtResource("6_6537d")
+
+[node name="Sprite2D" type="Sprite2D" parent="Deck"]
+position = Vector2(0, -8.28505e-06)
+scale = Vector2(0.433334, 0.430189)
+texture = ExtResource("5_35u6i")
+
+[node name="Area2D" type="Area2D" parent="Deck"]
+collision_layer = 4
+collision_mask = 4
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Deck/Area2D"]
+shape = SubResource("RectangleShape2D_5mofp")
+
+[node name="Label" type="Label" parent="Deck"]
+anchors_preset = -1
+anchor_right = 0.5
+anchor_bottom = 1.0
+offset_left = -38.0
+offset_top = -23.0
+offset_right = 39.0
+offset_bottom = 57.0
+grow_horizontal = 2
+grow_vertical = 0
+text = "40 / 40"
+horizontal_alignment = 1
+vertical_alignment = 2
+
+[node name="playerHand" type="Node2D" parent="." node_paths=PackedStringArray("gameScene")]
+z_index = 1
+script = ExtResource("4_4r13x")
+gameScene = NodePath("..")
+cardPrefab = ExtResource("1_c0q3d")
