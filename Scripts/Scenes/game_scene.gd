@@ -11,11 +11,11 @@ var screen_size: Vector2
 var is_hovering_on_card: bool
 var _space_state: PhysicsDirectSpaceState2D
 var highlight_scale: float = 1.2
-#endregion
 #-------------------------------------------------------------------------------
 const cardDatabase_path: String = "res://Cards/Resources"
 const cardDatabase_hability_path: String = "res://Cards/Scripts"
 @export var cardDatabase: Dictionary = {}
+#endregion
 #-------------------------------------------------------------------------------
 #region MONOVEHAVIOUR
 func _ready() -> void:
@@ -40,6 +40,7 @@ func _input(_event: InputEvent) -> void:
 				Finish_Drag()
 #endregion
 #-------------------------------------------------------------------------------
+#region CARD DATABASE
 func LoadCardDatabase():
 	var dir_array = DirAccess.get_files_at(cardDatabase_hability_path)
 	if(dir_array):
@@ -50,6 +51,7 @@ func LoadCardDatabase():
 			var _cardResource: CardResource = load(cardDatabase_path+"/"+_base_name+".tres") as CardResource
 			_cardBase.cardResource = _cardResource
 			cardDatabase[_base_name] = _cardBase
+#endregion
 #-------------------------------------------------------------------------------
 #region RAYCAST FUNTIONS
 func Raycast_at_Cursor():
@@ -114,17 +116,7 @@ func Star_Drag(_card:Card):
 	_card.scale = Vector2(1, 1)
 #--------------------------------------------------------------------------
 func Finish_Drag():
-	card_being_dragged.scale = Vector2(highlight_scale, highlight_scale)
-	var _card_slot_found: CardSlot = Raycast_Check_for_CardSlot()
-	if(_card_slot_found and not _card_slot_found.card_in_slot):
-		playerHand.Remove_card_from_hand(card_being_dragged)
-		card_being_dragged.global_position = _card_slot_found.global_position
-		card_being_dragged.scale = Vector2(0.75, 0.75)
-		card_being_dragged.collisionShape.disabled = true
-		_card_slot_found.card_in_slot = true
-	else:
-		playerHand.Add_card_to_hand(card_being_dragged)
-	card_being_dragged = null
+	card_being_dragged.cardBase.Finish_Drag(card_being_dragged)
 #endregion
 #-------------------------------------------------------------------------------
 #region CREATING CARD FUNC

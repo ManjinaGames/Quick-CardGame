@@ -1,4 +1,4 @@
-[gd_scene load_steps=11 format=3 uid="uid://dlfgbqjvq7ybh"]
+[gd_scene load_steps=15 format=3 uid="uid://dlfgbqjvq7ybh"]
 
 [ext_resource type="PackedScene" uid="uid://dfb2i4o7cr1k1" path="res://Nodes/Prefabs/card.tscn" id="1_c0q3d"]
 [ext_resource type="Script" path="res://Scripts/Scenes/game_scene.gd" id="1_txxkl"]
@@ -8,7 +8,11 @@
 [ext_resource type="PackedScene" uid="uid://cxkn57phelxmp" path="res://Nodes/Prefabs/field.tscn" id="4_73rpg"]
 [ext_resource type="Texture2D" uid="uid://cc152q6tuxnfr" path="res://Assets/Images/Deck.png" id="5_35u6i"]
 [ext_resource type="Script" path="res://Scripts/Prefabs/deck.gd" id="5_epbpp"]
+[ext_resource type="Script" path="res://Scripts/Resources/CardResource.gd" id="6_1x76o"]
 [ext_resource type="Texture2D" uid="uid://rfrid568vffs" path="res://Assets/Images/CardSlot.png" id="6_6537d"]
+[ext_resource type="Resource" uid="uid://bq5v7m2hno8k3" path="res://Cards/Resources/a1_c2.tres" id="7_0n7u7"]
+[ext_resource type="Resource" uid="uid://dbrt65apxppa3" path="res://Cards/Resources/a1_c3.tres" id="8_m7ftw"]
+[ext_resource type="Resource" uid="uid://ce82fsgo08mb" path="res://Cards/Resources/a1_c4.tres" id="9_ruiml"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_5mofp"]
 size = Vector2(74, 110)
@@ -27,6 +31,7 @@ ExtResource("3_8sa80"): ExtResource("2_qwwp1")
 
 [node name="Field" parent="." instance=ExtResource("4_73rpg")]
 position = Vector2(576, 504)
+myFIELD_TYPE = 1
 
 [node name="Field2" parent="." instance=ExtResource("4_73rpg")]
 position = Vector2(576, 383)
@@ -36,6 +41,7 @@ position = Vector2(576, 262)
 
 [node name="Field4" parent="." instance=ExtResource("4_73rpg")]
 position = Vector2(576, 142)
+myFIELD_TYPE = 1
 
 [node name="Deck" type="Node2D" parent="." node_paths=PackedStringArray("gameScene", "collisionShape", "sprite", "label")]
 position = Vector2(912, 505)
@@ -44,6 +50,7 @@ gameScene = NodePath("..")
 collisionShape = NodePath("Area2D/CollisionShape2D")
 sprite = NodePath("Sprite2D")
 label = NodePath("Label")
+player_deck_resources = Array[ExtResource("6_1x76o")]([ExtResource("3_8sa80"), ExtResource("7_0n7u7"), ExtResource("8_m7ftw"), ExtResource("3_8sa80"), ExtResource("7_0n7u7"), ExtResource("8_m7ftw"), ExtResource("3_8sa80"), ExtResource("7_0n7u7"), ExtResource("9_ruiml"), ExtResource("9_ruiml"), ExtResource("9_ruiml"), ExtResource("9_ruiml")])
 
 [node name="Sprite2D2" type="Sprite2D" parent="Deck"]
 position = Vector2(-9.73143e-06, 1.99676e-06)
@@ -77,7 +84,6 @@ horizontal_alignment = 1
 vertical_alignment = 2
 
 [node name="playerHand" type="Node2D" parent="." node_paths=PackedStringArray("gameScene")]
-z_index = 1
 script = ExtResource("4_4r13x")
 gameScene = NodePath("..")
 cardPrefab = ExtResource("1_c0q3d")

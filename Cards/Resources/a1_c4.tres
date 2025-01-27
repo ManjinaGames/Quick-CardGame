@@ -1,0 +1,16 @@
+[gd_resource type="Resource" script_class="CardResource_Red" load_steps=3 format=3 uid="uid://ce82fsgo08mb"]
+
+[ext_resource type="Texture2D" uid="uid://ctgqjq2qfme6v" path="res://Cards/Artworks/a1_c4.png" id="1_8g3u6"]
+[ext_resource type="Script" path="res://Scripts/Resources/CardResource_Red.gd" id="1_pvftk"]
+
+[resource]
+script = ExtResource("1_pvftk")
+attack = 50
+defense = 120
+myELEMENT = 2
+myCLASS = 5
+level = 3
+artwork = ExtResource("1_8g3u6")
+myARCHTYPE = Array[int]([0])
+myRESTRICTION = 0
+limit = 3

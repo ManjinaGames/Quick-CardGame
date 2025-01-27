@@ -6,5 +6,7 @@ class_name Card
 @export var frame: Sprite2D
 @export var artwork: Sprite2D
 var starting_position: Vector2
+#-------------------------------------------------------------------------------
+var cardBase: CardBase
 #endregion
 #-------------------------------------------------------------------------------

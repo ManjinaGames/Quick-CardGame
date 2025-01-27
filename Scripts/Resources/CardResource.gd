@@ -11,3 +11,6 @@ enum RESTRICTION{UNLIMITED, SOFT_ONCE_PER_TURN, HARD_ONCE_PER_TURN}
 @export_range (1, 3) var limit: int = 3
 #endregion
 #-------------------------------------------------------------------------------
+
+func CreateCard() -> CardBase:
+	return CardBase.new()

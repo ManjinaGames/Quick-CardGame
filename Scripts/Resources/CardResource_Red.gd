@@ -14,3 +14,5 @@ enum CLASS{WARRIOR, MAGICIAN, MACHINE, PANT, BEAST, DRAGON}
 @export_range (1, 10) var level: int = 1
 #endregion
 #-------------------------------------------------------------------------------
+func CreateCard() -> Card_Red:
+	return Card_Red.new()

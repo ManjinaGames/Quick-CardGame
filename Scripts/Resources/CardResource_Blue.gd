@@ -6,3 +6,5 @@ enum ITEM_TYPE{NORMAL, EQUIP, QUICK, INFINITE}
 @export var myITEM_TYPE: ITEM_TYPE
 #endregion
 #-------------------------------------------------------------------------------
+func CreateCard() -> Card_Blue:
+	return Card_Blue.new()
