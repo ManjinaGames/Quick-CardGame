@@ -1,10 +1,10 @@
-[gd_resource type="Resource" script_class="CardResource_Red" load_steps=3 format=3 uid="uid://ce82fsgo08mb"]
+[gd_resource type="Resource" script_class="Card_Resource_Red" load_steps=3 format=3 uid="uid://ce82fsgo08mb"]
 
 [ext_resource type="Texture2D" uid="uid://ctgqjq2qfme6v" path="res://Cards/Artworks/a1_c4.png" id="1_8g3u6"]
-[ext_resource type="Script" path="res://Scripts/Resources/CardResource_Red.gd" id="1_pvftk"]
+[ext_resource type="Script" path="res://Scripts/Card_Resource/Card_Resource_Red.gd" id="2_hscu7"]
 
 [resource]
-script = ExtResource("1_pvftk")
+script = ExtResource("2_hscu7")
 attack = 50
 defense = 120
 myELEMENT = 2

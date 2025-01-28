@@ -1,26 +1,26 @@
-[gd_scene load_steps=15 format=3 uid="uid://dlfgbqjvq7ybh"]
+[gd_scene load_steps=16 format=3 uid="uid://dlfgbqjvq7ybh"]
 
-[ext_resource type="PackedScene" uid="uid://dfb2i4o7cr1k1" path="res://Nodes/Prefabs/card.tscn" id="1_c0q3d"]
+[ext_resource type="PackedScene" uid="uid://dfb2i4o7cr1k1" path="res://Nodes/Prefabs/card_node.tscn" id="1_c0q3d"]
 [ext_resource type="Script" path="res://Scripts/Scenes/game_scene.gd" id="1_txxkl"]
 [ext_resource type="Script" path="res://Cards/Scripts/a1_c1.gd" id="2_qwwp1"]
 [ext_resource type="Resource" uid="uid://b8chr0up3hjdd" path="res://Cards/Resources/a1_c1.tres" id="3_8sa80"]
-[ext_resource type="Script" path="res://Scripts/Prefabs/player_hand.gd" id="4_4r13x"]
-[ext_resource type="PackedScene" uid="uid://cxkn57phelxmp" path="res://Nodes/Prefabs/field.tscn" id="4_73rpg"]
+[ext_resource type="Script" path="res://Scripts/Card_Node/hand_node.gd" id="4_4r13x"]
+[ext_resource type="Script" path="res://Scripts/Card_Node/player_node.gd" id="4_p7vwb"]
 [ext_resource type="Texture2D" uid="uid://cc152q6tuxnfr" path="res://Assets/Images/Deck.png" id="5_35u6i"]
-[ext_resource type="Script" path="res://Scripts/Prefabs/deck.gd" id="5_epbpp"]
-[ext_resource type="Script" path="res://Scripts/Resources/CardResource.gd" id="6_1x76o"]
+[ext_resource type="Script" path="res://Scripts/Card_Node/deck_node.gd" id="5_epbpp"]
 [ext_resource type="Texture2D" uid="uid://rfrid568vffs" path="res://Assets/Images/CardSlot.png" id="6_6537d"]
+[ext_resource type="Script" path="res://Scripts/Card_Resource/Card_Resource.gd" id="6_mbwul"]
 [ext_resource type="Resource" uid="uid://bq5v7m2hno8k3" path="res://Cards/Resources/a1_c2.tres" id="7_0n7u7"]
 [ext_resource type="Resource" uid="uid://dbrt65apxppa3" path="res://Cards/Resources/a1_c3.tres" id="8_m7ftw"]
 [ext_resource type="Resource" uid="uid://ce82fsgo08mb" path="res://Cards/Resources/a1_c4.tres" id="9_ruiml"]
+[ext_resource type="PackedScene" uid="uid://lvkosjxhgre1" path="res://Nodes/Prefabs/cardslot_node.tscn" id="13_bej0y"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_5mofp"]
 size = Vector2(74, 110)
 
-[node name="GameScene" type="Node2D" node_paths=PackedStringArray("playerHand", "playerDeck")]
+[node name="GameScene" type="Node2D" node_paths=PackedStringArray("player")]
 script = ExtResource("1_txxkl")
-playerHand = NodePath("playerHand")
-playerDeck = NodePath("Deck")
+player = NodePath("Player")
 collision_mask_card = 1
 collision_mask_cardslot = 2
 collision_mask_deck = 4
@@ -29,47 +29,41 @@ cardDatabase = {
 ExtResource("3_8sa80"): ExtResource("2_qwwp1")
 }
 
-[node name="Field" parent="." instance=ExtResource("4_73rpg")]
-position = Vector2(576, 504)
-myFIELD_TYPE = 1
+[node name="Player" type="Node2D" parent="." node_paths=PackedStringArray("deck", "hand", "magicZone", "monsterZone")]
+position = Vector2(562, 483)
+script = ExtResource("4_p7vwb")
+deck = NodePath("Deck")
+hand = NodePath("hand")
+magicZone = [NodePath("CardSlot_Node"), NodePath("CardSlot_Node2"), NodePath("CardSlot_Node3"), NodePath("CardSlot_Node4"), NodePath("CardSlot_Node5")]
+monsterZone = [NodePath("CardSlot_Node6"), NodePath("CardSlot_Node7"), NodePath("CardSlot_Node8"), NodePath("CardSlot_Node9"), NodePath("CardSlot_Node10")]
 
-[node name="Field2" parent="." instance=ExtResource("4_73rpg")]
-position = Vector2(576, 383)
-
-[node name="Field3" parent="." instance=ExtResource("4_73rpg")]
-position = Vector2(576, 262)
-
-[node name="Field4" parent="." instance=ExtResource("4_73rpg")]
-position = Vector2(576, 142)
-myFIELD_TYPE = 1
-
-[node name="Deck" type="Node2D" parent="." node_paths=PackedStringArray("gameScene", "collisionShape", "sprite", "label")]
-position = Vector2(912, 505)
+[node name="Deck" type="Node2D" parent="Player" node_paths=PackedStringArray("gameScene", "collisionShape", "sprite", "label")]
+position = Vector2(345, 0)
 script = ExtResource("5_epbpp")
-gameScene = NodePath("..")
+gameScene = NodePath("../..")
 collisionShape = NodePath("Area2D/CollisionShape2D")
 sprite = NodePath("Sprite2D")
 label = NodePath("Label")
-player_deck_resources = Array[ExtResource("6_1x76o")]([ExtResource("3_8sa80"), ExtResource("7_0n7u7"), ExtResource("8_m7ftw"), ExtResource("3_8sa80"), ExtResource("7_0n7u7"), ExtResource("8_m7ftw"), ExtResource("3_8sa80"), ExtResource("7_0n7u7"), ExtResource("9_ruiml"), ExtResource("9_ruiml"), ExtResource("9_ruiml"), ExtResource("9_ruiml")])
+player_deck_resources = Array[ExtResource("6_mbwul")]([ExtResource("3_8sa80"), ExtResource("7_0n7u7"), ExtResource("8_m7ftw"), ExtResource("3_8sa80"), ExtResource("7_0n7u7"), ExtResource("8_m7ftw"), ExtResource("3_8sa80"), ExtResource("7_0n7u7"), ExtResource("9_ruiml"), ExtResource("9_ruiml"), ExtResource("9_ruiml"), ExtResource("9_ruiml")])
 
-[node name="Sprite2D2" type="Sprite2D" parent="Deck"]
+[node name="Sprite2D2" type="Sprite2D" parent="Player/Deck"]
 position = Vector2(-9.73143e-06, 1.99676e-06)
 scale = Vector2(0.433333, 0.430189)
 texture = ExtResource("6_6537d")
 
-[node name="Sprite2D" type="Sprite2D" parent="Deck"]
+[node name="Sprite2D" type="Sprite2D" parent="Player/Deck"]
 position = Vector2(0, -8.28505e-06)
 scale = Vector2(0.433334, 0.430189)
 texture = ExtResource("5_35u6i")
 
-[node name="Area2D" type="Area2D" parent="Deck"]
+[node name="Area2D" type="Area2D" parent="Player/Deck"]
 collision_layer = 4
 collision_mask = 4
 
-[node name="CollisionShape2D" type="CollisionShape2D" parent="Deck/Area2D"]
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Player/Deck/Area2D"]
 shape = SubResource("RectangleShape2D_5mofp")
 
-[node name="Label" type="Label" parent="Deck"]
+[node name="Label" type="Label" parent="Player/Deck"]
 anchors_preset = -1
 anchor_right = 0.5
 anchor_bottom = 1.0
@@ -83,7 +77,42 @@ text = "40 / 40"
 horizontal_alignment = 1
 vertical_alignment = 2
 
-[node name="playerHand" type="Node2D" parent="." node_paths=PackedStringArray("gameScene")]
+[node name="hand" type="Node2D" parent="Player" node_paths=PackedStringArray("gameScene")]
+position = Vector2(0, 115)
 script = ExtResource("4_4r13x")
-gameScene = NodePath("..")
+gameScene = NodePath("../..")
 cardPrefab = ExtResource("1_c0q3d")
+
+[node name="CardSlot_Node" parent="Player" instance=ExtResource("13_bej0y")]
+position = Vector2(-230, 0)
+myFIELD_TYPE = 1
+
+[node name="CardSlot_Node2" parent="Player" instance=ExtResource("13_bej0y")]
+position = Vector2(-115, 0)
+myFIELD_TYPE = 1
+
+[node name="CardSlot_Node3" parent="Player" instance=ExtResource("13_bej0y")]
+myFIELD_TYPE = 1
+
+[node name="CardSlot_Node4" parent="Player" instance=ExtResource("13_bej0y")]
+position = Vector2(115, 0)
+myFIELD_TYPE = 1
+
+[node name="CardSlot_Node5" parent="Player" instance=ExtResource("13_bej0y")]
+position = Vector2(230, 0)
+myFIELD_TYPE = 1
+
+[node name="CardSlot_Node6" parent="Player" instance=ExtResource("13_bej0y")]
+position = Vector2(-230, -115)
+
+[node name="CardSlot_Node7" parent="Player" instance=ExtResource("13_bej0y")]
+position = Vector2(-115, -115)
+
+[node name="CardSlot_Node8" parent="Player" instance=ExtResource("13_bej0y")]
+position = Vector2(0, -115)
+
+[node name="CardSlot_Node9" parent="Player" instance=ExtResource("13_bej0y")]
+position = Vector2(115, -115)
+
+[node name="CardSlot_Node10" parent="Player" instance=ExtResource("13_bej0y")]
+position = Vector2(230, -115)

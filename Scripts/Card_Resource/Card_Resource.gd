@@ -1,5 +1,5 @@
 extends Resource
-class_name CardResource
+class_name Card_Resource
 #-------------------------------------------------------------------------------
 enum ARCHTYPE{DRAGON_MAID}
 enum RESTRICTION{UNLIMITED, SOFT_ONCE_PER_TURN, HARD_ONCE_PER_TURN}
@@ -12,5 +12,5 @@ enum RESTRICTION{UNLIMITED, SOFT_ONCE_PER_TURN, HARD_ONCE_PER_TURN}
 #endregion
 #-------------------------------------------------------------------------------
 
-func CreateCard() -> CardBase:
-	return CardBase.new()
+func CreateCard() -> Card_Class:
+	return Card_Class.new()

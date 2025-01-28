@@ -1,5 +1,5 @@
-extends CardResource
-class_name CardResource_Red
+extends Card_Resource
+class_name Card_Resource_Red
 #-------------------------------------------------------------------------------
 enum ELEMENT{WATER, FIRE, EARTH, WIND, THUNDER}
 enum CLASS{WARRIOR, MAGICIAN, MACHINE, PANT, BEAST, DRAGON}
@@ -14,5 +14,5 @@ enum CLASS{WARRIOR, MAGICIAN, MACHINE, PANT, BEAST, DRAGON}
 @export_range (1, 10) var level: int = 1
 #endregion
 #-------------------------------------------------------------------------------
-func CreateCard() -> Card_Red:
-	return Card_Red.new()
+func CreateCard() -> Card_Class_Red:
+	return Card_Class_Red.new()

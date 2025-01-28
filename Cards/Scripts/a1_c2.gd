@@ -1,1 +1,1 @@
-extends Card_Blue
+extends Card_Class_Blue

@@ -1,10 +1,10 @@
-extends CardResource
-class_name CardResource_Blue
+extends Node2D
+class_name CardSlot_Node
 #-------------------------------------------------------------------------------
-enum ITEM_TYPE{NORMAL, EQUIP, QUICK, INFINITE}
+enum FIELD_TYPE{MONSTERS, ITEMS}
 #region VARIABLES
-@export var myITEM_TYPE: ITEM_TYPE
+@export var area2D: Area2D
+@export var myFIELD_TYPE: FIELD_TYPE
+var card_in_slot: Card_Node
 #endregion
 #-------------------------------------------------------------------------------
-func CreateCard() -> Card_Blue:
-	return Card_Blue.new()

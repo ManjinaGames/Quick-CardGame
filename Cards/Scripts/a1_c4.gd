@@ -1,1 +1,1 @@
-extends Card_Red
+extends Card_Class_Red

@@ -1,0 +1,64 @@
+[gd_scene load_steps=5 format=3 uid="uid://dfb2i4o7cr1k1"]
+
+[ext_resource type="Script" path="res://Scripts/Card_Node/card_node.gd" id="1_vx84k"]
+[ext_resource type="Texture2D" uid="uid://cwn65mgw3fyk2" path="res://Assets/Images/Frame.png" id="2_ugerl"]
+[ext_resource type="Texture2D" uid="uid://ddipubiwahbeo" path="res://Cards/Artworks/a1_c1.png" id="3_bmntj"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_wf6kc"]
+size = Vector2(96, 144)
+
+[node name="Card_Node" type="Node2D" node_paths=PackedStringArray("area2d", "collisionShape", "frame", "artwork")]
+script = ExtResource("1_vx84k")
+area2d = NodePath("Area2D")
+collisionShape = NodePath("Area2D/CollisionShape2D")
+frame = NodePath("Frame")
+artwork = NodePath("Frame/TextureRect/Artwork")
+
+[node name="Area2D" type="Area2D" parent="."]
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Area2D"]
+shape = SubResource("RectangleShape2D_wf6kc")
+
+[node name="Frame" type="TextureRect" parent="."]
+offset_left = -48.0
+offset_top = -72.0
+offset_right = 48.0
+offset_bottom = 72.0
+mouse_filter = 2
+texture = ExtResource("2_ugerl")
+expand_mode = 1
+
+[node name="TextureRect" type="TextureRect" parent="Frame"]
+self_modulate = Color(0, 0, 0, 1)
+layout_mode = 1
+anchors_preset = -1
+anchor_left = 0.083
+anchor_top = 0.146
+anchor_right = 0.917
+anchor_bottom = 0.722
+offset_left = 0.0319986
+offset_top = -0.024004
+offset_right = -0.0320129
+offset_bottom = 0.0319824
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+texture = ExtResource("3_bmntj")
+expand_mode = 1
+
+[node name="Artwork" type="TextureRect" parent="Frame/TextureRect"]
+layout_mode = 1
+anchors_preset = -1
+anchor_left = 0.037
+anchor_top = 0.036
+anchor_right = 0.962
+anchor_bottom = 0.964
+offset_left = 0.04
+offset_top = 0.0119996
+offset_right = 0.0399857
+offset_bottom = -0.012001
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+texture = ExtResource("3_bmntj")
+expand_mode = 1

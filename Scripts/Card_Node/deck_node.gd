@@ -1,12 +1,12 @@
 extends Node2D
-class_name Deck
+class_name Deck_Node
 #region VARIABLES
 @export var gameScene: GameScene
 @export var collisionShape: CollisionShape2D
 @export var sprite: Sprite2D
 @export var label: Label
-@export var player_deck_resources: Array[CardResource]
-var player_deck: Array[CardBase]
+@export var player_deck_resources: Array[Card_Resource]
+var player_deck: Array[Card_Class]
 var maxDeckNum: int
 #endregion
 #-------------------------------------------------------------------------------
@@ -20,33 +20,34 @@ func _ready() -> void:
 func LoadDeck():
 	for _cardResource in player_deck_resources:
 		var _name: String = GetResource_Name(_cardResource)
-		var _cardBase: CardBase = load(gameScene.cardDatabase_hability_path+"/"+_name+".gd").new() as CardBase
-		_cardBase.cardResource = _cardResource
-		player_deck.append(_cardBase)
+		var _card_Class: Card_Class = load(gameScene.cardDatabase_hability_path+"/"+_name+".gd").new() as Card_Class
+		_card_Class.cardResource = _cardResource
+		player_deck.append(_card_Class)
 	player_deck.shuffle()
 #-------------------------------------------------------------------------------
-func GetResource_Name(_resource: CardResource) -> String:
+func GetResource_Name(_resource: Card_Resource) -> String:
 	return _resource.resource_path.get_file().trim_suffix('.tres')
 #-------------------------------------------------------------------------------
 func DrawCard():
-	var _cardBase: CardBase = player_deck[0]
-	player_deck.erase(_cardBase)
+	var _card_Class: Card_Class = player_deck[0]
+	player_deck.erase(_card_Class)
 	#-------------------------------------------------------------------------------
 	if(player_deck.size() == 0):
 		collisionShape.disabled = true
 		sprite.visible = false
 	#-------------------------------------------------------------------------------
 	SetDeckNumber()
-	var _new_card: Card = gameScene.playerHand.cardPrefab.instantiate()
-	_new_card.global_position = global_position
-	gameScene.SetCard(_new_card)
-	gameScene.playerHand.add_child(_new_card)
 	#-------------------------------------------------------------------------------
-	_new_card.cardBase = _cardBase
-	_cardBase.SetColor(_new_card.frame)
-	_cardBase.gameScene = gameScene
-	_new_card.artwork.texture = _cardBase.cardResource.artwork
-	gameScene.playerHand.Add_card_to_hand(_new_card)
+	var _card_Node: Card_Node = gameScene.player.hand.cardPrefab.instantiate()
+	gameScene.SetCard(_card_Node)
+	gameScene.add_child(_card_Node)
+	_card_Node.global_position = global_position
+	#-------------------------------------------------------------------------------
+	_card_Node.cardBase = _card_Class
+	_card_Class.SetColor(_card_Node.frame)
+	_card_Class.gameScene = gameScene
+	_card_Node.artwork.texture = _card_Class.cardResource.artwork
+	gameScene.player.hand.Add_card_to_hand(_card_Node)
 #-------------------------------------------------------------------------------
 func SetDeckNumber():
 	label.text = str(player_deck.size())+" / "+str(maxDeckNum)
