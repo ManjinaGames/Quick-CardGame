@@ -1,35 +1,66 @@
-[gd_scene load_steps=16 format=3 uid="uid://dlfgbqjvq7ybh"]
+[gd_scene load_steps=25 format=3 uid="uid://dlfgbqjvq7ybh"]
 
 [ext_resource type="PackedScene" uid="uid://dfb2i4o7cr1k1" path="res://Nodes/Prefabs/card_node.tscn" id="1_c0q3d"]
 [ext_resource type="Script" path="res://Scripts/Scenes/game_scene.gd" id="1_txxkl"]
-[ext_resource type="Script" path="res://Cards/Scripts/a1_c1.gd" id="2_qwwp1"]
-[ext_resource type="Resource" uid="uid://b8chr0up3hjdd" path="res://Cards/Resources/a1_c1.tres" id="3_8sa80"]
+[ext_resource type="Script" path="res://Scripts/Card_Resource/Card_Resource_Red.gd" id="2_qebso"]
 [ext_resource type="Script" path="res://Scripts/Card_Node/hand_node.gd" id="4_4r13x"]
 [ext_resource type="Script" path="res://Scripts/Card_Node/player_node.gd" id="4_p7vwb"]
 [ext_resource type="Texture2D" uid="uid://cc152q6tuxnfr" path="res://Assets/Images/Deck.png" id="5_35u6i"]
 [ext_resource type="Script" path="res://Scripts/Card_Node/deck_node.gd" id="5_epbpp"]
+[ext_resource type="Resource" uid="uid://c4ckyvej8drql" path="res://Cards/Resources/dragonmaid (1).tres" id="6_74mte"]
 [ext_resource type="Texture2D" uid="uid://rfrid568vffs" path="res://Assets/Images/CardSlot.png" id="6_6537d"]
 [ext_resource type="Script" path="res://Scripts/Card_Resource/Card_Resource.gd" id="6_mbwul"]
-[ext_resource type="Resource" uid="uid://bq5v7m2hno8k3" path="res://Cards/Resources/a1_c2.tres" id="7_0n7u7"]
-[ext_resource type="Resource" uid="uid://dbrt65apxppa3" path="res://Cards/Resources/a1_c3.tres" id="8_m7ftw"]
-[ext_resource type="Resource" uid="uid://ce82fsgo08mb" path="res://Cards/Resources/a1_c4.tres" id="9_ruiml"]
+[ext_resource type="Resource" uid="uid://ctbs5k56elnwk" path="res://Cards/Resources/dragonmaid (2).tres" id="7_57oyu"]
+[ext_resource type="Resource" uid="uid://by7ivcnaktt2p" path="res://Cards/Resources/dragonmaid (3).tres" id="8_qxogf"]
+[ext_resource type="Resource" uid="uid://c6p45aqi1tqq6" path="res://Cards/Resources/dragonmaid (4).tres" id="9_7r23j"]
+[ext_resource type="Resource" uid="uid://cat61wonelpge" path="res://Cards/Resources/dragonmaid (5).tres" id="10_lcw8k"]
+[ext_resource type="Resource" uid="uid://c3g0ji26qdft8" path="res://Cards/Resources/dragonmaid (6).tres" id="11_7no7l"]
+[ext_resource type="Resource" uid="uid://b2kienbacrnvt" path="res://Cards/Resources/dragonmaid (7).tres" id="12_tcrqf"]
+[ext_resource type="Resource" uid="uid://b6qcpny2r8kuw" path="res://Cards/Resources/dragonmaid (8).tres" id="13_2htqx"]
 [ext_resource type="PackedScene" uid="uid://lvkosjxhgre1" path="res://Nodes/Prefabs/cardslot_node.tscn" id="13_bej0y"]
+[ext_resource type="Resource" uid="uid://3708ghuclhnf" path="res://Cards/Resources/dragonmaid (9).tres" id="14_lbyx3"]
+[ext_resource type="Resource" uid="uid://b4kg13dc3skp2" path="res://Cards/Resources/dragonmaid (10).tres" id="15_yqhx7"]
+
+[sub_resource type="GDScript" id="GDScript_scis2"]
+script/source = "extends Card_Class_Red
+#region FUNCTIONS FROM PARENT
+func NormalSummon():
+	print(\"DragonMaid Laundry was Summon\")
+#endregion
+#-------------------------------------------------------------------------------
+"
+
+[sub_resource type="CompressedTexture2D" id="CompressedTexture2D_ywi56"]
+
+[sub_resource type="Resource" id="Resource_juy0k"]
+script = ExtResource("2_qebso")
+attack = 50
+defense = 120
+myELEMENT = 0
+myCLASS = 5
+level = 2
+artwork = SubResource("CompressedTexture2D_ywi56")
+myARCHTYPE = Array[int]([0])
+myRESTRICTION = 0
+limit = 3
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_5mofp"]
 size = Vector2(74, 110)
 
-[node name="GameScene" type="Node2D" node_paths=PackedStringArray("player")]
+[node name="GameScene" type="Node2D" node_paths=PackedStringArray("player", "debugInfo")]
 script = ExtResource("1_txxkl")
 player = NodePath("Player")
 collision_mask_card = 1
 collision_mask_cardslot = 2
 collision_mask_deck = 4
+debugInfo = NodePath("CanvasLayer/Label")
 cardDatabase = {
-"a1_c1": ExtResource("2_qwwp1"),
-ExtResource("3_8sa80"): ExtResource("2_qwwp1")
+"a1_c1": SubResource("GDScript_scis2"),
+SubResource("Resource_juy0k"): SubResource("GDScript_scis2")
 }
 
 [node name="Player" type="Node2D" parent="." node_paths=PackedStringArray("deck", "hand", "magicZone", "monsterZone")]
+z_index = -2
 position = Vector2(562, 483)
 script = ExtResource("4_p7vwb")
 deck = NodePath("Deck")
@@ -44,7 +75,7 @@ gameScene = NodePath("../..")
 collisionShape = NodePath("Area2D/CollisionShape2D")
 sprite = NodePath("Sprite2D")
 label = NodePath("Label")
-player_deck_resources = Array[ExtResource("6_mbwul")]([ExtResource("3_8sa80"), ExtResource("7_0n7u7"), ExtResource("8_m7ftw"), ExtResource("3_8sa80"), ExtResource("7_0n7u7"), ExtResource("8_m7ftw"), ExtResource("3_8sa80"), ExtResource("7_0n7u7"), ExtResource("9_ruiml"), ExtResource("9_ruiml"), ExtResource("9_ruiml"), ExtResource("9_ruiml")])
+player_deck_resources = Array[ExtResource("6_mbwul")]([ExtResource("6_74mte"), ExtResource("7_57oyu"), ExtResource("8_qxogf"), ExtResource("9_7r23j"), ExtResource("10_lcw8k"), ExtResource("11_7no7l"), ExtResource("12_tcrqf"), ExtResource("13_2htqx"), ExtResource("14_lbyx3"), ExtResource("15_yqhx7")])
 
 [node name="Sprite2D2" type="Sprite2D" parent="Player/Deck"]
 position = Vector2(-9.73143e-06, 1.99676e-06)
@@ -116,3 +147,12 @@ position = Vector2(115, -115)
 
 [node name="CardSlot_Node10" parent="Player" instance=ExtResource("13_bej0y")]
 position = Vector2(230, -115)
+
+[node name="CanvasLayer" type="CanvasLayer" parent="."]
+
+[node name="Label" type="Label" parent="CanvasLayer"]
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2

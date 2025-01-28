@@ -1,0 +1,1 @@
+extends Card_Class_Blue

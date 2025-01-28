@@ -6,7 +6,7 @@ class_name Hand_Node
 var playerHand: Array[Card_Node] = []
 var height: float
 var width: float
-var card_width: float = 110
+var card_width: float = 70
 #endregion
 #-------------------------------------------------------------------------------
 #region MONOVEHAVIOUR

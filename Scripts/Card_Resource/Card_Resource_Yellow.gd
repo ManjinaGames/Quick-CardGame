@@ -12,6 +12,8 @@ enum CLASS{WARRIOR, MAGICIAN, MACHINE, PANT, BEAST, DRAGON}
 @export var myCLASS: CLASS
 #-------------------------------------------------------------------------------
 @export_range (1, 10) var level: int = 1
+#-------------------------------------------------------------------------------
+@export var cardClass: Card_Class_Blue
 #endregion
 #-------------------------------------------------------------------------------
 func CreateCard() -> Card_Class_Yellow:

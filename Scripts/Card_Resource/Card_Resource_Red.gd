@@ -5,6 +5,7 @@ enum ELEMENT{WATER, FIRE, EARTH, WIND, THUNDER}
 enum CLASS{WARRIOR, MAGICIAN, MACHINE, PANT, BEAST, DRAGON}
 #region VARIABLES
 #-------------------------------------------------------------------------------
+@export var cardClass: Card_Class_Red
 @export var attack: int = 0
 @export var defense: int = 0
 #-------------------------------------------------------------------------------

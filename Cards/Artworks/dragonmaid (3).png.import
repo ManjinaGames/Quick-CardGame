@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://ctgqjq2qfme6v"
-path="res://.godot/imported/a1_c4.png-72537f94addf7434794144351a2b56ea.ctex"
+uid="uid://cg2yb8imwmsld"
+path="res://.godot/imported/dragonmaid (3).png-aa3a772dbc4d71151e780152b9e37975.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://Cards/Artworks/a1_c4.png"
-dest_files=["res://.godot/imported/a1_c4.png-72537f94addf7434794144351a2b56ea.ctex"]
+source_file="res://Cards/Artworks/dragonmaid (3).png"
+dest_files=["res://.godot/imported/dragonmaid (3).png-aa3a772dbc4d71151e780152b9e37975.ctex"]
 
 [params]
 

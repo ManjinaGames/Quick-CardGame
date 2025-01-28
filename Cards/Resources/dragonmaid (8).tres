@@ -1,0 +1,14 @@
+[gd_resource type="Resource" script_class="Card_Resource_Blue" load_steps=4 format=3 uid="uid://b6qcpny2r8kuw"]
+
+[ext_resource type="Texture2D" uid="uid://daaewtrwvsx0a" path="res://Cards/Artworks/dragonmaid (8).png" id="1_t6y1n"]
+[ext_resource type="Script" path="res://Scripts/Card_Resource/Card_Resource_Blue.gd" id="1_wpmhr"]
+[ext_resource type="Script" path="res://Cards/Scripts/dragonmaid (8).gd" id="2_438ah"]
+
+[resource]
+script = ExtResource("1_wpmhr")
+myITEM_TYPE = 0
+cardClass = ExtResource("2_438ah")
+artwork = ExtResource("1_t6y1n")
+myARCHTYPE = Array[int]([])
+myRESTRICTION = 0
+limit = 3

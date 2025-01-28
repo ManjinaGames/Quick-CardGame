@@ -2,14 +2,24 @@ extends Node2D
 class_name GameScene
 #region VARIABLES
 @export var player: Player_Node
+#-------------------------------------------------------------------------------
 @export_flags_2d_physics var collision_mask_card
 @export_flags_2d_physics var collision_mask_cardslot
 @export_flags_2d_physics var collision_mask_deck
+#-------------------------------------------------------------------------------
+var z_index_field: int = 0
+var z_index_hand: int = 1
+#-------------------------------------------------------------------------------
+@export var debugInfo: Label
+#-------------------------------------------------------------------------------
+var parameters: PhysicsPointQueryParameters2D
+var space_state: PhysicsDirectSpaceState2D
+#-------------------------------------------------------------------------------
 var card_being_dragged: Card_Node
+var card_being_hightlighted: Card_Node
+#-------------------------------------------------------------------------------
 var screen_size: Vector2
-var is_hovering_on_card: bool
-var _space_state: PhysicsDirectSpaceState2D
-var highlight_scale: float = 1.2
+var highlight_scale: float = 1.3
 #-------------------------------------------------------------------------------
 const cardDatabase_path: String = "res://Cards/Resources"
 const cardDatabase_hability_path: String = "res://Cards/Scripts"
@@ -18,25 +28,15 @@ const cardDatabase_hability_path: String = "res://Cards/Scripts"
 #-------------------------------------------------------------------------------
 #region MONOVEHAVIOUR
 func _ready() -> void:
+	parameters = PhysicsPointQueryParameters2D.new()
+	parameters.collide_with_areas = true
+	space_state = get_world_2d().direct_space_state
+	#-------------------------------------------------------------------------------
 	screen_size = get_viewport_rect().size
-	_space_state = get_world_2d().direct_space_state
 	LoadCardDatabase()
-	print(cardDatabase)
 #-------------------------------------------------------------------------------
 func _process(_delta: float) -> void:
-	if(card_being_dragged):
-		var mouse_pos: Vector2 = get_global_mouse_position()
-		var _x: float = clamp(mouse_pos.x, 0, screen_size.x)
-		var _y: float  = clamp(mouse_pos.y, 0, screen_size.y)
-		card_being_dragged.global_position = Vector2(_x, _y)
-#-------------------------------------------------------------------------------
-func _input(_event: InputEvent) -> void:
-	if(_event is InputEventMouseButton and _event.button_index == MOUSE_BUTTON_LEFT):
-		if(_event.is_pressed()):
-			Raycast_at_Cursor()
-		else:
-			if(card_being_dragged):
-				Finish_Drag()
+	StateMachine()
 #endregion
 #-------------------------------------------------------------------------------
 #region CARD DATABASE
@@ -45,7 +45,6 @@ func LoadCardDatabase():
 	if(dir_array):
 		for _i in dir_array.size():
 			var _base_name: String = dir_array[_i].get_slice(".",0)
-			print(_base_name)
 			var _cardBase: Card_Class = load(cardDatabase_hability_path+"/"+_base_name+".gd").new() as Card_Class
 			var _cardResource: Card_Resource = load(cardDatabase_path+"/"+_base_name+".tres") as Card_Resource
 			_cardBase.cardResource = _cardResource
@@ -53,98 +52,80 @@ func LoadCardDatabase():
 #endregion
 #-------------------------------------------------------------------------------
 #region RAYCAST FUNTIONS
-func Raycast_at_Cursor():
-	var _parameters: PhysicsPointQueryParameters2D = PhysicsPointQueryParameters2D.new()
-	_parameters.position = get_global_mouse_position()
-	_parameters.collide_with_areas = true
-	var _result: Array[Dictionary] = _space_state.intersect_point(_parameters)
+func StateMachine():
 	#-------------------------------------------------------------------------------
-	if(_result.size()>0):
-		var _result_collision_mask: int = _result[0].collider.collision_mask
+	parameters.position = get_global_mouse_position()
+	var _result: Array[Dictionary] = space_state.intersect_point(parameters)
+	#-------------------------------------------------------------------------------
+	var _card_found: Array[Card_Node] = []
+	var _cardslot_found: Array[CardSlot_Node] = []
+	var _deck_found: Array[Deck_Node] = []
+	#-------------------------------------------------------------------------------
+	for _i in _result.size():
+		var _result_collision_mask: int = _result[_i].collider.collision_mask as int
 		match(_result_collision_mask):
 			collision_mask_card:
-				var _card_found: Card_Node = _result[0].collider.get_parent()
-				if(_card_found):
-					Star_Drag(_card_found)
+				_card_found.append(_result[_i].collider.get_parent() as Card_Node)
+			#-------------------------------------------------------------------------------
+			collision_mask_cardslot:
+				_cardslot_found.append(_result[_i].collider.get_parent() as CardSlot_Node)
 			#-------------------------------------------------------------------------------
 			collision_mask_deck:
-				print("Mouse Presed")
-				player.deck.DrawCard()
+				_deck_found.append(_result[_i].collider.get_parent() as Deck_Node)
 			#-------------------------------------------------------------------------------
 		#-------------------------------------------------------------------------------
 	#-------------------------------------------------------------------------------
-#-------------------------------------------------------------------------------
-func Raycast_Check_for_Card() -> Card_Node:
-	var _parameters: PhysicsPointQueryParameters2D = PhysicsPointQueryParameters2D.new()
-	_parameters.position = get_global_mouse_position()
-	_parameters.collide_with_areas = true
-	_parameters.collision_mask = collision_mask_card
-	var _result: Array[Dictionary] = _space_state.intersect_point(_parameters)
+	var _s: String = ""
+	for _i in _card_found:
+		_s += "Card: "+str(_i)+"\n"
+	for _i in _cardslot_found:
+		_s += "Card Slot: "+str(_i)+"\n"
+	for _i in _deck_found:
+		_s += "Deck: "+str(_i)+"\n"
+	debugInfo.text = _s
 	#-------------------------------------------------------------------------------
-	var _cards: Array[Card_Node]
-	for _i:int in _result.size():
-		_cards.push_back(_result[0].collider.get_parent())
+	if(_deck_found.size() > 0):
+		if(Input.is_action_just_pressed("Left_Click")):
+			player.deck.DrawCard()
 	#-------------------------------------------------------------------------------
-	if(_cards.size()>0):
-		return Get_Card_with_Highest_z_Index(_cards)
-	return null
-#-------------------------------------------------------------------------------
-func Raycast_Check_for_CardSlot() -> CardSlot_Node:
-	var _parameters: PhysicsPointQueryParameters2D = PhysicsPointQueryParameters2D.new()
-	_parameters.position = get_global_mouse_position()
-	_parameters.collide_with_areas = true
-	_parameters.collision_mask = collision_mask_cardslot
-	var _result: Array[Dictionary] = _space_state.intersect_point(_parameters)
-	#-------------------------------------------------------------------------------
-	if(_result.size() > 0):
-		return _result[0].collider.get_parent()
-	return null
-#-------------------------------------------------------------------------------
-func Get_Card_with_Highest_z_Index(_card_node:Array[Card_Node]) -> Card_Node:
-	var _highest_z_card: Card_Node = _card_node[0]
-	var _highest_z_index: int = _highest_z_card.z_index
-	for _i in range(1, _card_node.size()):
-		var _current_card: Card_Node = _card_node[_i]
-		if(_current_card.z_index > _highest_z_index):
-			_highest_z_card = _current_card
-			_highest_z_index = _current_card.z_index
-	return _highest_z_card
-#--------------------------------------------------------------------------
-func Star_Drag(_card_node:Card_Node):
-	card_being_dragged = _card_node
-	#_card_node.scale = Vector2(1, 1)
-#--------------------------------------------------------------------------
-func Finish_Drag():
-	card_being_dragged.cardBase.Finish_Drag(card_being_dragged)
-#endregion
-#-------------------------------------------------------------------------------
-#region CREATING CARD FUNC
-func SetCard(_card_node:Card_Node):
-	_card_node.area2d.mouse_entered.connect(func():Card_Mouse_Entered(_card_node))
-	_card_node.area2d.mouse_exited.connect(func():Card_Mouse_Exited(_card_node))
-#-------------------------------------------------------------------------------
-func Card_Mouse_Entered(_card_node: Card_Node):
-	if(!is_hovering_on_card):
-		is_hovering_on_card = true
-		Highlight_Card_True(_card_node)
-#-------------------------------------------------------------------------------
-func Card_Mouse_Exited(_card_node: Card_Node):
-	if(!card_being_dragged):
-		Highlight_Card_False(_card_node)
-		var _new_cad_hovered: Card_Node = Raycast_Check_for_Card()
-		if(_new_cad_hovered):
-			Highlight_Card_True(_card_node)
+	if(card_being_dragged):
+		var mouse_pos: Vector2 = get_global_mouse_position()
+		var _x: float = clamp(mouse_pos.x, 0, screen_size.x)
+		var _y: float  = clamp(mouse_pos.y, 0, screen_size.y)
+		card_being_dragged.global_position = Vector2(_x, _y)
+		#-------------------------------------------------------------------------------
+		if(Input.is_action_just_released("Left_Click")):
+			if(_cardslot_found.size()>0):
+				card_being_dragged.cardBase.Finish_Drag(card_being_dragged, _cardslot_found[0])
+			else:
+				player.hand.Add_card_to_hand(card_being_dragged)
+			card_being_dragged = null
+		#-------------------------------------------------------------------------------
+	else:
+		if(card_being_hightlighted):
+			if(Input.is_action_just_pressed("Left_Click")):
+				card_being_dragged = card_being_hightlighted
+				return
+			if(_card_found.size()>0):
+				var _bool: bool = false
+				for _card in _card_found:
+					if(card_being_hightlighted == _card):
+						_bool = true
+						break
+				if(!_bool):
+					card_being_hightlighted.scale = Vector2(1, 1)
+					card_being_hightlighted.z_index = 1
+					card_being_hightlighted = null
+			else:
+				card_being_hightlighted.scale = Vector2(1, 1)
+				card_being_hightlighted.z_index = 1
+				card_being_hightlighted = null
 		else:
-			is_hovering_on_card = false
-#-------------------------------------------------------------------------------
-func Highlight_Card_True(_card_node: Card_Node):
-	pass
-	#_card_node.scale = Vector2(highlight_scale, highlight_scale)
-	#_card_node.z_index = 2
-#-------------------------------------------------------------------------------
-func Highlight_Card_False(_card_node: Card_Node):
-	pass
-	#_card_node.scale = Vector2(1, 1)
-	#_card_node.z_index = 1
+			if(_card_found.size()>0):
+				#var _card_found_first: Card_Node = Get_Card_with_Highest_z_Index(_card_found)
+				var _card_found_first: Card_Node = _card_found[0]
+				_card_found_first.scale = Vector2(highlight_scale, highlight_scale)
+				_card_found_first.z_index = 2
+				card_being_hightlighted = _card_found_first
 #endregion
 #-------------------------------------------------------------------------------
