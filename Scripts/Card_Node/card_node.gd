@@ -5,9 +5,10 @@ class_name Card_Node
 @export var collisionShape: CollisionShape2D
 @export var frame: TextureRect
 @export var artwork: TextureRect
-@export var topLavel: Label
+@export var topLabel: Label
+@export var bottonLabel: Label
 var starting_position: Vector2
 #-------------------------------------------------------------------------------
-var cardBase: Card_Class
+var card_Class: Card_Class
 #endregion
 #-------------------------------------------------------------------------------

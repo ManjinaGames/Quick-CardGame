@@ -1,24 +1,29 @@
-[gd_scene load_steps=25 format=3 uid="uid://dlfgbqjvq7ybh"]
+[gd_scene load_steps=41 format=3 uid="uid://dlfgbqjvq7ybh"]
 
 [ext_resource type="PackedScene" uid="uid://dfb2i4o7cr1k1" path="res://Nodes/Prefabs/card_node.tscn" id="1_c0q3d"]
 [ext_resource type="Script" path="res://Scripts/Scenes/game_scene.gd" id="1_txxkl"]
 [ext_resource type="Script" path="res://Scripts/Card_Node/hand_node.gd" id="4_4r13x"]
 [ext_resource type="Script" path="res://Scripts/Card_Node/player_node.gd" id="4_p7vwb"]
+[ext_resource type="Texture2D" uid="uid://bgo4742bd6dl3" path="res://Cards/Artworks/dragonmaid (1).png" id="5_5qw6w"]
 [ext_resource type="Texture2D" uid="uid://cc152q6tuxnfr" path="res://Assets/Images/Deck.png" id="5_35u6i"]
 [ext_resource type="Script" path="res://Scripts/Card_Node/deck_node.gd" id="5_epbpp"]
-[ext_resource type="Resource" uid="uid://b8itilv3eupn6" path="res://Cards/Resources/dragonmaid (1).tres" id="5_w0rv4"]
 [ext_resource type="Texture2D" uid="uid://rfrid568vffs" path="res://Assets/Images/CardSlot.png" id="6_6537d"]
-[ext_resource type="Resource" uid="uid://otg0sqo8h5cp" path="res://Cards/Resources/dragonmaid (2).tres" id="6_emvl4"]
 [ext_resource type="Script" path="res://Scripts/Card_Resource/Card_Resource.gd" id="6_mbwul"]
-[ext_resource type="Resource" uid="uid://latp60wh3sc3" path="res://Cards/Resources/dragonmaid (3).tres" id="7_4udd4"]
-[ext_resource type="Resource" uid="uid://guk21f86346y" path="res://Cards/Resources/dragonmaid (4).tres" id="8_rcph7"]
-[ext_resource type="Resource" uid="uid://bont1mo8yn7me" path="res://Cards/Resources/dragonmaid (5).tres" id="9_l1t5s"]
-[ext_resource type="Resource" uid="uid://dreotdtdw6vrq" path="res://Cards/Resources/dragonmaid (6).tres" id="10_v8rp7"]
-[ext_resource type="Resource" uid="uid://camfetuo323ie" path="res://Cards/Resources/dragonmaid (7).tres" id="11_fnrwv"]
-[ext_resource type="Resource" uid="uid://bdc1ft0vvpbts" path="res://Cards/Resources/dragonmaid (8).tres" id="12_fu2j2"]
+[ext_resource type="Texture2D" uid="uid://djmlajx4bc82d" path="res://Cards/Artworks/dragonmaid (2).png" id="6_sya4k"]
+[ext_resource type="Texture2D" uid="uid://cg2yb8imwmsld" path="res://Cards/Artworks/dragonmaid (3).png" id="7_u6qac"]
+[ext_resource type="Script" path="res://Cards/Scripts/dragonmaid (3).gd" id="8_hj0yw"]
+[ext_resource type="Texture2D" uid="uid://cl17j4rf4e81g" path="res://Cards/Artworks/dragonmaid (4).png" id="9_b7o78"]
+[ext_resource type="Texture2D" uid="uid://bwjrjghlxhnv3" path="res://Cards/Artworks/dragonmaid (5).png" id="10_v686j"]
+[ext_resource type="Script" path="res://Cards/Scripts/dragonmaid (5).gd" id="11_2e6i8"]
+[ext_resource type="Texture2D" uid="uid://cka1sewlsq4ow" path="res://Cards/Artworks/dragonmaid (6).png" id="12_8pq5s"]
 [ext_resource type="PackedScene" uid="uid://lvkosjxhgre1" path="res://Nodes/Prefabs/cardslot_node.tscn" id="13_bej0y"]
-[ext_resource type="Resource" uid="uid://g3kw4h8wixrd" path="res://Cards/Resources/dragonmaid (9).tres" id="13_plchi"]
-[ext_resource type="Resource" uid="uid://d2ufpn3wtd18h" path="res://Cards/Resources/dragonmaid (10).tres" id="14_dpwcw"]
+[ext_resource type="Script" path="res://Cards/Scripts/dragonmaid (6).gd" id="13_fcs3r"]
+[ext_resource type="Texture2D" uid="uid://c17ogyad2njnb" path="res://Cards/Artworks/dragonmaid (7).png" id="14_73ms5"]
+[ext_resource type="Texture2D" uid="uid://daaewtrwvsx0a" path="res://Cards/Artworks/dragonmaid (8).png" id="15_pa0li"]
+[ext_resource type="Script" path="res://Cards/Scripts/dragonmaid (8).gd" id="16_qfmd0"]
+[ext_resource type="Texture2D" uid="uid://6r6wpom3iuav" path="res://Cards/Artworks/dragonmaid (9).png" id="17_l26xf"]
+[ext_resource type="Script" path="res://Cards/Scripts/dragonmaid (9).gd" id="18_pe8nh"]
+[ext_resource type="Texture2D" uid="uid://boye4rrni4dgf" path="res://Cards/Artworks/dragonmaid (10).png" id="19_qyp17"]
 
 [sub_resource type="GDScript" id="GDScript_scis2"]
 script/source = "extends Card_Class
@@ -39,6 +44,159 @@ class_name Card_Resource_Red
 [sub_resource type="Resource" id="Resource_juy0k"]
 script = SubResource("GDScript_tcra8")
 artwork = SubResource("CompressedTexture2D_ywi56")
+myCARD_TYPE = 0
+myRESTRICTION = 0
+limit = 3
+myARCHTYPE = Array[int]([])
+attack = 0
+defense = 0
+myELEMENT = 0
+myCLASS = 0
+level = 1
+myITEM_TYPE = 0
+
+[sub_resource type="Resource" id="Resource_wacss"]
+script = SubResource("GDScript_tcra8")
+artwork = ExtResource("5_5qw6w")
+myCARD_TYPE = 0
+myRESTRICTION = 0
+limit = 3
+myARCHTYPE = Array[int]([])
+attack = 0
+defense = 0
+myELEMENT = 0
+myCLASS = 0
+level = 1
+myITEM_TYPE = 0
+
+[sub_resource type="Resource" id="Resource_wnjl5"]
+script = SubResource("GDScript_tcra8")
+artwork = ExtResource("6_sya4k")
+myCARD_TYPE = 0
+myRESTRICTION = 0
+limit = 3
+myARCHTYPE = Array[int]([])
+attack = 0
+defense = 0
+myELEMENT = 0
+myCLASS = 0
+level = 1
+myITEM_TYPE = 0
+
+[sub_resource type="GDScript" id="GDScript_em82r"]
+script/source = "extends Card_Resource
+class_name Card_Resource_Blue
+#-------------------------------------------------------------------------------
+func CreateCard() -> Card_Class:
+	return Card_Class.new()
+"
+
+[sub_resource type="Resource" id="Resource_815ku"]
+script = SubResource("GDScript_em82r")
+artwork = ExtResource("7_u6qac")
+myCARD_TYPE = 0
+myRESTRICTION = 0
+limit = 3
+myARCHTYPE = Array[int]([])
+cardClass = ExtResource("8_hj0yw")
+attack = 0
+defense = 0
+myELEMENT = 0
+myCLASS = 0
+level = 1
+myITEM_TYPE = 0
+
+[sub_resource type="Resource" id="Resource_35oqt"]
+script = SubResource("GDScript_tcra8")
+artwork = ExtResource("9_b7o78")
+myCARD_TYPE = 0
+myRESTRICTION = 0
+limit = 3
+myARCHTYPE = Array[int]([])
+attack = 0
+defense = 0
+myELEMENT = 0
+myCLASS = 0
+level = 1
+myITEM_TYPE = 0
+
+[sub_resource type="Resource" id="Resource_6q8f5"]
+script = SubResource("GDScript_em82r")
+artwork = ExtResource("10_v686j")
+myCARD_TYPE = 0
+myRESTRICTION = 0
+limit = 3
+myARCHTYPE = Array[int]([])
+cardClass = ExtResource("11_2e6i8")
+attack = 0
+defense = 0
+myELEMENT = 0
+myCLASS = 0
+level = 1
+myITEM_TYPE = 0
+
+[sub_resource type="Resource" id="Resource_bvs4e"]
+script = SubResource("GDScript_em82r")
+artwork = ExtResource("12_8pq5s")
+myCARD_TYPE = 0
+myRESTRICTION = 0
+limit = 3
+myARCHTYPE = Array[int]([])
+cardClass = ExtResource("13_fcs3r")
+attack = 0
+defense = 0
+myELEMENT = 0
+myCLASS = 0
+level = 1
+myITEM_TYPE = 0
+
+[sub_resource type="Resource" id="Resource_4kuw8"]
+script = SubResource("GDScript_tcra8")
+artwork = ExtResource("14_73ms5")
+myCARD_TYPE = 0
+myRESTRICTION = 0
+limit = 3
+myARCHTYPE = Array[int]([])
+attack = 0
+defense = 0
+myELEMENT = 0
+myCLASS = 0
+level = 1
+myITEM_TYPE = 0
+
+[sub_resource type="Resource" id="Resource_hkunu"]
+script = SubResource("GDScript_em82r")
+artwork = ExtResource("15_pa0li")
+myCARD_TYPE = 0
+myRESTRICTION = 0
+limit = 3
+myARCHTYPE = Array[int]([])
+cardClass = ExtResource("16_qfmd0")
+attack = 0
+defense = 0
+myELEMENT = 0
+myCLASS = 0
+level = 1
+myITEM_TYPE = 0
+
+[sub_resource type="Resource" id="Resource_leyty"]
+script = SubResource("GDScript_em82r")
+artwork = ExtResource("17_l26xf")
+myCARD_TYPE = 0
+myRESTRICTION = 0
+limit = 3
+myARCHTYPE = Array[int]([])
+cardClass = ExtResource("18_pe8nh")
+attack = 0
+defense = 0
+myELEMENT = 0
+myCLASS = 0
+level = 1
+myITEM_TYPE = 0
+
+[sub_resource type="Resource" id="Resource_8rvui"]
+script = SubResource("GDScript_tcra8")
+artwork = ExtResource("19_qyp17")
 myCARD_TYPE = 0
 myRESTRICTION = 0
 limit = 3
@@ -81,7 +239,7 @@ gameScene = NodePath("../..")
 collisionShape = NodePath("Area2D/CollisionShape2D")
 sprite = NodePath("Sprite2D")
 label = NodePath("Label")
-player_deck_resources = Array[ExtResource("6_mbwul")]([ExtResource("5_w0rv4"), ExtResource("5_w0rv4"), ExtResource("6_emvl4"), ExtResource("7_4udd4"), ExtResource("8_rcph7"), ExtResource("9_l1t5s"), ExtResource("10_v8rp7"), ExtResource("11_fnrwv"), ExtResource("12_fu2j2"), ExtResource("13_plchi"), ExtResource("14_dpwcw"), ExtResource("14_dpwcw"), ExtResource("13_plchi"), ExtResource("12_fu2j2"), ExtResource("11_fnrwv"), ExtResource("10_v8rp7"), ExtResource("9_l1t5s"), ExtResource("8_rcph7"), ExtResource("7_4udd4"), ExtResource("6_emvl4")])
+player_deck_resources = Array[ExtResource("6_mbwul")]([SubResource("Resource_wacss"), SubResource("Resource_wnjl5"), SubResource("Resource_815ku"), SubResource("Resource_35oqt"), SubResource("Resource_6q8f5"), SubResource("Resource_bvs4e"), SubResource("Resource_4kuw8"), SubResource("Resource_hkunu"), SubResource("Resource_leyty"), SubResource("Resource_8rvui")])
 
 [node name="Sprite2D2" type="Sprite2D" parent="Player/Deck"]
 position = Vector2(-9.73143e-06, 1.99676e-06)

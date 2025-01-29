@@ -2,14 +2,42 @@ extends GDScript
 class_name Card_Class
 #region VARIABLES
 var gameScene: GameScene
+var cardResource: Card_Resource
 #endregion
 #-------------------------------------------------------------------------------
 #region FUNCTIONS THAT CHILDS INHERITS
 func Set_Card_Node(_card_node:Card_Node):
-	pass
+	match(_card_node.card_Class.cardResource.myCARD_TYPE):
+		Card_Resource.CARD_TYPE.RED:
+			_card_node.frame.self_modulate = Color.LIGHT_PINK
+			_card_node.topLabel.text = Get_Stars()
+			_card_node.bottonLabel.text = Get_Attack_and_Defense()
+		Card_Resource.CARD_TYPE.BLUE:
+			_card_node.frame.self_modulate = Color.LIGHT_BLUE
+			_card_node.topLabel.text = "(Magic Card)"
+			_card_node.bottonLabel.text = ""
+		Card_Resource.CARD_TYPE.YELLOW:
+			_card_node.frame.self_modulate = Color.LIGHT_GOLDENROD
+			_card_node.topLabel.text = Get_Stars()
+			_card_node.bottonLabel.text = Get_Attack_and_Defense()
+#-------------------------------------------------------------------------------
+func Get_Attack_and_Defense() -> String:
+	return "ATK/"+str(cardResource.attack)+"      "+"DEF/"+str(cardResource.defense)
+#-------------------------------------------------------------------------------
+func Get_Stars() -> String:
+	var _s:String = ""
+	for _i in cardResource.level:
+		_s += "* "
+	return _s
 #-------------------------------------------------------------------------------
 func Finish_Drag(_card:Card_Node, _cardSlot:CardSlot_Node):
-	print("This card has no Code to Drag and Drop")
+	match(_card.card_Class.cardResource.myCARD_TYPE):
+		Card_Resource.CARD_TYPE.RED:
+			Finish_Drag_Common(_card, _cardSlot, CardSlot_Node.FIELD_TYPE.MONSTERS, NormalSummon)
+		Card_Resource.CARD_TYPE.BLUE:
+			Finish_Drag_Common(_card, _cardSlot, CardSlot_Node.FIELD_TYPE.ITEMS, NormalActivation)
+		Card_Resource.CARD_TYPE.YELLOW:
+			pass
 #endregion
 #-------------------------------------------------------------------------------
 #region FUNCTIONS THAT CHILDS USES
@@ -28,3 +56,8 @@ func Finish_Drag_Common(_card:Card_Node, _cardSlot:CardSlot_Node, _myFIELD_TYPE:
 #-------------------------------------------------------------------------------
 #endregion
 #-------------------------------------------------------------------------------
+func NormalActivation():
+	pass
+#-------------------------------------------------------------------------------
+func NormalSummon():
+	pass

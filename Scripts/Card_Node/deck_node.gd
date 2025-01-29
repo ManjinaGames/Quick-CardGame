@@ -19,9 +19,7 @@ func _ready() -> void:
 #-------------------------------------------------------------------------------
 func LoadDeck():
 	for _cardResource in player_deck_resources:
-		var _name: String = GetResource_Name(_cardResource)
-		print(_name)
-		var _card_Class: Card_Class = load(gameScene.cardDatabase_hability_path+"/"+_name+".gd").new() as Card_Class
+		var _card_Class: Card_Class = _cardResource.card_Class.new() as Card_Class
 		_card_Class.cardResource = _cardResource
 		player_deck.append(_card_Class)
 	player_deck.shuffle()
@@ -46,7 +44,7 @@ func DrawCard():
 	_card_Node.z_index = gameScene.z_index_hand
 	gameScene.add_child(_card_Node)
 	#-------------------------------------------------------------------------------
-	_card_Node.cardBase = _card_Class
+	_card_Node.card_Class = _card_Class
 	_card_Class.Set_Card_Node(_card_Node)
 	_card_Class.gameScene = gameScene
 	_card_Node.artwork.texture = _card_Class.cardResource.artwork

@@ -1,1 +1,4 @@
-extends Card_Class_Blue
+extends Card_Class
+
+func NormalActivation():
+	print("DragonMaid ChangeOver was activated")

@@ -33,7 +33,7 @@ func _ready() -> void:
 	space_state = get_world_2d().direct_space_state
 	#-------------------------------------------------------------------------------
 	screen_size = get_viewport_rect().size
-	LoadCardDatabase()
+	#LoadCardDatabase()
 #-------------------------------------------------------------------------------
 func _process(_delta: float) -> void:
 	StateMachine()
@@ -96,7 +96,7 @@ func StateMachine():
 		#-------------------------------------------------------------------------------
 		if(Input.is_action_just_released("Left_Click")):
 			if(_cardslot_found.size()>0):
-				card_being_dragged.cardBase.Finish_Drag(card_being_dragged, _cardslot_found[0])
+				card_being_dragged.card_Class.Finish_Drag(card_being_dragged, _cardslot_found[0])
 			else:
 				player.hand.Add_card_to_hand(card_being_dragged)
 			card_being_dragged = null

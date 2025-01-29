@@ -7,13 +7,14 @@
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_wf6kc"]
 size = Vector2(96, 144)
 
-[node name="Card_Node" type="Node2D" node_paths=PackedStringArray("area2d", "collisionShape", "frame", "artwork", "topLavel")]
+[node name="Card_Node" type="Node2D" node_paths=PackedStringArray("area2d", "collisionShape", "frame", "artwork", "topLabel", "bottonLabel")]
 script = ExtResource("1_vx84k")
 area2d = NodePath("Area2D")
 collisionShape = NodePath("Area2D/CollisionShape2D")
 frame = NodePath("Frame")
 artwork = NodePath("Frame/TextureRect/Artwork")
-topLavel = NodePath("Frame/Label")
+topLabel = NodePath("Frame/Top_Label")
+bottonLabel = NodePath("Frame/Botton_Label")
 
 [node name="Area2D" type="Area2D" parent="."]
 
@@ -64,14 +65,29 @@ mouse_filter = 2
 texture = ExtResource("3_cn51o")
 expand_mode = 1
 
-[node name="Label" type="Label" parent="Frame"]
+[node name="Top_Label" type="Label" parent="Frame"]
 layout_mode = 1
 anchors_preset = 10
 anchor_right = 1.0
-offset_bottom = 21.0
+offset_right = -8.0
+offset_bottom = 23.0
 grow_horizontal = 2
 theme_override_constants/outline_size = 5
 theme_override_font_sizes/font_size = 8
-text = "(Lv 2)"
-horizontal_alignment = 1
+text = "(Magic Card)"
+horizontal_alignment = 2
 vertical_alignment = 2
+
+[node name="Botton_Label" type="Label" parent="Frame"]
+layout_mode = 1
+anchors_preset = 12
+anchor_top = 1.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_top = -18.0
+grow_horizontal = 2
+grow_vertical = 0
+theme_override_constants/outline_size = 5
+theme_override_font_sizes/font_size = 8
+text = "ATK/500      DEF/1600"
+horizontal_alignment = 1
