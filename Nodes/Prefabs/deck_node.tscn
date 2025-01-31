@@ -1,0 +1,95 @@
+[gd_scene load_steps=17 format=3 uid="uid://idh8uvwwpbjb"]
+
+[ext_resource type="Script" path="res://Scripts/Card_Node/deck_node.gd" id="1_5jrh3"]
+[ext_resource type="Script" path="res://Scripts/Card_Resource/Card_Resource.gd" id="2_bxbnl"]
+[ext_resource type="Resource" uid="uid://b8itilv3eupn6" path="res://Cards/Resources/dragonmaid (1).tres" id="3_1hiwk"]
+[ext_resource type="Resource" uid="uid://otg0sqo8h5cp" path="res://Cards/Resources/dragonmaid (2).tres" id="4_fr2cg"]
+[ext_resource type="Resource" uid="uid://latp60wh3sc3" path="res://Cards/Resources/dragonmaid (3).tres" id="5_fkcli"]
+[ext_resource type="Resource" uid="uid://guk21f86346y" path="res://Cards/Resources/dragonmaid (4).tres" id="6_61fgw"]
+[ext_resource type="Resource" uid="uid://bont1mo8yn7me" path="res://Cards/Resources/dragonmaid (5).tres" id="7_fi63g"]
+[ext_resource type="Resource" uid="uid://dreotdtdw6vrq" path="res://Cards/Resources/dragonmaid (6).tres" id="8_d086q"]
+[ext_resource type="Resource" uid="uid://camfetuo323ie" path="res://Cards/Resources/dragonmaid (7).tres" id="9_v6rfg"]
+[ext_resource type="Resource" uid="uid://bdc1ft0vvpbts" path="res://Cards/Resources/dragonmaid (8).tres" id="10_ib35r"]
+[ext_resource type="Resource" uid="uid://g3kw4h8wixrd" path="res://Cards/Resources/dragonmaid (9).tres" id="11_p4wmp"]
+[ext_resource type="Resource" uid="uid://d2ufpn3wtd18h" path="res://Cards/Resources/dragonmaid (10).tres" id="12_o308v"]
+[ext_resource type="Texture2D" uid="uid://rfrid568vffs" path="res://Assets/Images/CardSlot.png" id="13_yw3em"]
+[ext_resource type="Texture2D" uid="uid://dlndl0yv6kf3h" path="res://icon.svg" id="14_dvmeg"]
+[ext_resource type="Texture2D" uid="uid://cc152q6tuxnfr" path="res://Assets/Images/Deck.png" id="15_waik6"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_5mofp"]
+size = Vector2(74, 110)
+
+[node name="deck_node" type="Node2D" node_paths=PackedStringArray("collisionShape", "highlight_TextureRect", "card_TextureRect", "label")]
+script = ExtResource("1_5jrh3")
+collisionShape = NodePath("Area2D/CollisionShape2D")
+highlight_TextureRect = NodePath("Cardslot_TextureRect/Highlight_TextureRect")
+card_TextureRect = NodePath("Cardslot_TextureRect/Card_TextureRect")
+label = NodePath("Label")
+card_Resource = Array[ExtResource("2_bxbnl")]([ExtResource("3_1hiwk"), ExtResource("3_1hiwk"), ExtResource("4_fr2cg"), ExtResource("4_fr2cg"), ExtResource("5_fkcli"), ExtResource("5_fkcli"), ExtResource("6_61fgw"), ExtResource("6_61fgw"), ExtResource("7_fi63g"), ExtResource("7_fi63g"), ExtResource("8_d086q"), ExtResource("8_d086q"), ExtResource("9_v6rfg"), ExtResource("9_v6rfg"), ExtResource("10_ib35r"), ExtResource("10_ib35r"), ExtResource("11_p4wmp"), ExtResource("11_p4wmp"), ExtResource("12_o308v"), ExtResource("12_o308v")])
+
+[node name="Cardslot_TextureRect" type="TextureRect" parent="."]
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -37.0
+offset_top = -55.0
+offset_right = 37.0
+offset_bottom = 55.0
+grow_horizontal = 2
+grow_vertical = 2
+texture = ExtResource("13_yw3em")
+expand_mode = 1
+
+[node name="Highlight_TextureRect" type="TextureRect" parent="Cardslot_TextureRect"]
+visible = false
+show_behind_parent = true
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = -6.0
+offset_top = -9.0
+offset_right = 5.0
+offset_bottom = 7.0
+grow_horizontal = 2
+grow_vertical = 2
+size_flags_horizontal = 4
+size_flags_vertical = 4
+texture = ExtResource("14_dvmeg")
+expand_mode = 1
+
+[node name="Card_TextureRect" type="TextureRect" parent="Cardslot_TextureRect"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+texture = ExtResource("15_waik6")
+expand_mode = 1
+
+[node name="Area2D" type="Area2D" parent="."]
+collision_layer = 4
+collision_mask = 4
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Area2D"]
+shape = SubResource("RectangleShape2D_5mofp")
+
+[node name="Label" type="Label" parent="."]
+anchors_preset = 12
+anchor_top = 1.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = -39.0
+offset_top = 23.0
+offset_right = 39.0
+offset_bottom = 57.0
+grow_horizontal = 2
+grow_vertical = 0
+size_flags_horizontal = 4
+size_flags_vertical = 8
+text = "40 / 40"
+horizontal_alignment = 1
+vertical_alignment = 2

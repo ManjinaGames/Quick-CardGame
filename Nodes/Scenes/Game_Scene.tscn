@@ -1,13 +1,11 @@
-[gd_scene load_steps=25 format=3 uid="uid://dlfgbqjvq7ybh"]
+[gd_scene load_steps=22 format=3 uid="uid://dlfgbqjvq7ybh"]
 
 [ext_resource type="PackedScene" uid="uid://dfb2i4o7cr1k1" path="res://Nodes/Prefabs/card_node.tscn" id="1_c0q3d"]
 [ext_resource type="Script" path="res://Scripts/Scenes/game_scene.gd" id="1_txxkl"]
 [ext_resource type="Script" path="res://Scripts/Card_Node/hand_node.gd" id="4_4r13x"]
 [ext_resource type="Script" path="res://Scripts/Card_Node/player_node.gd" id="4_p7vwb"]
-[ext_resource type="Texture2D" uid="uid://cc152q6tuxnfr" path="res://Assets/Images/Deck.png" id="5_35u6i"]
-[ext_resource type="Script" path="res://Scripts/Card_Node/deck_node.gd" id="5_epbpp"]
+[ext_resource type="PackedScene" uid="uid://idh8uvwwpbjb" path="res://Nodes/Prefabs/deck_node.tscn" id="4_u3nvj"]
 [ext_resource type="Resource" uid="uid://b8itilv3eupn6" path="res://Cards/Resources/dragonmaid (1).tres" id="5_w0rv4"]
-[ext_resource type="Texture2D" uid="uid://rfrid568vffs" path="res://Assets/Images/CardSlot.png" id="6_6537d"]
 [ext_resource type="Resource" uid="uid://otg0sqo8h5cp" path="res://Cards/Resources/dragonmaid (2).tres" id="6_emvl4"]
 [ext_resource type="Script" path="res://Scripts/Card_Resource/Card_Resource.gd" id="6_mbwul"]
 [ext_resource type="Resource" uid="uid://latp60wh3sc3" path="res://Cards/Resources/dragonmaid (3).tres" id="7_4udd4"]
@@ -50,115 +48,105 @@ myCLASS = 0
 level = 1
 myITEM_TYPE = 0
 
-[sub_resource type="RectangleShape2D" id="RectangleShape2D_5mofp"]
-size = Vector2(74, 110)
-
 [node name="GameScene" type="Node2D" node_paths=PackedStringArray("player", "debugInfo")]
 script = ExtResource("1_txxkl")
 player = NodePath("Player")
+card_Node_Prefab = ExtResource("1_c0q3d")
 collision_mask_card = 1
 collision_mask_cardslot = 2
 collision_mask_deck = 4
-debugInfo = NodePath("CanvasLayer/Label")
+debugInfo = NodePath("CanvasLayer/MarginContainer/Label")
 cardDatabase = {
 "a1_c1": SubResource("GDScript_scis2"),
 SubResource("Resource_juy0k"): SubResource("GDScript_scis2")
 }
 
-[node name="Player" type="Node2D" parent="." node_paths=PackedStringArray("deck", "hand", "magicZone", "monsterZone")]
+[node name="Player" type="Node2D" parent="." node_paths=PackedStringArray("mainDeck", "extraDeck", "grave", "removed", "hand", "magicZone", "monsterZone")]
 z_index = -2
 position = Vector2(562, 483)
 script = ExtResource("4_p7vwb")
-deck = NodePath("Deck")
+mainDeck = NodePath("mainDeck_node")
+extraDeck = NodePath("ExtraDeck_node")
+grave = NodePath("GraveDeck_Node")
+removed = NodePath("RemovedDeck_node")
 hand = NodePath("hand")
 magicZone = [NodePath("CardSlot_Node"), NodePath("CardSlot_Node2"), NodePath("CardSlot_Node3"), NodePath("CardSlot_Node4"), NodePath("CardSlot_Node5")]
 monsterZone = [NodePath("CardSlot_Node6"), NodePath("CardSlot_Node7"), NodePath("CardSlot_Node8"), NodePath("CardSlot_Node9"), NodePath("CardSlot_Node10")]
-
-[node name="Deck" type="Node2D" parent="Player" node_paths=PackedStringArray("gameScene", "collisionShape", "sprite", "label")]
-position = Vector2(345, 0)
-script = ExtResource("5_epbpp")
-gameScene = NodePath("../..")
-collisionShape = NodePath("Area2D/CollisionShape2D")
-sprite = NodePath("Sprite2D")
-label = NodePath("Label")
-player_deck_resources = Array[ExtResource("6_mbwul")]([ExtResource("5_w0rv4"), ExtResource("5_w0rv4"), ExtResource("6_emvl4"), ExtResource("7_4udd4"), ExtResource("8_rcph7"), ExtResource("9_l1t5s"), ExtResource("10_v8rp7"), ExtResource("11_fnrwv"), ExtResource("12_fu2j2"), ExtResource("13_plchi"), ExtResource("14_dpwcw"), ExtResource("14_dpwcw"), ExtResource("13_plchi"), ExtResource("12_fu2j2"), ExtResource("11_fnrwv"), ExtResource("10_v8rp7"), ExtResource("9_l1t5s"), ExtResource("8_rcph7"), ExtResource("7_4udd4"), ExtResource("6_emvl4")])
-
-[node name="Sprite2D2" type="Sprite2D" parent="Player/Deck"]
-position = Vector2(-9.73143e-06, 1.99676e-06)
-scale = Vector2(0.433333, 0.430189)
-texture = ExtResource("6_6537d")
-
-[node name="Sprite2D" type="Sprite2D" parent="Player/Deck"]
-position = Vector2(0, -8.28505e-06)
-scale = Vector2(0.433334, 0.430189)
-texture = ExtResource("5_35u6i")
-
-[node name="Area2D" type="Area2D" parent="Player/Deck"]
-collision_layer = 4
-collision_mask = 4
-
-[node name="CollisionShape2D" type="CollisionShape2D" parent="Player/Deck/Area2D"]
-shape = SubResource("RectangleShape2D_5mofp")
-
-[node name="Label" type="Label" parent="Player/Deck"]
-anchors_preset = -1
-anchor_right = 0.5
-anchor_bottom = 1.0
-offset_left = -38.0
-offset_top = -23.0
-offset_right = 39.0
-offset_bottom = 57.0
-grow_horizontal = 2
-grow_vertical = 0
-text = "40 / 40"
-horizontal_alignment = 1
-vertical_alignment = 2
 
 [node name="hand" type="Node2D" parent="Player" node_paths=PackedStringArray("gameScene")]
 position = Vector2(0, 115)
 script = ExtResource("4_4r13x")
 gameScene = NodePath("../..")
-cardPrefab = ExtResource("1_c0q3d")
+
+[node name="ExtraDeck_node" parent="Player" node_paths=PackedStringArray("gameScene") instance=ExtResource("4_u3nvj")]
+position = Vector2(-336, 0)
+gameScene = NodePath("../..")
+myDECK_TYPE = 1
 
 [node name="CardSlot_Node" parent="Player" instance=ExtResource("13_bej0y")]
-position = Vector2(-230, 0)
+position = Vector2(-224, 0)
 myFIELD_TYPE = 1
 
 [node name="CardSlot_Node2" parent="Player" instance=ExtResource("13_bej0y")]
-position = Vector2(-115, 0)
+position = Vector2(-112, 0)
 myFIELD_TYPE = 1
 
 [node name="CardSlot_Node3" parent="Player" instance=ExtResource("13_bej0y")]
 myFIELD_TYPE = 1
 
 [node name="CardSlot_Node4" parent="Player" instance=ExtResource("13_bej0y")]
-position = Vector2(115, 0)
+position = Vector2(112, 0)
 myFIELD_TYPE = 1
 
 [node name="CardSlot_Node5" parent="Player" instance=ExtResource("13_bej0y")]
-position = Vector2(230, 0)
+position = Vector2(224, 0)
 myFIELD_TYPE = 1
 
+[node name="mainDeck_node" parent="Player" node_paths=PackedStringArray("gameScene") instance=ExtResource("4_u3nvj")]
+position = Vector2(336, 0)
+gameScene = NodePath("../..")
+card_Resource = Array[ExtResource("6_mbwul")]([ExtResource("5_w0rv4"), ExtResource("5_w0rv4"), ExtResource("6_emvl4"), ExtResource("6_emvl4"), ExtResource("7_4udd4"), ExtResource("7_4udd4"), ExtResource("8_rcph7"), ExtResource("8_rcph7"), ExtResource("9_l1t5s"), ExtResource("9_l1t5s"), ExtResource("10_v8rp7"), ExtResource("10_v8rp7"), ExtResource("11_fnrwv"), ExtResource("11_fnrwv"), ExtResource("12_fu2j2"), ExtResource("12_fu2j2"), ExtResource("13_plchi"), ExtResource("13_plchi"), ExtResource("14_dpwcw"), ExtResource("14_dpwcw"), ExtResource("5_w0rv4"), ExtResource("5_w0rv4"), ExtResource("6_emvl4"), ExtResource("6_emvl4"), ExtResource("7_4udd4"), ExtResource("7_4udd4"), ExtResource("8_rcph7"), ExtResource("8_rcph7"), ExtResource("9_l1t5s"), ExtResource("9_l1t5s"), ExtResource("10_v8rp7"), ExtResource("10_v8rp7"), ExtResource("11_fnrwv"), ExtResource("11_fnrwv"), ExtResource("12_fu2j2"), ExtResource("12_fu2j2"), ExtResource("13_plchi"), ExtResource("13_plchi"), ExtResource("14_dpwcw"), ExtResource("14_dpwcw")])
+
+[node name="RemovedDeck_node" parent="Player" node_paths=PackedStringArray("gameScene") instance=ExtResource("4_u3nvj")]
+position = Vector2(-336, -112)
+gameScene = NodePath("../..")
+myDECK_TYPE = 3
+
 [node name="CardSlot_Node6" parent="Player" instance=ExtResource("13_bej0y")]
-position = Vector2(-230, -115)
+position = Vector2(-224, -112)
 
 [node name="CardSlot_Node7" parent="Player" instance=ExtResource("13_bej0y")]
-position = Vector2(-115, -115)
+position = Vector2(-112, -112)
 
 [node name="CardSlot_Node8" parent="Player" instance=ExtResource("13_bej0y")]
-position = Vector2(0, -115)
+position = Vector2(0, -112)
 
 [node name="CardSlot_Node9" parent="Player" instance=ExtResource("13_bej0y")]
-position = Vector2(115, -115)
+position = Vector2(112, -112)
 
 [node name="CardSlot_Node10" parent="Player" instance=ExtResource("13_bej0y")]
-position = Vector2(230, -115)
+position = Vector2(224, -112)
+
+[node name="GraveDeck_Node" parent="Player" node_paths=PackedStringArray("gameScene") instance=ExtResource("4_u3nvj")]
+position = Vector2(336, -112)
+gameScene = NodePath("../..")
+myDECK_TYPE = 2
 
 [node name="CanvasLayer" type="CanvasLayer" parent="."]
 
-[node name="Label" type="Label" parent="CanvasLayer"]
+[node name="MarginContainer" type="MarginContainer" parent="CanvasLayer"]
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
+theme_override_constants/margin_left = 5
+theme_override_constants/margin_top = 5
+theme_override_constants/margin_right = 5
+theme_override_constants/margin_bottom = 5
+
+[node name="Label" type="Label" parent="CanvasLayer/MarginContainer"]
+layout_mode = 2
+size_flags_vertical = 1
+theme_override_font_sizes/font_size = 8
+text = "ssdfsdfsdfsdfsdfsdf"
