@@ -17,7 +17,7 @@
 [ext_resource type="Texture2D" uid="uid://cc152q6tuxnfr" path="res://Assets/Images/Deck.png" id="15_waik6"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_5mofp"]
-size = Vector2(74, 110)
+size = Vector2(74, 112)
 
 [node name="deck_node" type="Node2D" node_paths=PackedStringArray("collisionShape", "highlight_TextureRect", "card_TextureRect", "label")]
 script = ExtResource("1_5jrh3")

@@ -1,7 +1,7 @@
 extends Node2D
 class_name GameScene
 #-------------------------------------------------------------------------------
-enum MOUSE_STATE{EMPTY_STATE, CARD_HIGHLIGHTED, CARD_DRAGGED, CARDSLOT_HIGHLIGHTED, DECK_HIGHLIGHTED}
+enum MOUSE_STATE{EMPTY_STATE, CARD_HIGHLIGHTED, CARDSLOT_HIGHLIGHTED, DECK_HIGHLIGHTED, CARD_DRAGGED, CARD_DRAGGED_OVER_SLOT}
 #region VARIABLES
 @export var player: Player_Node
 #-------------------------------------------------------------------------------
@@ -75,7 +75,7 @@ func LoadCardDatabase():
 			cardDatabase[_base_name] = _cardBase
 #endregion
 #-------------------------------------------------------------------------------
-#region STATE MACHINE FINCTIONS
+#region STATE MACHINE
 func StateMachine():
 	#-------------------------------------------------------------------------------
 	parameters.position = get_global_mouse_position()
@@ -148,20 +148,6 @@ func StateMachine():
 				return
 			#-------------------------------------------------------------------------------
 		#-------------------------------------------------------------------------------
-		MOUSE_STATE.CARD_DRAGGED:
-			var mouse_pos: Vector2 = get_global_mouse_position()
-			var _x: float = clamp(mouse_pos.x, 0, screen_size.x)
-			var _y: float  = clamp(mouse_pos.y, 0, screen_size.y)
-			current_card_node.global_position = Vector2(_x, _y)
-			#-------------------------------------------------------------------------------
-			if(Input.is_action_just_released("Left_Click")):
-				if(cardslot_node.size()>0):
-					Card_Found_CardSlot_True(current_card_node, cardslot_node[0])
-					return
-				else:
-					Card_Found_CardSlot_False()
-					return
-		#-------------------------------------------------------------------------------
 		MOUSE_STATE.CARDSLOT_HIGHLIGHTED:
 			if(card_node.size() > 0):
 				Cardslot_Highlight_False(current_cardslot_node)
@@ -201,10 +187,98 @@ func StateMachine():
 					DrawCard()
 				return
 		#-------------------------------------------------------------------------------
+		MOUSE_STATE.CARD_DRAGGED:
+			var mouse_pos: Vector2 = get_global_mouse_position()
+			var _x: float = clamp(mouse_pos.x, 0, screen_size.x)
+			var _y: float  = clamp(mouse_pos.y, 0, screen_size.y)
+			current_card_node.global_position = Vector2(_x, _y)
+			#-------------------------------------------------------------------------------
+			if(cardslot_node.size()>0):
+				var _card_Resource: Card_Resource = current_card_node.card_Class.card_Resource
+				#-------------------------------------------------------------------------------
+				match(cardslot_node[0].myFIELD_TYPE):
+					CardSlot_Node.FIELD_TYPE.MONSTERS:
+						if(_card_Resource.myCARD_TYPE == Card_Resource.CARD_TYPE.RED or _card_Resource.myCARD_TYPE == Card_Resource.CARD_TYPE.YELLOW):
+							if(!cardslot_node[0].card_in_slot):
+								current_card_node.global_position = cardslot_node[0].global_position
+								current_card_node.scale = Vector2(0.7, 0.7)
+								current_card_node.z_index = z_index_field
+								current_cardslot_node = cardslot_node[0]
+								myMOUSE_STATE = MOUSE_STATE.CARD_DRAGGED_OVER_SLOT
+					#-------------------------------------------------------------------------------
+					CardSlot_Node.FIELD_TYPE.ITEMS:
+						if(_card_Resource.myCARD_TYPE == Card_Resource.CARD_TYPE.BLUE):
+							if(!cardslot_node[0].card_in_slot):
+								current_card_node.global_position = cardslot_node[0].global_position
+								current_card_node.scale = Vector2(0.7, 0.7)
+								current_card_node.z_index = z_index_field
+								current_cardslot_node = cardslot_node[0]
+								myMOUSE_STATE = MOUSE_STATE.CARD_DRAGGED_OVER_SLOT
+					#-------------------------------------------------------------------------------
+				#-------------------------------------------------------------------------------
+			#-------------------------------------------------------------------------------
+			if(Input.is_action_just_released("Left_Click")):
+				Card_Found_CardSlot_False()
+				return
+		#-------------------------------------------------------------------------------
+		MOUSE_STATE.CARD_DRAGGED_OVER_SLOT:
+			#-------------------------------------------------------------------------------
+			if(cardslot_node.size() > 0):
+				if(!cardslot_node.has(current_cardslot_node)):
+					var _card_Resource: Card_Resource = current_card_node.card_Class.card_Resource
+					#-------------------------------------------------------------------------------
+					match(cardslot_node[0].myFIELD_TYPE):
+						CardSlot_Node.FIELD_TYPE.MONSTERS:
+							if(_card_Resource.myCARD_TYPE == Card_Resource.CARD_TYPE.RED or _card_Resource.myCARD_TYPE == Card_Resource.CARD_TYPE.YELLOW):
+								if(!cardslot_node[0].card_in_slot):
+									current_card_node.global_position = cardslot_node[0].global_position
+									current_cardslot_node = cardslot_node[0]
+									return
+								else:
+									Exit_Card_Dragged()
+									return
+							else:
+								Exit_Card_Dragged()
+								return
+						#-------------------------------------------------------------------------------
+						CardSlot_Node.FIELD_TYPE.ITEMS:
+							if(_card_Resource.myCARD_TYPE == Card_Resource.CARD_TYPE.BLUE):
+								if(!cardslot_node[0].card_in_slot):
+									current_card_node.global_position = cardslot_node[0].global_position
+									current_cardslot_node = cardslot_node[0]
+									return
+								else:
+									Exit_Card_Dragged()
+									return
+							else:
+								Exit_Card_Dragged()
+								return
+						#-------------------------------------------------------------------------------
+					#-------------------------------------------------------------------------------
+			#-------------------------------------------------------------------------------
+			else:
+				Exit_Card_Dragged()
+				return
+			#-------------------------------------------------------------------------------
+			if(Input.is_action_just_released("Left_Click")):
+				Card_Found_CardSlot_True(current_card_node, cardslot_node[0])
+				return
 	#-------------------------------------------------------------------------------
 #-------------------------------------------------------------------------------
 #endregion
 #-------------------------------------------------------------------------------
+func Set_Card_Mouse_Position():
+	var mouse_pos: Vector2 = get_global_mouse_position()
+	var _x: float = clamp(mouse_pos.x, 0, screen_size.x)
+	var _y: float  = clamp(mouse_pos.y, 0, screen_size.y)
+	current_card_node.global_position = Vector2(_x, _y)
+#-------------------------------------------------------------------------------
+func Exit_Card_Dragged():
+	Set_Card_Mouse_Position()
+	Card_Highlight_False(current_card_node)
+	myMOUSE_STATE = MOUSE_STATE.CARD_DRAGGED
+#-------------------------------------------------------------------------------
+#region STATE MACHINE FUNCTIONS
 func Card_Found_CardSlot_False():
 	Add_card_to_hand(current_card_node)
 	if(card_node.has(current_card_node)):
@@ -233,6 +307,7 @@ func Deck_Highlight_True(_deck_node: Deck_Node):
 #-------------------------------------------------------------------------------
 func Deck_Highlight_False(_deck_node: Deck_Node):
 	_deck_node.highlight_TextureRect.hide()
+#endregion
 #-------------------------------------------------------------------------------
 #region DECK_HIGHLIGHTED FUNCTIONS
 func LoadDeck():
