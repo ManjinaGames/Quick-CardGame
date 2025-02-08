@@ -1,4 +1,4 @@
-extends Node2D
+extends Object_Node
 class_name Deck_Node
 #-------------------------------------------------------------------------------
 enum DECK_TYPE{MAIN, EXTRA, GRAVEYARD, REMOVED}

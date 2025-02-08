@@ -1,4 +1,4 @@
-extends Node2D
+extends Object_Node
 class_name CardSlot_Node
 #-------------------------------------------------------------------------------
 enum FIELD_TYPE{MONSTERS, ITEMS}

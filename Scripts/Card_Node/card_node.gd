@@ -1,4 +1,4 @@
-extends Node2D
+extends Object_Node
 class_name Card_Node
 #region VARIABLES
 @export var area2d: Area2D

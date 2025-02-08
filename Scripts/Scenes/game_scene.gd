@@ -1,29 +1,34 @@
 extends Node2D
 class_name GameScene
 #-------------------------------------------------------------------------------
-enum MOUSE_STATE{EMPTY_STATE, CARD_HIGHLIGHTED, CARDSLOT_HIGHLIGHTED, DECK_HIGHLIGHTED, CARD_DRAGGED, CARD_DRAGGED_OVER_SLOT}
+enum MOUSE_STATE{HIGHLIGHT, HOLD}
+enum HIGHLIGHT_STATE{EMPTY, HAND, MONSTER_ZONE, MAGIC_ZONE, MAIN_DECK_ZONE, EXTRA_DECK_ZONE, GRAVE_ZONE, REMOVE_ZONE}
 #region VARIABLES
 @export var player: Player_Node
 #-------------------------------------------------------------------------------
 @export var card_Node_Prefab: PackedScene
 #-------------------------------------------------------------------------------
 @export_flags_2d_physics var collision_mask_card
-@export_flags_2d_physics var collision_mask_cardslot
-@export_flags_2d_physics var collision_mask_deck
 #-------------------------------------------------------------------------------
 var z_index_field: int = 0
 var z_index_hand: int = 1
+var tweenSpeed: float = 0.1
 #-------------------------------------------------------------------------------
 @export var debugInfo: Label
 #-------------------------------------------------------------------------------
 var parameters: PhysicsPointQueryParameters2D
 var space_state: PhysicsDirectSpaceState2D
 #-------------------------------------------------------------------------------
-var myMOUSE_STATE: MOUSE_STATE = MOUSE_STATE.EMPTY_STATE
+var myMOUSE_STATE: MOUSE_STATE = MOUSE_STATE.HIGHLIGHT
+var myHIGHLIGHT_STATE: HIGHLIGHT_STATE = HIGHLIGHT_STATE.EMPTY
 #-------------------------------------------------------------------------------
 var card_node: Array[Card_Node]
-var cardslot_node: Array[CardSlot_Node]
-var deck_node: Array[Deck_Node]
+var monsterSlot_node: Array[CardSlot_Node]
+var magicSlot_node: Array[CardSlot_Node]
+var mainDeck_node: Array[Deck_Node]
+var graveDeck_node: Array[Deck_Node]
+var extraDeck_node: Array[Deck_Node]
+var removeDeck_node: Array[Deck_Node]
 #-------------------------------------------------------------------------------
 var current_card_node: Card_Node = null
 var current_cardslot_node: CardSlot_Node = null
@@ -77,30 +82,344 @@ func LoadCardDatabase():
 #-------------------------------------------------------------------------------
 #region STATE MACHINE
 func StateMachine():
+	Organize_Area2Ds()
+	Debug_Info()
 	#-------------------------------------------------------------------------------
-	parameters.position = get_global_mouse_position()
-	var _result: Array[Dictionary] = space_state.intersect_point(parameters)
-	#-------------------------------------------------------------------------------
-	card_node = []
-	cardslot_node = []
-	deck_node = []
-	#-------------------------------------------------------------------------------
-	for _i in _result.size():
-		var _result_collision_mask: int = _result[_i].collider.collision_mask as int
-		match(_result_collision_mask):
-			collision_mask_card:
-				card_node.append(_result[_i].collider.get_parent() as Card_Node)
+	match(myMOUSE_STATE):
+		MOUSE_STATE.HIGHLIGHT:
 			#-------------------------------------------------------------------------------
-			collision_mask_cardslot:
-				cardslot_node.append(_result[_i].collider.get_parent() as CardSlot_Node)
+			match(myHIGHLIGHT_STATE):
+				HIGHLIGHT_STATE.EMPTY:
+					if(card_node.size()>0):
+						Card_Highlight_True(card_node[0])
+						current_card_node = card_node[0]
+						myHIGHLIGHT_STATE = HIGHLIGHT_STATE.HAND
+						return
+					#-------------------------------------------------------------------------------
+					if(monsterSlot_node.size()>0):
+						Cardslot_Highlight_True(monsterSlot_node[0])
+						current_cardslot_node = monsterSlot_node[0]
+						myHIGHLIGHT_STATE = HIGHLIGHT_STATE.MONSTER_ZONE
+						return
+					#-------------------------------------------------------------------------------
+					if(magicSlot_node.size()>0):
+						Cardslot_Highlight_True(magicSlot_node[0])
+						current_cardslot_node = magicSlot_node[0]
+						myHIGHLIGHT_STATE = HIGHLIGHT_STATE.MAGIC_ZONE
+						return
+					#-------------------------------------------------------------------------------
+					if(mainDeck_node.size()>0):
+						Deck_Highlight_True(mainDeck_node[0])
+						current_deck_node = mainDeck_node[0]
+						myHIGHLIGHT_STATE = HIGHLIGHT_STATE.MAIN_DECK_ZONE
+						return
+					#-------------------------------------------------------------------------------
+					if(extraDeck_node.size()>0):
+						Deck_Highlight_True(extraDeck_node[0])
+						current_deck_node = extraDeck_node[0]
+						myHIGHLIGHT_STATE = HIGHLIGHT_STATE.EXTRA_DECK_ZONE
+						return
+					#-------------------------------------------------------------------------------
+					if(graveDeck_node.size()>0):
+						Deck_Highlight_True(graveDeck_node[0])
+						current_deck_node = graveDeck_node[0]
+						myHIGHLIGHT_STATE = HIGHLIGHT_STATE.GRAVE_ZONE
+						return
+					#-------------------------------------------------------------------------------
+					if(removeDeck_node.size()>0):
+						Deck_Highlight_True(removeDeck_node[0])
+						current_deck_node = removeDeck_node[0]
+						myHIGHLIGHT_STATE = HIGHLIGHT_STATE.REMOVE_ZONE
+						return
+					#-------------------------------------------------------------------------------
+				#-------------------------------------------------------------------------------
+				HIGHLIGHT_STATE.HAND:
+					if(!card_node.has(current_card_node)):
+						Card_Highlight_False(current_card_node)
+						current_card_node = null
+						myHIGHLIGHT_STATE = HIGHLIGHT_STATE.EMPTY
+						return
+					#-------------------------------------------------------------------------------
+					if(Input.is_action_just_pressed("Left_Click")):
+						myMOUSE_STATE = MOUSE_STATE.HOLD
+						return
+					#-------------------------------------------------------------------------------
+				#-------------------------------------------------------------------------------
+				HIGHLIGHT_STATE.MONSTER_ZONE:
+					if(card_node.size()>0):
+						Cardslot_Highlight_False(current_cardslot_node)
+						current_cardslot_node = null
+						#-------------------------------------------------------------------------------
+						Card_Highlight_True(card_node[0])
+						current_card_node = card_node[0]
+						myHIGHLIGHT_STATE = HIGHLIGHT_STATE.HAND
+						return
+					#-------------------------------------------------------------------------------
+					if(!monsterSlot_node.has(current_cardslot_node)):
+						Cardslot_Highlight_False(current_cardslot_node)
+						current_cardslot_node = null
+						myHIGHLIGHT_STATE = HIGHLIGHT_STATE.EMPTY
+						return
+					#-------------------------------------------------------------------------------
+				#-------------------------------------------------------------------------------
+				HIGHLIGHT_STATE.MAGIC_ZONE:
+					if(card_node.size()>0):
+						Cardslot_Highlight_False(current_cardslot_node)
+						current_cardslot_node = null
+						#-------------------------------------------------------------------------------
+						Card_Highlight_True(card_node[0])
+						current_card_node = card_node[0]
+						myHIGHLIGHT_STATE = HIGHLIGHT_STATE.HAND
+						return
+					#-------------------------------------------------------------------------------
+					if(!magicSlot_node.has(current_cardslot_node)):
+						Cardslot_Highlight_False(current_cardslot_node)
+						current_cardslot_node = null
+						myHIGHLIGHT_STATE = HIGHLIGHT_STATE.EMPTY
+						return
+					#-------------------------------------------------------------------------------
+				#-------------------------------------------------------------------------------
+				HIGHLIGHT_STATE.MAIN_DECK_ZONE:
+					#-------------------------------------------------------------------------------
+					if(card_node.size()>0):
+						Deck_Highlight_False(current_deck_node)
+						current_deck_node = null
+						#-------------------------------------------------------------------------------
+						Card_Highlight_True(card_node[0])
+						current_card_node = card_node[0]
+						myHIGHLIGHT_STATE = HIGHLIGHT_STATE.HAND
+						return
+					#-------------------------------------------------------------------------------
+					if(!mainDeck_node.has(current_deck_node)):
+						Deck_Highlight_False(current_deck_node)
+						current_deck_node = null
+						myHIGHLIGHT_STATE = HIGHLIGHT_STATE.EMPTY
+						return
+					#-------------------------------------------------------------------------------
+					if(Input.is_action_just_pressed("Left_Click")):
+						DrawCard()
+						return
+					#-------------------------------------------------------------------------------
+				#-------------------------------------------------------------------------------
+				HIGHLIGHT_STATE.EXTRA_DECK_ZONE:
+					#-------------------------------------------------------------------------------
+					if(!extraDeck_node.has(current_deck_node)):
+						Deck_Highlight_False(current_deck_node)
+						current_deck_node = null
+						myHIGHLIGHT_STATE = HIGHLIGHT_STATE.EMPTY
+						return
+					#-------------------------------------------------------------------------------
+				#-------------------------------------------------------------------------------
+				HIGHLIGHT_STATE.GRAVE_ZONE:
+					#-------------------------------------------------------------------------------
+					if(!graveDeck_node.has(current_deck_node)):
+						Deck_Highlight_False(current_deck_node)
+						current_deck_node = null
+						myHIGHLIGHT_STATE = HIGHLIGHT_STATE.EMPTY
+						return
+					#-------------------------------------------------------------------------------
+				#-------------------------------------------------------------------------------
+				HIGHLIGHT_STATE.REMOVE_ZONE:
+					#-------------------------------------------------------------------------------
+					if(!removeDeck_node.has(current_deck_node)):
+						Deck_Highlight_False(current_deck_node)
+						current_deck_node = null
+						myHIGHLIGHT_STATE = HIGHLIGHT_STATE.EMPTY
+						return
+					#-------------------------------------------------------------------------------
+				#-------------------------------------------------------------------------------
 			#-------------------------------------------------------------------------------
-			collision_mask_deck:
-				deck_node.append(_result[_i].collider.get_parent() as Deck_Node)
+		#-------------------------------------------------------------------------------
+		MOUSE_STATE.HOLD:
+			#-------------------------------------------------------------------------------
+			match(myHIGHLIGHT_STATE):
+				HIGHLIGHT_STATE.HAND:
+					Set_Card_Mouse_Position()
+					#-------------------------------------------------------------------------------
+					if(Input.is_action_just_released("Left_Click")):
+						var _tween: Tween = get_tree().create_tween()
+						_tween.tween_property(current_card_node, "scale", Vector2(1, 1), tweenSpeed)
+						Update_hand_position()
+						myHIGHLIGHT_STATE = HIGHLIGHT_STATE.EMPTY
+						myMOUSE_STATE = MOUSE_STATE.HIGHLIGHT
+						return
+					#-------------------------------------------------------------------------------
+					if(monsterSlot_node.size()>0):
+						current_cardslot_node = monsterSlot_node[0]
+						myHIGHLIGHT_STATE = HIGHLIGHT_STATE.MONSTER_ZONE
+						#-------------------------------------------------------------------------------
+						var _tween: Tween = get_tree().create_tween()
+						_tween.set_parallel()
+						_tween.tween_property(current_card_node, "global_position", monsterSlot_node[0].global_position, tweenSpeed)
+						_tween.tween_property(current_card_node, "scale", Vector2(0.7, 0.7), tweenSpeed)
+						return
+					#-------------------------------------------------------------------------------
+					if(magicSlot_node.size()>0):
+						current_cardslot_node = magicSlot_node[0]
+						myHIGHLIGHT_STATE = HIGHLIGHT_STATE.MAGIC_ZONE
+						#-------------------------------------------------------------------------------
+						var _tween: Tween = get_tree().create_tween()
+						_tween.set_parallel()
+						_tween.tween_property(current_card_node, "global_position", magicSlot_node[0].global_position, tweenSpeed)
+						_tween.tween_property(current_card_node, "scale", Vector2(0.7, 0.7), tweenSpeed)
+						return
+					#-------------------------------------------------------------------------------
+					if(graveDeck_node.size()>0):
+						current_deck_node = graveDeck_node[0]
+						myHIGHLIGHT_STATE = HIGHLIGHT_STATE.GRAVE_ZONE
+						#-------------------------------------------------------------------------------
+						var _tween: Tween = get_tree().create_tween()
+						_tween.set_parallel()
+						_tween.tween_property(current_card_node, "global_position", graveDeck_node[0].global_position, tweenSpeed)
+						_tween.tween_property(current_card_node, "scale", Vector2(0.7, 0.7), tweenSpeed)
+						return
+					#-------------------------------------------------------------------------------
+					if(mainDeck_node.size()>0):
+						current_deck_node = mainDeck_node[0]
+						myHIGHLIGHT_STATE = HIGHLIGHT_STATE.MAIN_DECK_ZONE
+						#-------------------------------------------------------------------------------
+						var _tween: Tween = get_tree().create_tween()
+						_tween.set_parallel()
+						_tween.tween_property(current_card_node, "global_position", mainDeck_node[0].global_position, tweenSpeed)
+						_tween.tween_property(current_card_node, "scale", Vector2(0.7, 0.7), tweenSpeed)
+						return
+					#-------------------------------------------------------------------------------
+					if(extraDeck_node.size()>0):
+						current_deck_node = extraDeck_node[0]
+						myHIGHLIGHT_STATE = HIGHLIGHT_STATE.EXTRA_DECK_ZONE
+						#-------------------------------------------------------------------------------
+						var _tween: Tween = get_tree().create_tween()
+						_tween.set_parallel()
+						_tween.tween_property(current_card_node, "global_position", extraDeck_node[0].global_position, tweenSpeed)
+						_tween.tween_property(current_card_node, "scale", Vector2(0.7, 0.7), tweenSpeed)
+						return
+					#-------------------------------------------------------------------------------
+					if(removeDeck_node.size()>0):
+						current_deck_node = removeDeck_node[0]
+						myHIGHLIGHT_STATE = HIGHLIGHT_STATE.REMOVE_ZONE
+						#-------------------------------------------------------------------------------
+						var _tween: Tween = get_tree().create_tween()
+						_tween.set_parallel()
+						_tween.tween_property(current_card_node, "global_position", removeDeck_node[0].global_position, tweenSpeed)
+						_tween.tween_property(current_card_node, "scale", Vector2(0.7, 0.7), tweenSpeed)
+						return
+					#-------------------------------------------------------------------------------
+				#-------------------------------------------------------------------------------
+				HIGHLIGHT_STATE.MONSTER_ZONE:
+					if(Input.is_action_just_released("Left_Click")):
+						player.hand.card_Node.erase(current_card_node)
+						Update_hand_position()
+						current_card_node.collisionShape.disabled = true
+						current_card_node.z_index = z_index_field
+						myHIGHLIGHT_STATE = HIGHLIGHT_STATE.EMPTY
+						myMOUSE_STATE = MOUSE_STATE.HIGHLIGHT
+						return
+					#-------------------------------------------------------------------------------
+					if(!monsterSlot_node.has(current_cardslot_node)):
+						var _tween: Tween = get_tree().create_tween()
+						_tween.tween_property(current_card_node, "scale", Vector2(highlight_scale, highlight_scale), tweenSpeed)
+						myHIGHLIGHT_STATE = HIGHLIGHT_STATE.HAND
+						current_cardslot_node = null
+						return
+					#-------------------------------------------------------------------------------
+				#-------------------------------------------------------------------------------
+				HIGHLIGHT_STATE.MAGIC_ZONE:
+					if(Input.is_action_just_released("Left_Click")):
+						player.hand.card_Node.erase(current_card_node)
+						Update_hand_position()
+						current_card_node.collisionShape.disabled = true
+						current_card_node.z_index = z_index_field
+						myHIGHLIGHT_STATE = HIGHLIGHT_STATE.EMPTY
+						myMOUSE_STATE = MOUSE_STATE.HIGHLIGHT
+						return
+					#-------------------------------------------------------------------------------
+					if(!magicSlot_node.has(current_cardslot_node)):
+						var _tween: Tween = get_tree().create_tween()
+						_tween.tween_property(current_card_node, "scale", Vector2(highlight_scale, highlight_scale), tweenSpeed)
+						myHIGHLIGHT_STATE = HIGHLIGHT_STATE.HAND
+						current_cardslot_node = null
+						return
+					#-------------------------------------------------------------------------------
+				#-------------------------------------------------------------------------------
+				HIGHLIGHT_STATE.GRAVE_ZONE:
+					if(Input.is_action_just_released("Left_Click")):
+						player.hand.card_Node.erase(current_card_node)
+						Update_hand_position()
+						current_card_node.collisionShape.disabled = true
+						current_card_node.z_index = z_index_field
+						myHIGHLIGHT_STATE = HIGHLIGHT_STATE.EMPTY
+						myMOUSE_STATE = MOUSE_STATE.HIGHLIGHT
+						return
+					#-------------------------------------------------------------------------------
+					if(!graveDeck_node.has(current_deck_node)):
+						var _tween: Tween = get_tree().create_tween()
+						_tween.tween_property(current_card_node, "scale", Vector2(highlight_scale, highlight_scale), tweenSpeed)
+						myHIGHLIGHT_STATE = HIGHLIGHT_STATE.HAND
+						current_cardslot_node = null
+						return
+				#-------------------------------------------------------------------------------
+				HIGHLIGHT_STATE.MAIN_DECK_ZONE:
+					if(Input.is_action_just_released("Left_Click")):
+						player.hand.card_Node.erase(current_card_node)
+						Update_hand_position()
+						current_card_node.collisionShape.disabled = true
+						current_card_node.z_index = z_index_field
+						myHIGHLIGHT_STATE = HIGHLIGHT_STATE.EMPTY
+						myMOUSE_STATE = MOUSE_STATE.HIGHLIGHT
+						return
+					#-------------------------------------------------------------------------------
+					if(!mainDeck_node.has(current_deck_node)):
+						var _tween: Tween = get_tree().create_tween()
+						_tween.tween_property(current_card_node, "scale", Vector2(highlight_scale, highlight_scale), tweenSpeed)
+						myHIGHLIGHT_STATE = HIGHLIGHT_STATE.HAND
+						current_cardslot_node = null
+						return
+				#-------------------------------------------------------------------------------
+				HIGHLIGHT_STATE.EXTRA_DECK_ZONE:
+					if(Input.is_action_just_released("Left_Click")):
+						player.hand.card_Node.erase(current_card_node)
+						Update_hand_position()
+						current_card_node.collisionShape.disabled = true
+						current_card_node.z_index = z_index_field
+						myHIGHLIGHT_STATE = HIGHLIGHT_STATE.EMPTY
+						myMOUSE_STATE = MOUSE_STATE.HIGHLIGHT
+						return
+					#-------------------------------------------------------------------------------
+					if(!extraDeck_node.has(current_deck_node)):
+						var _tween: Tween = get_tree().create_tween()
+						_tween.tween_property(current_card_node, "scale", Vector2(highlight_scale, highlight_scale), tweenSpeed)
+						myHIGHLIGHT_STATE = HIGHLIGHT_STATE.HAND
+						current_cardslot_node = null
+						return
+				#-------------------------------------------------------------------------------
+				HIGHLIGHT_STATE.REMOVE_ZONE:
+					if(Input.is_action_just_released("Left_Click")):
+						player.hand.card_Node.erase(current_card_node)
+						Update_hand_position()
+						current_card_node.collisionShape.disabled = true
+						current_card_node.z_index = z_index_field
+						myHIGHLIGHT_STATE = HIGHLIGHT_STATE.EMPTY
+						myMOUSE_STATE = MOUSE_STATE.HIGHLIGHT
+						return
+					#-------------------------------------------------------------------------------
+					if(!removeDeck_node.has(current_deck_node)):
+						var _tween: Tween = get_tree().create_tween()
+						_tween.tween_property(current_card_node, "scale", Vector2(highlight_scale, highlight_scale), tweenSpeed)
+						myHIGHLIGHT_STATE = HIGHLIGHT_STATE.HAND
+						current_cardslot_node = null
+						return
+				#-------------------------------------------------------------------------------
 			#-------------------------------------------------------------------------------
 		#-------------------------------------------------------------------------------
 	#-------------------------------------------------------------------------------
+#endregion
+#-------------------------------------------------------------------------------
+#region STATE MACHINE FUNCTIONS
+#-------------------------------------------------------------------------------
+func Debug_Info():
 	var _s: String = ""
 	_s += "MOUSE_STATE: "+str(MOUSE_STATE.keys()[myMOUSE_STATE])+"\n"
+	_s += "HIGHLIGHT_STATE: "+str(HIGHLIGHT_STATE.keys()[myHIGHLIGHT_STATE])+"\n"
 	_s += "Current Card_Node: "+str(current_card_node)+"\n"
 	_s += "Current CardSlot_Node: "+str(current_cardslot_node)+"\n"
 	_s += "Current Deck_Node: "+str(current_deck_node)+"\n"
@@ -108,206 +427,67 @@ func StateMachine():
 	_s += "Areas2D_Node Being Detected:\n"
 	for _i in card_node.size():
 		_s += "---> Card: "+str(card_node[_i])+"\n"
-	for _i in cardslot_node.size():
-		_s += "---> Card Slot: "+str(cardslot_node[_i])+"\n"
-	for _i in deck_node.size():
-		_s += "---> Deck: "+str(deck_node[_i])+"\n"
+	for _i in monsterSlot_node.size():
+		_s += "---> Monster Slot: "+str(monsterSlot_node[_i])+"\n"
+	for _i in magicSlot_node.size():
+		_s += "---> Magic Slot: "+str(magicSlot_node[_i])+"\n"
+	for _i in mainDeck_node.size():
+		_s += "---> MainDeck: "+str(mainDeck_node[_i])+"\n"
+	for _i in extraDeck_node.size():
+		_s += "---> MainDeck: "+str(extraDeck_node[_i])+"\n"
+	for _i in graveDeck_node.size():
+		_s += "---> MainDeck: "+str(graveDeck_node[_i])+"\n"
+	for _i in removeDeck_node.size():
+		_s += "---> MainDeck: "+str(removeDeck_node[_i])+"\n"
 	debugInfo.text = _s
+#-------------------------------------------------------------------------------
+func Organize_Area2Ds():
+	parameters.position = get_global_mouse_position()
+	var _result: Array[Dictionary] = space_state.intersect_point(parameters)
 	#-------------------------------------------------------------------------------
-	match(myMOUSE_STATE):
-		MOUSE_STATE.EMPTY_STATE:
-			if(card_node.size() > 0):
-				Card_Highlight_True(card_node[0])
-				current_card_node = card_node[0]
-				myMOUSE_STATE = MOUSE_STATE.CARD_HIGHLIGHTED
-				return
-			if(cardslot_node.size() > 0):
-				Cardslot_Highlight_True(cardslot_node[0])
-				current_cardslot_node = cardslot_node[0]
-				myMOUSE_STATE = MOUSE_STATE.CARDSLOT_HIGHLIGHTED
-				return
-			if(deck_node.size() > 0):
-				Deck_Highlight_True(deck_node[0])
-				current_deck_node = deck_node[0]
-				myMOUSE_STATE = MOUSE_STATE.DECK_HIGHLIGHTED
-				return
-		#-------------------------------------------------------------------------------
-		MOUSE_STATE.CARD_HIGHLIGHTED:
-			if(!card_node.has(current_card_node)):
-				Card_Highlight_False(current_card_node)
-				if(card_node.size() > 0):
-					current_card_node = card_node[0]
-					Card_Highlight_True(card_node[0])
-				else:
-					current_card_node = null
-					myMOUSE_STATE = MOUSE_STATE.EMPTY_STATE
-				return
-			else:
-				if(Input.is_action_just_pressed("Left_Click")):
-					myMOUSE_STATE = MOUSE_STATE.CARD_DRAGGED
-					return
+	card_node = []
+	monsterSlot_node = []
+	magicSlot_node = []
+	mainDeck_node = []
+	graveDeck_node = []
+	extraDeck_node = []
+	removeDeck_node = []
+	#-------------------------------------------------------------------------------
+	for _i in _result.size():
+		var _object_node: Object_Node = _result[_i].collider.get_parent() as Object_Node
+		match(_object_node.myZONE_TYPE):
+			Object_Node.ZONE_TYPE.HAND_ZONE:
+				card_node.append(_object_node as Card_Node)
 			#-------------------------------------------------------------------------------
-		#-------------------------------------------------------------------------------
-		MOUSE_STATE.CARDSLOT_HIGHLIGHTED:
-			if(card_node.size() > 0):
-				Cardslot_Highlight_False(current_cardslot_node)
-				current_cardslot_node = null
-				myMOUSE_STATE = MOUSE_STATE.EMPTY_STATE
-				return
+			Object_Node.ZONE_TYPE.MONSTER_ZONE:
+				monsterSlot_node.append(_object_node as CardSlot_Node)
 			#-------------------------------------------------------------------------------
-			if(!cardslot_node.has(current_cardslot_node)):
-				Cardslot_Highlight_False(current_cardslot_node)
-				if(cardslot_node.size() > 0):
-					current_cardslot_node = cardslot_node[0]
-					Cardslot_Highlight_True(current_cardslot_node)
-				else:
-					current_cardslot_node = null
-					myMOUSE_STATE = MOUSE_STATE.EMPTY_STATE
-				return
-		#-------------------------------------------------------------------------------
-		MOUSE_STATE.DECK_HIGHLIGHTED:
-			if(card_node.size() > 0):
-				Deck_Highlight_False(current_deck_node)
-				current_deck_node = null
-				myMOUSE_STATE = MOUSE_STATE.EMPTY_STATE
-				return
+			Object_Node.ZONE_TYPE.MAGIC_ZONE:
+				magicSlot_node.append(_object_node as CardSlot_Node)
 			#-------------------------------------------------------------------------------
-			if(!deck_node.has(current_deck_node)):
-				Deck_Highlight_False(current_deck_node)
-				if(deck_node.size() > 0):
-					current_deck_node = deck_node[0]
-					Deck_Highlight_True(current_deck_node)
-				else:
-					current_deck_node = null
-					myMOUSE_STATE = MOUSE_STATE.EMPTY_STATE
-				return
+			Object_Node.ZONE_TYPE.DECK_ZONE:
+				mainDeck_node.append(_object_node as Deck_Node)
 			#-------------------------------------------------------------------------------
-			if(Input.is_action_just_pressed("Left_Click")):
-				if(current_deck_node.myDECK_TYPE == Deck_Node.DECK_TYPE.MAIN):
-					DrawCard()
-				return
-		#-------------------------------------------------------------------------------
-		MOUSE_STATE.CARD_DRAGGED:
-			var mouse_pos: Vector2 = get_global_mouse_position()
-			var _x: float = clamp(mouse_pos.x, 0, screen_size.x)
-			var _y: float  = clamp(mouse_pos.y, 0, screen_size.y)
-			current_card_node.global_position = Vector2(_x, _y)
+			Object_Node.ZONE_TYPE.EXTRA_DECK_ZONE:
+				extraDeck_node.append(_object_node as Deck_Node)
 			#-------------------------------------------------------------------------------
-			if(cardslot_node.size()>0):
-				var _card_Resource: Card_Resource = current_card_node.card_Class.card_Resource
-				#-------------------------------------------------------------------------------
-				match(cardslot_node[0].myFIELD_TYPE):
-					CardSlot_Node.FIELD_TYPE.MONSTERS:
-						if(_card_Resource.myCARD_TYPE == Card_Resource.CARD_TYPE.RED or _card_Resource.myCARD_TYPE == Card_Resource.CARD_TYPE.YELLOW):
-							if(!cardslot_node[0].card_in_slot):
-								Enter_Card_Dragg()
-					#-------------------------------------------------------------------------------
-					CardSlot_Node.FIELD_TYPE.ITEMS:
-						if(_card_Resource.myCARD_TYPE == Card_Resource.CARD_TYPE.BLUE):
-							if(!cardslot_node[0].card_in_slot):
-								Enter_Card_Dragg()
-					#-------------------------------------------------------------------------------
-				#-------------------------------------------------------------------------------
+			Object_Node.ZONE_TYPE.GRAVE_ZONE:
+				graveDeck_node.append(_object_node as Deck_Node)
 			#-------------------------------------------------------------------------------
-			if(Input.is_action_just_released("Left_Click")):
-				Add_card_to_hand(current_card_node)
-				if(card_node.has(current_card_node)):
-					myMOUSE_STATE = MOUSE_STATE.CARD_HIGHLIGHTED
-				else:
-					Card_Highlight_False(current_card_node)
-					current_card_node = null
-					myMOUSE_STATE = MOUSE_STATE.EMPTY_STATE
-				return
-		#-------------------------------------------------------------------------------
-		MOUSE_STATE.CARD_DRAGGED_OVER_SLOT:
-			#-------------------------------------------------------------------------------
-			if(cardslot_node.size() > 0):
-				var _card_Resource: Card_Resource = current_card_node.card_Class.card_Resource
-				#-------------------------------------------------------------------------------
-				match(cardslot_node[0].myFIELD_TYPE):
-					CardSlot_Node.FIELD_TYPE.MONSTERS:
-						if(!cardslot_node.has(current_cardslot_node)):
-							if(_card_Resource.myCARD_TYPE == Card_Resource.CARD_TYPE.RED or _card_Resource.myCARD_TYPE == Card_Resource.CARD_TYPE.YELLOW):
-								if(!cardslot_node[0].card_in_slot):
-									current_card_node.global_position = cardslot_node[0].global_position
-									current_cardslot_node = cardslot_node[0]
-									return
-								else:
-									Exit_Card_Dragged()
-									return
-							else:
-								Exit_Card_Dragged()
-								return
-						#-------------------------------------------------------------------------------
-						else:
-							if(Input.is_action_just_released("Left_Click")):
-								current_card_node.card_Class.NormalSummon()
-								Place_Card_in_Cardslot()
-					#-------------------------------------------------------------------------------
-					CardSlot_Node.FIELD_TYPE.ITEMS:
-						if(!cardslot_node.has(current_cardslot_node)):
-							if(_card_Resource.myCARD_TYPE == Card_Resource.CARD_TYPE.BLUE):
-								if(!cardslot_node[0].card_in_slot):
-									current_card_node.global_position = cardslot_node[0].global_position
-									current_cardslot_node = cardslot_node[0]
-									return
-								else:
-									Exit_Card_Dragged()
-									return
-							else:
-								Exit_Card_Dragged()
-								return
-						#-------------------------------------------------------------------------------
-						else:
-							if(Input.is_action_just_released("Left_Click")):
-								current_card_node.card_Class.NormalActivation()
-								Place_Card_in_Cardslot()
-					#-------------------------------------------------------------------------------
-				#-------------------------------------------------------------------------------
-			#-------------------------------------------------------------------------------
-			else:
-				Exit_Card_Dragged()
-				return
+			Object_Node.ZONE_TYPE.REMOVE_ZONE:
+				removeDeck_node.append(_object_node as Deck_Node)
 			#-------------------------------------------------------------------------------
 		#-------------------------------------------------------------------------------
 	#-------------------------------------------------------------------------------
-#endregion
-#-------------------------------------------------------------------------------
-#region STATE MACHINE FUNCTIONS
-func Place_Card_in_Cardslot():
-	Remove_card_from_hand(current_card_node)
-	current_card_node.global_position = cardslot_node[0].global_position
-	current_card_node.scale = Vector2(0.7, 0.7)
-	current_card_node.z_index = z_index_field
-	current_card_node.collisionShape.disabled = true
-	cardslot_node[0].card_in_slot = current_card_node
-	myMOUSE_STATE = MOUSE_STATE.EMPTY_STATE
-	current_card_node = null
-#-------------------------------------------------------------------------------
-func Set_Card_Mouse_Position():
-	var mouse_pos: Vector2 = get_global_mouse_position()
-	var _x: float = clamp(mouse_pos.x, 0, screen_size.x)
-	var _y: float  = clamp(mouse_pos.y, 0, screen_size.y)
-	current_card_node.global_position = Vector2(_x, _y)
-#-------------------------------------------------------------------------------
-func Enter_Card_Dragg():
-	current_card_node.global_position = cardslot_node[0].global_position
-	current_card_node.scale = Vector2(0.7, 0.7)
-	current_card_node.z_index = z_index_field
-	current_cardslot_node = cardslot_node[0]
-	myMOUSE_STATE = MOUSE_STATE.CARD_DRAGGED_OVER_SLOT
-#-------------------------------------------------------------------------------
-func Exit_Card_Dragged():
-	Set_Card_Mouse_Position()
-	Card_Highlight_False(current_card_node)
-	myMOUSE_STATE = MOUSE_STATE.CARD_DRAGGED
 #-------------------------------------------------------------------------------
 func Card_Highlight_True(_card_node: Card_Node):
-	_card_node.scale = Vector2(highlight_scale, highlight_scale)
+	var _tween: Tween = get_tree().create_tween()
+	_tween.tween_property(_card_node, "scale", Vector2(highlight_scale, highlight_scale), tweenSpeed)
 	_card_node.z_index = 2
 #-------------------------------------------------------------------------------
 func Card_Highlight_False(_card_node: Card_Node):
-	_card_node.scale = Vector2(1, 1)
+	var _tween: Tween = get_tree().create_tween()
+	_tween.tween_property(_card_node, "scale", Vector2(1, 1), tweenSpeed)
 	_card_node.z_index = 1
 #-------------------------------------------------------------------------------
 func Cardslot_Highlight_True(_cardslot_node: CardSlot_Node):
@@ -420,11 +600,19 @@ func Calculate_card_position(_i:int) -> float:
 #-------------------------------------------------------------------------------
 func Animate_card_to_position(_card:Card_Node, _newPosition:Vector2):
 	var _tween: Tween = get_tree().create_tween()
-	_tween.tween_property(_card, "global_position", _newPosition, 0.1)
+	_tween.tween_property(_card, "global_position", _newPosition, tweenSpeed)
 #-------------------------------------------------------------------------------
 func Remove_card_from_hand(_card:Card_Node):
 	if(_card in player.hand.card_Node):
 		player.hand.card_Node.erase(_card)
 		Update_hand_position()
+#-------------------------------------------------------------------------------
+func Set_Card_Mouse_Position():
+	var mouse_pos: Vector2 = get_global_mouse_position()
+	var _x: float = lerp(current_card_node.global_position.x, mouse_pos.x, 0.75)
+	_x = clamp(_x, 0, screen_size.x)
+	var _y: float  = lerp(current_card_node.global_position.y, mouse_pos.y, 0.75)
+	_y = clamp(_y, 0, screen_size.y)
+	current_card_node.global_position = Vector2(_x, _y)
 #endregion
 #-------------------------------------------------------------------------------

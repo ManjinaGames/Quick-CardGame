@@ -17,7 +17,7 @@
 [ext_resource type="Texture2D" uid="uid://cc152q6tuxnfr" path="res://Assets/Images/Deck.png" id="15_waik6"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_5mofp"]
-size = Vector2(74, 112)
+size = Vector2(50, 82)
 
 [node name="deck_node" type="Node2D" node_paths=PackedStringArray("collisionShape", "highlight_TextureRect", "card_TextureRect", "label")]
 script = ExtResource("1_5jrh3")
@@ -73,13 +73,12 @@ texture = ExtResource("15_waik6")
 expand_mode = 1
 
 [node name="Area2D" type="Area2D" parent="."]
-collision_layer = 4
-collision_mask = 4
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="Area2D"]
 shape = SubResource("RectangleShape2D_5mofp")
 
 [node name="Label" type="Label" parent="."]
+z_index = 5
 anchors_preset = 12
 anchor_top = 1.0
 anchor_right = 1.0
@@ -92,6 +91,7 @@ grow_horizontal = 2
 grow_vertical = 0
 size_flags_horizontal = 4
 size_flags_vertical = 8
+theme_override_constants/outline_size = 5
 text = "40 / 40"
 horizontal_alignment = 1
 vertical_alignment = 2
