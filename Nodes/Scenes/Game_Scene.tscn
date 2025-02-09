@@ -1,4 +1,4 @@
-[gd_scene load_steps=22 format=3 uid="uid://dlfgbqjvq7ybh"]
+[gd_scene load_steps=23 format=3 uid="uid://dlfgbqjvq7ybh"]
 
 [ext_resource type="PackedScene" uid="uid://dfb2i4o7cr1k1" path="res://Nodes/Prefabs/card_node.tscn" id="1_c0q3d"]
 [ext_resource type="Script" path="res://Scripts/Scenes/game_scene.gd" id="1_txxkl"]
@@ -17,6 +17,7 @@
 [ext_resource type="PackedScene" uid="uid://lvkosjxhgre1" path="res://Nodes/Prefabs/cardslot_node.tscn" id="13_bej0y"]
 [ext_resource type="Resource" uid="uid://g3kw4h8wixrd" path="res://Cards/Resources/dragonmaid (9).tres" id="13_plchi"]
 [ext_resource type="Resource" uid="uid://d2ufpn3wtd18h" path="res://Cards/Resources/dragonmaid (10).tres" id="14_dpwcw"]
+[ext_resource type="PackedScene" uid="uid://d00ndvs4nnoku" path="res://Nodes/Prefabs/frame.tscn" id="18_quvkb"]
 
 [sub_resource type="GDScript" id="GDScript_scis2"]
 script/source = "extends Card_Class
@@ -48,9 +49,11 @@ myCLASS = 0
 level = 1
 myITEM_TYPE = 0
 
-[node name="GameScene" type="Node2D" node_paths=PackedStringArray("player", "debugInfo")]
+[node name="GameScene" type="Node2D" node_paths=PackedStringArray("player", "descriptionMenu", "descriptionMenu_Frame", "debugInfo")]
 script = ExtResource("1_txxkl")
 player = NodePath("Player")
+descriptionMenu = NodePath("CanvasLayer/MarginContainer2")
+descriptionMenu_Frame = NodePath("CanvasLayer/MarginContainer2/Panel/Control/Frame")
 card_Node_Prefab = ExtResource("1_c0q3d")
 collision_mask_card = 1
 debugInfo = NodePath("CanvasLayer/MarginContainer/Label")
@@ -162,3 +165,71 @@ layout_mode = 2
 size_flags_vertical = 1
 theme_override_font_sizes/font_size = 8
 text = "ssdfsdfsdfsdfsdfsdf"
+
+[node name="MarginContainer2" type="MarginContainer" parent="CanvasLayer"]
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+
+[node name="Panel" type="Panel" parent="CanvasLayer/MarginContainer2"]
+layout_mode = 2
+
+[node name="Control" type="Control" parent="CanvasLayer/MarginContainer2/Panel"]
+layout_mode = 1
+anchors_preset = 4
+anchor_top = 0.5
+anchor_bottom = 0.5
+offset_left = 40.0
+offset_top = -284.0
+offset_right = 433.0
+offset_bottom = 285.0
+grow_vertical = 2
+size_flags_horizontal = 0
+
+[node name="Frame" parent="CanvasLayer/MarginContainer2/Panel/Control" instance=ExtResource("18_quvkb")]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 0.0
+offset_top = 0.0
+offset_right = 0.0
+offset_bottom = 0.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="Top_Label" parent="CanvasLayer/MarginContainer2/Panel/Control/Frame" index="1"]
+theme_override_constants/outline_size = 10
+theme_override_font_sizes/font_size = 20
+
+[node name="Botton_Label" parent="CanvasLayer/MarginContainer2/Panel/Control/Frame" index="2"]
+theme_override_constants/outline_size = 10
+theme_override_font_sizes/font_size = 30
+
+[node name="Label" type="Label" parent="CanvasLayer/MarginContainer2/Panel"]
+layout_mode = 2
+offset_left = 451.0
+offset_top = 30.0
+offset_right = 1122.0
+offset_bottom = 618.0
+grow_horizontal = 2
+grow_vertical = 2
+size_flags_vertical = 1
+theme_override_constants/outline_size = 10
+theme_override_font_sizes/font_size = 20
+text = "---------------------------------------------------------------------------------------------------
+Dragonmaid Nurse
+---------------------------------------------------------------------------------------------------
+[ Dragon / EARTH / Lv-2 ]
+Atk / 500          Def / 1600
+---------------------------------------------------------------------------------------------------
+Effect:
+               Si esta carta es Invocada de Modo Normal o Especial: puedes seleccionar 1 monstruo \"Dragoncella\" de Nivel 4 o menor en tu Cementerio, excepto \"Dragoncella Enfermera\"; Invócalo de Modo Especial. Al comienzo de la Battle Phase: puedes devolver esta carta a la mano y, si lo haces, Invoca de Modo Especial, desde tu mano o Cementerio, 1 monstruo \"Dragoncella\" de Nivel 7. Sólo puedes usar cada efecto de \"Dragoncella Enfermera\" una vez por turno.
+"
+autowrap_mode = 2
+
+[editable path="CanvasLayer/MarginContainer2/Panel/Control/Frame"]

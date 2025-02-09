@@ -1,0 +1,94 @@
+[gd_scene load_steps=4 format=3 uid="uid://d00ndvs4nnoku"]
+
+[ext_resource type="Texture2D" uid="uid://cwn65mgw3fyk2" path="res://Assets/Images/Frame.png" id="1_ihc15"]
+[ext_resource type="Script" path="res://Scripts/Card_Node/frame_node.gd" id="2_1efc4"]
+[ext_resource type="Texture2D" uid="uid://bgo4742bd6dl3" path="res://Cards/Artworks/dragonmaid (1).png" id="2_grgyi"]
+
+[node name="Frame" type="TextureRect" node_paths=PackedStringArray("frame", "artwork", "topLabel", "bottonLabel")]
+offset_left = -48.0
+offset_top = -72.0
+offset_right = 48.0
+offset_bottom = 72.0
+size_flags_horizontal = 3
+size_flags_vertical = 3
+mouse_filter = 2
+texture = ExtResource("1_ihc15")
+expand_mode = 1
+script = ExtResource("2_1efc4")
+frame = NodePath(".")
+artwork = NodePath("TextureRect/Artwork")
+topLabel = NodePath("Top_Label")
+bottonLabel = NodePath("Botton_Label")
+
+[node name="TextureRect" type="TextureRect" parent="."]
+self_modulate = Color(0, 0, 0, 1)
+layout_mode = 1
+anchors_preset = -1
+anchor_left = 0.083
+anchor_top = 0.146
+anchor_right = 0.917
+anchor_bottom = 0.722
+offset_left = 0.0319986
+offset_top = -0.024004
+offset_right = -0.0320129
+offset_bottom = 0.0319824
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+texture = ExtResource("2_grgyi")
+expand_mode = 1
+
+[node name="Artwork" type="TextureRect" parent="TextureRect"]
+layout_mode = 1
+anchors_preset = -1
+anchor_left = 0.037
+anchor_top = 0.036
+anchor_right = 0.962
+anchor_bottom = 0.964
+offset_left = 0.04
+offset_top = 0.0119996
+offset_right = 0.0399857
+offset_bottom = -0.012001
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+texture = ExtResource("2_grgyi")
+expand_mode = 1
+
+[node name="Top_Label" type="Label" parent="."]
+layout_mode = 1
+anchors_preset = -1
+anchor_left = 0.052
+anchor_top = 0.028
+anchor_right = 0.917
+anchor_bottom = 0.146
+offset_left = 0.0079999
+offset_top = -0.0320001
+offset_right = -0.0320053
+offset_bottom = -0.0240021
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_constants/outline_size = 5
+theme_override_font_sizes/font_size = 8
+text = "(Magic Card)"
+horizontal_alignment = 2
+vertical_alignment = 2
+
+[node name="Botton_Label" type="Label" parent="."]
+layout_mode = 1
+anchors_preset = -1
+anchor_left = 0.042
+anchor_top = 0.729
+anchor_right = 0.958
+anchor_bottom = 0.972
+offset_left = -0.0320005
+offset_top = 0.0239944
+offset_right = 0.0319977
+offset_bottom = 0.0319977
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_constants/outline_size = 5
+theme_override_font_sizes/font_size = 8
+text = "ATK/500      DEF/1600"
+horizontal_alignment = 1
+vertical_alignment = 2

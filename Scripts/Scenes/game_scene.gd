@@ -1,10 +1,12 @@
 extends Node2D
 class_name GameScene
 #-------------------------------------------------------------------------------
-enum MOUSE_STATE{HIGHLIGHT, HOLD}
+enum MOUSE_STATE{NOTHING, HIGHLIGHT, HOLD, DESCRIPTION}
 enum HIGHLIGHT_STATE{EMPTY, HAND, MONSTER_ZONE, MAGIC_ZONE, MAIN_DECK_ZONE, EXTRA_DECK_ZONE, GRAVE_ZONE, REMOVE_ZONE}
 #region VARIABLES
 @export var player: Player_Node
+@export var descriptionMenu: Control
+@export var descriptionMenu_Frame: Frame_Node
 #-------------------------------------------------------------------------------
 @export var card_Node_Prefab: PackedScene
 #-------------------------------------------------------------------------------
@@ -13,6 +15,9 @@ enum HIGHLIGHT_STATE{EMPTY, HAND, MONSTER_ZONE, MAGIC_ZONE, MAIN_DECK_ZONE, EXTR
 var z_index_field: int = 0
 var z_index_hand: int = 1
 var tweenSpeed: float = 0.1
+var mouseCounter: int = 0
+var isMousePressed: bool = false
+var mouseLastPosition: Vector2
 #-------------------------------------------------------------------------------
 @export var debugInfo: Label
 #-------------------------------------------------------------------------------
@@ -63,6 +68,8 @@ func _ready() -> void:
 	SetDeckNumber1(player.extraDeck)
 	SetDeckNumber2(player.grave)
 	SetDeckNumber2(player.removed)
+	#-------------------------------------------------------------------------------
+	descriptionMenu.hide()
 #-------------------------------------------------------------------------------
 func _physics_process(_delta: float) -> void:
 	StateMachine()
@@ -140,9 +147,31 @@ func StateMachine():
 						myHIGHLIGHT_STATE = HIGHLIGHT_STATE.EMPTY
 						return
 					#-------------------------------------------------------------------------------
-					if(Input.is_action_just_pressed("Left_Click")):
-						myMOUSE_STATE = MOUSE_STATE.HOLD
+					if(isMousePressed):
+						var _distance: float = mouseLastPosition.distance_to(get_global_mouse_position())
+						if(_distance < 10):
+							mouseCounter += 1
+							if(mouseCounter > 40):
+								descriptionMenu.show()
+								myMOUSE_STATE = MOUSE_STATE.DESCRIPTION
+								Set_Card_Node(descriptionMenu_Frame, current_card_node.card_Class.card_Resource)
+								return
+							#-------------------------------------------------------------------------------
+							if(Input.is_action_just_released("Left_Click")):
+								mouseCounter = 0
+								isMousePressed = false
+								return
+						else:
+							mouseCounter = 0
+							isMousePressed = false
+							myMOUSE_STATE = MOUSE_STATE.HOLD
 						return
+					else:
+						if(Input.is_action_just_pressed("Left_Click")):
+							mouseCounter = 0
+							isMousePressed = true
+							mouseLastPosition = get_global_mouse_position()
+							return
 					#-------------------------------------------------------------------------------
 				#-------------------------------------------------------------------------------
 				HIGHLIGHT_STATE.MONSTER_ZONE:
@@ -411,6 +440,17 @@ func StateMachine():
 				#-------------------------------------------------------------------------------
 			#-------------------------------------------------------------------------------
 		#-------------------------------------------------------------------------------
+		MOUSE_STATE.DESCRIPTION:
+			if(Input.is_action_just_pressed("Right_Click")):
+				myMOUSE_STATE = MOUSE_STATE.HIGHLIGHT
+				myHIGHLIGHT_STATE = HIGHLIGHT_STATE.EMPTY
+				mouseCounter = 0
+				isMousePressed = false
+				Card_Highlight_False(current_card_node)
+				current_card_node = null
+				descriptionMenu.hide()
+				return
+		#-------------------------------------------------------------------------------
 	#-------------------------------------------------------------------------------
 #endregion
 #-------------------------------------------------------------------------------
@@ -423,6 +463,7 @@ func Debug_Info():
 	_s += "Current Card_Node: "+str(current_card_node)+"\n"
 	_s += "Current CardSlot_Node: "+str(current_cardslot_node)+"\n"
 	_s += "Current Deck_Node: "+str(current_deck_node)+"\n"
+	_s += "Mouse Counter: "+str(mouseCounter)+"\n"
 	_s += "______________________________________\n"
 	_s += "Areas2D_Node Being Detected:\n"
 	for _i in card_node.size():
@@ -529,9 +570,8 @@ func DrawCard():
 	add_child(_card_Node)
 	#-------------------------------------------------------------------------------
 	_card_Node.card_Class = _card_Class
-	Set_Card_Node(_card_Node)
+	Set_Card_Node(_card_Node.frame_Node, _card_Node.card_Class.card_Resource)
 	_card_Class.gameScene = self
-	_card_Node.artwork.texture = _card_Class.card_Resource.artwork
 	Add_card_to_hand(_card_Node)
 #-------------------------------------------------------------------------------
 func SetDeckNumber1(_deck_node: Deck_Node):
@@ -548,23 +588,24 @@ func SetDeckNumber2(_deck_node: Deck_Node):
 #endregion
 #-------------------------------------------------------------------------------
 #region CARD_HIGHLIGHTED FUNCTIONS
-func Set_Card_Node(_card_node:Card_Node):
-	var _card_Resource: Card_Resource = _card_node.card_Class.card_Resource
+func Set_Card_Node(_frame_node: Frame_Node, _card_Resource:Card_Resource):
+	_frame_node.artwork.texture = _card_Resource.artwork
+	#-------------------------------------------------------------------------------
 	match(_card_Resource.myCARD_TYPE):
 		Card_Resource.CARD_TYPE.RED:
-			_card_node.frame.self_modulate = Color.LIGHT_PINK
-			_card_node.topLabel.text = Get_Stars(_card_Resource)
-			_card_node.bottonLabel.text = Get_Attack_and_Defense(_card_Resource)
+			_frame_node.frame.self_modulate = Color.LIGHT_PINK
+			_frame_node.topLabel.text = Get_Stars(_card_Resource)
+			_frame_node.bottonLabel.text = Get_Attack_and_Defense(_card_Resource)
 		#-------------------------------------------------------------------------------
 		Card_Resource.CARD_TYPE.BLUE:
-			_card_node.frame.self_modulate = Color.LIGHT_BLUE
-			_card_node.topLabel.text = "(Magic Card)"
-			_card_node.bottonLabel.text = ""
+			_frame_node.frame.self_modulate = Color.LIGHT_BLUE
+			_frame_node.topLabel.text = "(Magic Card)"
+			_frame_node.bottonLabel.text = ""
 		#-------------------------------------------------------------------------------
 		Card_Resource.CARD_TYPE.YELLOW:
-			_card_node.frame.self_modulate = Color.LIGHT_GOLDENROD
-			_card_node.topLabel.text = Get_Stars(_card_Resource)
-			_card_node.bottonLabel.text = Get_Attack_and_Defense(_card_Resource)
+			_frame_node.frame.self_modulate = Color.LIGHT_GOLDENROD
+			_frame_node.topLabel.text = Get_Stars(_card_Resource)
+			_frame_node.bottonLabel.text = Get_Attack_and_Defense(_card_Resource)
 		#-------------------------------------------------------------------------------
 	#-------------------------------------------------------------------------------
 #-------------------------------------------------------------------------------
