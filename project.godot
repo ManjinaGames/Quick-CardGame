@@ -17,6 +17,8 @@ config/icon="res://icon.svg"
 
 [display]
 
+window/size/window_width_override=1600
+window/size/window_height_override=900
 window/stretch/mode="canvas_items"
 
 [input]
@@ -34,7 +36,10 @@ Right_Click={
 
 [layer_names]
 
-2d_physics/layer_1="Card&Slot"
+2d_physics/layer_1="Card"
+2d_physics/layer_2="CardSlot"
+2d_physics/layer_3="Deck"
+2d_physics/layer_4="UI"
 
 [rendering]
 

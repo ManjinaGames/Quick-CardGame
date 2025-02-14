@@ -1,4 +1,4 @@
-[gd_scene load_steps=23 format=3 uid="uid://dlfgbqjvq7ybh"]
+[gd_scene load_steps=28 format=3 uid="uid://dlfgbqjvq7ybh"]
 
 [ext_resource type="PackedScene" uid="uid://dfb2i4o7cr1k1" path="res://Nodes/Prefabs/card_node.tscn" id="1_c0q3d"]
 [ext_resource type="Script" path="res://Scripts/Scenes/game_scene.gd" id="1_txxkl"]
@@ -18,6 +18,10 @@
 [ext_resource type="Resource" uid="uid://g3kw4h8wixrd" path="res://Cards/Resources/dragonmaid (9).tres" id="13_plchi"]
 [ext_resource type="Resource" uid="uid://d2ufpn3wtd18h" path="res://Cards/Resources/dragonmaid (10).tres" id="14_dpwcw"]
 [ext_resource type="PackedScene" uid="uid://d00ndvs4nnoku" path="res://Nodes/Prefabs/frame.tscn" id="18_quvkb"]
+[ext_resource type="Script" path="res://Scripts/Card_Node/button_node.gd" id="19_t8rca"]
+[ext_resource type="Texture2D" uid="uid://c5qceh240gu1n" path="res://Assets/kenney_board-game-icons/card_place.png" id="20_pssv4"]
+[ext_resource type="Texture2D" uid="uid://dhhdcer6s02f6" path="res://Assets/kenney_board-game-icons/d12.png" id="20_s8jol"]
+[ext_resource type="Texture2D" uid="uid://bp0ddi7nqu28b" path="res://Assets/kenney_board-game-icons/card_outline_place.png" id="22_5hnbt"]
 
 [sub_resource type="GDScript" id="GDScript_scis2"]
 script/source = "extends Card_Class
@@ -49,13 +53,21 @@ myCLASS = 0
 level = 1
 myITEM_TYPE = 0
 
-[node name="GameScene" type="Node2D" node_paths=PackedStringArray("player", "descriptionMenu", "descriptionMenu_Frame", "debugInfo")]
+[sub_resource type="CircleShape2D" id="CircleShape2D_sdvyq"]
+radius = 28.0179
+
+[node name="GameScene" type="Node2D" node_paths=PackedStringArray("player", "descriptionMenu", "descriptionMenu_Frame", "button1", "button2", "debugInfo")]
 script = ExtResource("1_txxkl")
 player = NodePath("Player")
 descriptionMenu = NodePath("CanvasLayer/MarginContainer2")
 descriptionMenu_Frame = NodePath("CanvasLayer/MarginContainer2/Panel/Control/Frame")
+button1 = NodePath("button_node")
+button2 = NodePath("button_node2")
 card_Node_Prefab = ExtResource("1_c0q3d")
 collision_mask_card = 1
+collision_mask_cardslot = 2
+collision_mask_deck = 4
+collision_mask_button = 8
 debugInfo = NodePath("CanvasLayer/MarginContainer/Label")
 cardDatabase = {
 "a1_c1": SubResource("GDScript_scis2"),
@@ -75,7 +87,7 @@ magicZone = [NodePath("CardSlot_Node"), NodePath("CardSlot_Node2"), NodePath("Ca
 monsterZone = [NodePath("CardSlot_Node6"), NodePath("CardSlot_Node7"), NodePath("CardSlot_Node8"), NodePath("CardSlot_Node9"), NodePath("CardSlot_Node10")]
 
 [node name="hand" type="Node2D" parent="Player" node_paths=PackedStringArray("gameScene")]
-position = Vector2(0, 115)
+position = Vector2(0, 130)
 script = ExtResource("4_4r13x")
 gameScene = NodePath("../..")
 
@@ -83,69 +95,55 @@ gameScene = NodePath("../..")
 position = Vector2(-336, 0)
 gameScene = NodePath("../..")
 myDECK_TYPE = 1
-myZONE_TYPE = 5
 
 [node name="CardSlot_Node" parent="Player" instance=ExtResource("13_bej0y")]
 position = Vector2(-224, 0)
-myFIELD_TYPE = 1
-myZONE_TYPE = 2
+myZONE_TYPE = 1
 
 [node name="CardSlot_Node2" parent="Player" instance=ExtResource("13_bej0y")]
 position = Vector2(-112, 0)
-myFIELD_TYPE = 1
-myZONE_TYPE = 2
+myZONE_TYPE = 1
 
 [node name="CardSlot_Node3" parent="Player" instance=ExtResource("13_bej0y")]
-myFIELD_TYPE = 1
-myZONE_TYPE = 2
+myZONE_TYPE = 1
 
 [node name="CardSlot_Node4" parent="Player" instance=ExtResource("13_bej0y")]
 position = Vector2(112, 0)
-myFIELD_TYPE = 1
-myZONE_TYPE = 2
+myZONE_TYPE = 1
 
 [node name="CardSlot_Node5" parent="Player" instance=ExtResource("13_bej0y")]
 position = Vector2(224, 0)
-myFIELD_TYPE = 1
-myZONE_TYPE = 2
+myZONE_TYPE = 1
 
 [node name="mainDeck_node" parent="Player" node_paths=PackedStringArray("gameScene") instance=ExtResource("4_u3nvj")]
 position = Vector2(336, 0)
 gameScene = NodePath("../..")
 card_Resource = Array[ExtResource("6_mbwul")]([ExtResource("5_w0rv4"), ExtResource("5_w0rv4"), ExtResource("6_emvl4"), ExtResource("6_emvl4"), ExtResource("7_4udd4"), ExtResource("7_4udd4"), ExtResource("8_rcph7"), ExtResource("8_rcph7"), ExtResource("9_l1t5s"), ExtResource("9_l1t5s"), ExtResource("10_v8rp7"), ExtResource("10_v8rp7"), ExtResource("11_fnrwv"), ExtResource("11_fnrwv"), ExtResource("12_fu2j2"), ExtResource("12_fu2j2"), ExtResource("13_plchi"), ExtResource("13_plchi"), ExtResource("14_dpwcw"), ExtResource("14_dpwcw"), ExtResource("5_w0rv4"), ExtResource("5_w0rv4"), ExtResource("6_emvl4"), ExtResource("6_emvl4"), ExtResource("7_4udd4"), ExtResource("7_4udd4"), ExtResource("8_rcph7"), ExtResource("8_rcph7"), ExtResource("9_l1t5s"), ExtResource("9_l1t5s"), ExtResource("10_v8rp7"), ExtResource("10_v8rp7"), ExtResource("11_fnrwv"), ExtResource("11_fnrwv"), ExtResource("12_fu2j2"), ExtResource("12_fu2j2"), ExtResource("13_plchi"), ExtResource("13_plchi"), ExtResource("14_dpwcw"), ExtResource("14_dpwcw")])
-myZONE_TYPE = 3
 
 [node name="RemovedDeck_node" parent="Player" node_paths=PackedStringArray("gameScene") instance=ExtResource("4_u3nvj")]
-position = Vector2(-336, -112)
+position = Vector2(430, -112)
 gameScene = NodePath("../..")
 myDECK_TYPE = 3
-myZONE_TYPE = 6
 
 [node name="CardSlot_Node6" parent="Player" instance=ExtResource("13_bej0y")]
 position = Vector2(-224, -112)
-myZONE_TYPE = 1
 
 [node name="CardSlot_Node7" parent="Player" instance=ExtResource("13_bej0y")]
 position = Vector2(-112, -112)
-myZONE_TYPE = 1
 
 [node name="CardSlot_Node8" parent="Player" instance=ExtResource("13_bej0y")]
 position = Vector2(0, -112)
-myZONE_TYPE = 1
 
 [node name="CardSlot_Node9" parent="Player" instance=ExtResource("13_bej0y")]
 position = Vector2(112, -112)
-myZONE_TYPE = 1
 
 [node name="CardSlot_Node10" parent="Player" instance=ExtResource("13_bej0y")]
 position = Vector2(224, -112)
-myZONE_TYPE = 1
 
 [node name="GraveDeck_Node" parent="Player" node_paths=PackedStringArray("gameScene") instance=ExtResource("4_u3nvj")]
 position = Vector2(336, -112)
 gameScene = NodePath("../..")
 myDECK_TYPE = 2
-myZONE_TYPE = 4
 
 [node name="CanvasLayer" type="CanvasLayer" parent="."]
 
@@ -167,6 +165,7 @@ theme_override_font_sizes/font_size = 8
 text = "ssdfsdfsdfsdfsdfsdf"
 
 [node name="MarginContainer2" type="MarginContainer" parent="CanvasLayer"]
+visible = false
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
@@ -231,5 +230,157 @@ Effect:
                Si esta carta es Invocada de Modo Normal o Especial: puedes seleccionar 1 monstruo \"Dragoncella\" de Nivel 4 o menor en tu Cementerio, excepto \"Dragoncella Enfermera\"; Invócalo de Modo Especial. Al comienzo de la Battle Phase: puedes devolver esta carta a la mano y, si lo haces, Invoca de Modo Especial, desde tu mano o Cementerio, 1 monstruo \"Dragoncella\" de Nivel 7. Sólo puedes usar cada efecto de \"Dragoncella Enfermera\" una vez por turno.
 "
 autowrap_mode = 2
+
+[node name="button_node" type="Node2D" parent="." node_paths=PackedStringArray("area2D", "collisionShape2D", "highlight_TextureRect")]
+z_index = 5
+position = Vector2(353, 464)
+script = ExtResource("19_t8rca")
+area2D = NodePath("offset_Node2D/Area2D")
+collisionShape2D = NodePath("offset_Node2D/Area2D/CollisionShape2D")
+highlight_TextureRect = NodePath("offset_Node2D/TextureRect3/TextureRect2")
+
+[node name="offset_Node2D" type="Node2D" parent="button_node"]
+
+[node name="TextureRect3" type="TextureRect" parent="button_node/offset_Node2D"]
+self_modulate = Color(0, 0, 0, 0.607843)
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -38.0
+offset_top = -38.0
+offset_right = 38.0
+offset_bottom = 38.0
+grow_horizontal = 2
+grow_vertical = 2
+texture = ExtResource("20_s8jol")
+expand_mode = 1
+
+[node name="TextureRect2" type="TextureRect" parent="button_node/offset_Node2D/TextureRect3"]
+self_modulate = Color(1, 0.392157, 0.396078, 1)
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+texture = ExtResource("20_s8jol")
+expand_mode = 1
+
+[node name="TextureRect" type="TextureRect" parent="button_node/offset_Node2D"]
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -25.0
+offset_top = -25.0
+offset_right = 25.0
+offset_bottom = 25.0
+grow_horizontal = 2
+grow_vertical = 2
+size_flags_horizontal = 4
+size_flags_vertical = 4
+texture = ExtResource("20_pssv4")
+expand_mode = 1
+
+[node name="Label" type="Label" parent="button_node/offset_Node2D"]
+anchors_preset = 5
+anchor_left = 0.5
+anchor_right = 0.5
+offset_left = -36.5
+offset_top = 28.0
+offset_right = 36.5
+offset_bottom = 51.0
+grow_horizontal = 2
+theme_override_constants/outline_size = 4
+theme_override_font_sizes/font_size = 15
+text = "Convocar"
+horizontal_alignment = 1
+
+[node name="Area2D" type="Area2D" parent="button_node/offset_Node2D"]
+collision_layer = 8
+collision_mask = 8
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="button_node/offset_Node2D/Area2D"]
+shape = SubResource("CircleShape2D_sdvyq")
+
+[node name="button_node2" type="Node2D" parent="." node_paths=PackedStringArray("area2D", "collisionShape2D", "highlight_TextureRect")]
+z_index = 5
+position = Vector2(404, 464)
+script = ExtResource("19_t8rca")
+area2D = NodePath("offset_Node2D/Area2D")
+collisionShape2D = NodePath("offset_Node2D/Area2D/CollisionShape2D")
+highlight_TextureRect = NodePath("offset_Node2D/TextureRect3/TextureRect2")
+
+[node name="offset_Node2D" type="Node2D" parent="button_node2"]
+
+[node name="TextureRect3" type="TextureRect" parent="button_node2/offset_Node2D"]
+self_modulate = Color(0, 0, 0, 0.607843)
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -38.0
+offset_top = -38.0
+offset_right = 38.0
+offset_bottom = 38.0
+grow_horizontal = 2
+grow_vertical = 2
+texture = ExtResource("20_s8jol")
+expand_mode = 1
+
+[node name="TextureRect2" type="TextureRect" parent="button_node2/offset_Node2D/TextureRect3"]
+visible = false
+self_modulate = Color(1, 0.392157, 0.396078, 1)
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+texture = ExtResource("20_s8jol")
+expand_mode = 1
+
+[node name="TextureRect" type="TextureRect" parent="button_node2/offset_Node2D"]
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -25.0
+offset_top = -25.0
+offset_right = 25.0
+offset_bottom = 25.0
+grow_horizontal = 2
+grow_vertical = 2
+size_flags_horizontal = 4
+size_flags_vertical = 4
+texture = ExtResource("22_5hnbt")
+expand_mode = 1
+
+[node name="Label" type="Label" parent="button_node2/offset_Node2D"]
+anchors_preset = 5
+anchor_left = 0.5
+anchor_right = 0.5
+offset_left = -22.5
+offset_top = 28.0
+offset_right = 22.5
+offset_bottom = 42.0
+grow_horizontal = 2
+size_flags_vertical = 1
+theme_override_constants/outline_size = 4
+theme_override_font_sizes/font_size = 15
+text = "Colocar"
+horizontal_alignment = 1
+
+[node name="Area2D" type="Area2D" parent="button_node2/offset_Node2D"]
+collision_layer = 8
+collision_mask = 8
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="button_node2/offset_Node2D/Area2D"]
+shape = SubResource("CircleShape2D_sdvyq")
 
 [editable path="CanvasLayer/MarginContainer2/Panel/Control/Frame"]

@@ -13,21 +13,23 @@
 [ext_resource type="Resource" uid="uid://g3kw4h8wixrd" path="res://Cards/Resources/dragonmaid (9).tres" id="11_p4wmp"]
 [ext_resource type="Resource" uid="uid://d2ufpn3wtd18h" path="res://Cards/Resources/dragonmaid (10).tres" id="12_o308v"]
 [ext_resource type="Texture2D" uid="uid://rfrid568vffs" path="res://Assets/Images/CardSlot.png" id="13_yw3em"]
-[ext_resource type="Texture2D" uid="uid://dlndl0yv6kf3h" path="res://icon.svg" id="14_dvmeg"]
+[ext_resource type="Texture2D" uid="uid://dictncau670j4" path="res://Assets/Images/White Square.png" id="14_5n6gc"]
 [ext_resource type="Texture2D" uid="uid://cc152q6tuxnfr" path="res://Assets/Images/Deck.png" id="15_waik6"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_5mofp"]
-size = Vector2(50, 82)
+size = Vector2(74, 112)
 
 [node name="deck_node" type="Node2D" node_paths=PackedStringArray("collisionShape", "highlight_TextureRect", "card_TextureRect", "label")]
 script = ExtResource("1_5jrh3")
-collisionShape = NodePath("Area2D/CollisionShape2D")
-highlight_TextureRect = NodePath("Cardslot_TextureRect/Highlight_TextureRect")
-card_TextureRect = NodePath("Cardslot_TextureRect/Card_TextureRect")
-label = NodePath("Label")
+collisionShape = NodePath("Node2D/Area2D/CollisionShape2D")
+highlight_TextureRect = NodePath("Node2D/Cardslot_TextureRect/Highlight_TextureRect")
+card_TextureRect = NodePath("Node2D/Cardslot_TextureRect/Card_TextureRect")
+label = NodePath("Node2D/Label")
 card_Resource = Array[ExtResource("2_bxbnl")]([ExtResource("3_1hiwk"), ExtResource("3_1hiwk"), ExtResource("4_fr2cg"), ExtResource("4_fr2cg"), ExtResource("5_fkcli"), ExtResource("5_fkcli"), ExtResource("6_61fgw"), ExtResource("6_61fgw"), ExtResource("7_fi63g"), ExtResource("7_fi63g"), ExtResource("8_d086q"), ExtResource("8_d086q"), ExtResource("9_v6rfg"), ExtResource("9_v6rfg"), ExtResource("10_ib35r"), ExtResource("10_ib35r"), ExtResource("11_p4wmp"), ExtResource("11_p4wmp"), ExtResource("12_o308v"), ExtResource("12_o308v")])
 
-[node name="Cardslot_TextureRect" type="TextureRect" parent="."]
+[node name="Node2D" type="Node2D" parent="."]
+
+[node name="Cardslot_TextureRect" type="TextureRect" parent="Node2D"]
 anchors_preset = 8
 anchor_left = 0.5
 anchor_top = 0.5
@@ -44,25 +46,7 @@ size_flags_vertical = 3
 texture = ExtResource("13_yw3em")
 expand_mode = 1
 
-[node name="Highlight_TextureRect" type="TextureRect" parent="Cardslot_TextureRect"]
-visible = false
-show_behind_parent = true
-layout_mode = 1
-anchors_preset = 15
-anchor_right = 1.0
-anchor_bottom = 1.0
-offset_left = -6.0
-offset_top = -9.0
-offset_right = 5.0
-offset_bottom = 7.0
-grow_horizontal = 2
-grow_vertical = 2
-size_flags_horizontal = 4
-size_flags_vertical = 4
-texture = ExtResource("14_dvmeg")
-expand_mode = 1
-
-[node name="Card_TextureRect" type="TextureRect" parent="Cardslot_TextureRect"]
+[node name="Card_TextureRect" type="TextureRect" parent="Node2D/Cardslot_TextureRect"]
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
@@ -72,12 +56,27 @@ grow_vertical = 2
 texture = ExtResource("15_waik6")
 expand_mode = 1
 
-[node name="Area2D" type="Area2D" parent="."]
+[node name="Highlight_TextureRect" type="TextureRect" parent="Node2D/Cardslot_TextureRect"]
+visible = false
+self_modulate = Color(1, 1, 1, 0.411765)
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+texture = ExtResource("14_5n6gc")
+expand_mode = 1
 
-[node name="CollisionShape2D" type="CollisionShape2D" parent="Area2D"]
+[node name="Area2D" type="Area2D" parent="Node2D"]
+collision_layer = 4
+collision_mask = 4
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Node2D/Area2D"]
 shape = SubResource("RectangleShape2D_5mofp")
 
-[node name="Label" type="Label" parent="."]
+[node name="Label" type="Label" parent="Node2D"]
+visible = false
 z_index = 5
 anchors_preset = 12
 anchor_top = 1.0

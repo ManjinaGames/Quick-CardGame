@@ -6,15 +6,18 @@
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_wf6kc"]
 size = Vector2(90, 138)
 
-[node name="Card_Node" type="Node2D" node_paths=PackedStringArray("area2d", "collisionShape", "frame_Node")]
+[node name="Card_Node" type="Node2D" node_paths=PackedStringArray("area2d", "offset_Node2D", "collisionShape", "frame_Node")]
 script = ExtResource("1_vx84k")
-area2d = NodePath("Area2D")
-collisionShape = NodePath("Area2D/CollisionShape2D")
-frame_Node = NodePath("Frame")
+area2d = NodePath("offset_Node2D/Area2D")
+offset_Node2D = NodePath("offset_Node2D")
+collisionShape = NodePath("offset_Node2D/Area2D/CollisionShape2D")
+frame_Node = NodePath("offset_Node2D/Frame")
 
-[node name="Frame" parent="." instance=ExtResource("2_2qivj")]
+[node name="offset_Node2D" type="Node2D" parent="."]
 
-[node name="Area2D" type="Area2D" parent="."]
+[node name="Frame" parent="offset_Node2D" instance=ExtResource("2_2qivj")]
 
-[node name="CollisionShape2D" type="CollisionShape2D" parent="Area2D"]
+[node name="Area2D" type="Area2D" parent="offset_Node2D"]
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="offset_Node2D/Area2D"]
 shape = SubResource("RectangleShape2D_wf6kc")
