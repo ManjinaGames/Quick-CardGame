@@ -11,5 +11,7 @@ enum ZONE_TYPE{MONSTER_ZONE, MAGIC_ZONE}
 var card_in_slot: Card_Node
 #-------------------------------------------------------------------------------
 var pressed: Callable = func(): pass
+var highlighted: Callable = func(): pass
+var lowlighted: Callable = func(): pass
 #endregion
 #-------------------------------------------------------------------------------

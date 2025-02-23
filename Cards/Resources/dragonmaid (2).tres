@@ -1,12 +1,12 @@
 [gd_resource type="Resource" script_class="Card_Resource" load_steps=4 format=3 uid="uid://otg0sqo8h5cp"]
 
-[ext_resource type="Texture2D" uid="uid://djmlajx4bc82d" path="res://Cards/Artworks/dragonmaid (2).png" id="1_bjh6t"]
+[ext_resource type="Texture2D" uid="uid://ctvaap8gobq2a" path="res://Cards/Artworks/Christmas02-A.png" id="1_82qg2"]
 [ext_resource type="Script" path="res://Scripts/Card_Resource/Card_Resource.gd" id="1_nqop7"]
 [ext_resource type="Script" path="res://Cards/Scripts/dragonmaid (2).gd" id="2_0mpb0"]
 
 [resource]
 script = ExtResource("1_nqop7")
-artwork = ExtResource("1_bjh6t")
+artwork = ExtResource("1_82qg2")
 myCARD_TYPE = 0
 myRESTRICTION = 0
 limit = 3

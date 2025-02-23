@@ -14,5 +14,7 @@ var card_Class: Array[Card_Class]
 var maxDeckNum: int
 #-------------------------------------------------------------------------------
 var pressed: Callable = func(): pass
+var highlighted: Callable = func(): pass
+var lowlighted: Callable = func(): pass
 #endregion
 #-------------------------------------------------------------------------------

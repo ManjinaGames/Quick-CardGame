@@ -6,5 +6,7 @@ class_name Button_Node
 @export var highlight_TextureRect: TextureRect
 #-------------------------------------------------------------------------------
 var pressed: Callable = func(): pass
+var highlighted: Callable = func(): pass
+var lowlighted: Callable = func(): pass
 #endregion
 #-------------------------------------------------------------------------------

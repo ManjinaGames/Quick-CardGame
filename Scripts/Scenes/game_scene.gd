@@ -61,6 +61,9 @@ const cardDatabase_hability_path: String = "res://Cards/Scripts"
 var height: float
 var width: float
 var card_width: float = 90
+#-------------------------------------------------------------------------------
+var pressed: Callable = func(): pass
+var cancel: Callable = func(): pass
 #endregion
 #-------------------------------------------------------------------------------
 #region MONOVEHAVIOUR
@@ -86,6 +89,10 @@ func _ready() -> void:
 	button1.highlight_TextureRect.hide()
 	button2.highlight_TextureRect.hide()
 	#-------------------------------------------------------------------------------
+	pressed = func(): print("Nothing was Pressed.")
+	cancel = func(): print("Cancel was Pressed.")
+	SetStage()
+	#-------------------------------------------------------------------------------
 	descriptionMenu.hide()
 #-------------------------------------------------------------------------------
 func _physics_process(_delta: float) -> void:
@@ -109,294 +116,248 @@ func StateMachine():
 	Organize_Area2Ds()
 	Debug_Info()
 	#-------------------------------------------------------------------------------
-	match(myGAME_STATE):
-		GAME_STATE.GAMEPLAY:
-			#-------------------------------------------------------------------------------
-			if(Input.is_action_just_pressed("Right_Click")):
-				match(myGAMEPLAY_STATE):
-					GAMEPLAY_STATE.ON_IDLE:
-						#-------------------------------------------------------------------------------
-						match(mySELECTED_STATE):
-							SELECTED_STATE.ON_CARD:
-								if(selected_card_node == highlighted_card_node):
-									Highlight_Card_True(selected_card_node)
-								else:
-									Selected_Card_False(selected_card_node)
-								selected_card_node = null
-								Hide_Button_Node(button1)
-								Hide_Button_Node(button2)
-								mySELECTED_STATE = SELECTED_STATE.NOTHING
-							#-------------------------------------------------------------------------------
-							SELECTED_STATE.ON_CARDSLOT:
-								pass
-							#-------------------------------------------------------------------------------
-							SELECTED_STATE.ON_DECK:
-								pass
-							#-------------------------------------------------------------------------------
-						#-------------------------------------------------------------------------------
-					#-------------------------------------------------------------------------------
-					GAMEPLAY_STATE.ON_SUMMON:
-						myGAMEPLAY_STATE = GAMEPLAY_STATE.ON_IDLE
-						Show_Button_Node(button1)
-						Show_Button_Node(button2)
-						Selected_Card_True(selected_card_node)
-						for _i in player.monsterZone.size():
-								player.monsterZone[_i].summoning_TextureRect.hide()
-					#-------------------------------------------------------------------------------
+	if(Input.is_action_just_pressed("Right_Click")):
+		cancel.call()
+		return
+	#-------------------------------------------------------------------------------
+	if(myGAME_STATE != GAME_STATE.GAMEPLAY):
+		return
+	#-------------------------------------------------------------------------------
+	match(myHIGHLIGHT_STATE):
+		HIGHLIGHT_STATE.NOTHING:
+			if(button_node.size() > 0):
+				highlighted_button_node = button_node[0]
+				button_node[0].highlighted.call()
+				myHIGHLIGHT_STATE = HIGHLIGHT_STATE.ON_BUTTON
 				#-------------------------------------------------------------------------------
-			#-------------------------------------------------------------------------------
-			match(myHIGHLIGHT_STATE):
-				HIGHLIGHT_STATE.NOTHING:
-					if(button_node.size() > 0):
-						highlighted_button_node = button_node[0]
-						Highlight_Button_True(button_node[0])
-						mouseCounter = 0
-						isMousePressed = false
-						myHIGHLIGHT_STATE = HIGHLIGHT_STATE.ON_BUTTON
-						return
-					#-------------------------------------------------------------------------------
-					if(card_node.size() > 0):
-						highlighted_card_node = card_node[0]
-						if(myGAMEPLAY_STATE == GAMEPLAY_STATE.ON_IDLE):
-							if(Is_Current_Selected()):
-								pass
-							else:
-								Highlight_Card_True(card_node[0])
-						else:
-							Highlight_Card_True(card_node[0])
-						#-------------------------------------------------------------------------------
-						mouseCounter = 0
-						isMousePressed = false
-						myHIGHLIGHT_STATE = HIGHLIGHT_STATE.ON_CARD
-						return
-					#-------------------------------------------------------------------------------
-					if(cardSlot_node.size() > 0):
-						highlighted_cardslot_node = cardSlot_node[0]
-						Highlight_Cardslot_True(cardSlot_node[0])
-						mouseCounter = 0
-						isMousePressed = false
-						myHIGHLIGHT_STATE = HIGHLIGHT_STATE.ON_CARDSLOT
-						return
-					#-------------------------------------------------------------------------------
-					if(deck_node.size() > 0):
-						highlighted_deck_node = deck_node[0]
-						Highlight_Deck_True(deck_node[0])
-						mouseCounter = 0
-						isMousePressed = false
-						myHIGHLIGHT_STATE = HIGHLIGHT_STATE.ON_DECK
-						return
-					#-------------------------------------------------------------------------------
-					if(isMousePressed):
-						if(Input.is_action_just_released("Left_Click")):
-							if(myGAMEPLAY_STATE == GAMEPLAY_STATE.ON_IDLE):
-								mySELECTED_STATE = SELECTED_STATE.NOTHING
-								Selected_Card_False(selected_card_node)
-								selected_card_node = null
-								Hide_Button_Node(button1)
-								Hide_Button_Node(button2)
-							#-------------------------------------------------------------------------------
-							mouseCounter = 0
-							isMousePressed = false
-							return
-						#-------------------------------------------------------------------------------
-					#-------------------------------------------------------------------------------
-					else:
-						if(Input.is_action_just_pressed("Left_Click")):
-							isMousePressed = true
-							return
-						#-------------------------------------------------------------------------------
-					#-------------------------------------------------------------------------------
-				#-------------------------------------------------------------------------------
-				HIGHLIGHT_STATE.ON_CARD:
-					#-------------------------------------------------------------------------------
-					if(button_node.size() > 0):
-						if(!Is_Current_Selected()):
-							Highlight_Card_False(highlighted_card_node)
-						highlighted_card_node = null
-						#-------------------------------------------------------------------------------
-						Highlight_Button_True(button_node[0])
-						highlighted_button_node = button_node[0]
-						#-------------------------------------------------------------------------------
-						mouseCounter = 0
-						isMousePressed = false
-						myHIGHLIGHT_STATE = HIGHLIGHT_STATE.ON_BUTTON
-						return
-					#-------------------------------------------------------------------------------
-					if(card_node.has(selected_card_node) and highlighted_card_node != selected_card_node and myGAMEPLAY_STATE == GAMEPLAY_STATE.ON_IDLE):
-						Highlight_Card_False(highlighted_card_node)
-						highlighted_card_node = selected_card_node
-						mouseCounter = 0
-						isMousePressed = false
-						return
-					#-------------------------------------------------------------------------------
-					if(!card_node.has(highlighted_card_node)):
-						if(myGAMEPLAY_STATE == GAMEPLAY_STATE.ON_IDLE):
-							if(Is_Current_Selected()):
-								pass
-							else:
-								Highlight_Card_False(highlighted_card_node)
-						else:
-							Highlight_Card_False(highlighted_card_node)
-						highlighted_card_node = null
-						mouseCounter = 0
-						isMousePressed = false
-						myHIGHLIGHT_STATE = HIGHLIGHT_STATE.NOTHING
-						return
-					#-------------------------------------------------------------------------------
-					if(isMousePressed):
-						mouseCounter += 1
-						#-------------------------------------------------------------------------------
-						if(mouseCounter > 40):
-							Set_Card_Node(descriptionMenu_Frame, highlighted_card_node.card_Class.card_Resource)
-							descriptionMenu.show()
-							myGAME_STATE = GAME_STATE.DESCRIPTION_MENU
-							mouseCounter = 0
-							return
-						#-------------------------------------------------------------------------------
-						else:
-							if(Input.is_action_just_released("Left_Click")):
-								highlighted_card_node.pressed.call()
-								return
-							#-------------------------------------------------------------------------------
-						#-------------------------------------------------------------------------------
-					#-------------------------------------------------------------------------------
-					else:
-						if(Input.is_action_just_pressed("Left_Click")):
-							isMousePressed = true
-							mouseCounter = 0
-							mouseLastPosition = get_global_mouse_position()
-							return
-					#-------------------------------------------------------------------------------
-				#-------------------------------------------------------------------------------
-				HIGHLIGHT_STATE.ON_CARDSLOT:
-					#-------------------------------------------------------------------------------
-					if(button_node.size() > 0):
-						Highlight_Cardslot_False(highlighted_cardslot_node)
-						highlighted_cardslot_node = null
-						#-------------------------------------------------------------------------------
-						Highlight_Button_True(button_node[0])
-						highlighted_button_node = button_node[0]
-						#-------------------------------------------------------------------------------
-						mouseCounter = 0
-						isMousePressed = false
-						myHIGHLIGHT_STATE = HIGHLIGHT_STATE.ON_BUTTON
-						return
-					#-------------------------------------------------------------------------------
-					if(card_node.size() > 0):
-						Highlight_Cardslot_False(highlighted_cardslot_node)
-						highlighted_cardslot_node = null
-						highlighted_card_node = card_node[0]
-						#-------------------------------------------------------------------------------
-						if(myGAMEPLAY_STATE == GAMEPLAY_STATE.ON_IDLE):
-							if(Is_Current_Selected()):
-								pass
-							else:
-								Highlight_Card_True(card_node[0])
-						else:
-							Highlight_Card_True(card_node[0])
-						#-------------------------------------------------------------------------------
-						#-------------------------------------------------------------------------------
-						mouseCounter = 0
-						isMousePressed = false
-						myHIGHLIGHT_STATE = HIGHLIGHT_STATE.ON_CARD
-						return
-					#-------------------------------------------------------------------------------
-					if(!cardSlot_node.has(highlighted_cardslot_node)):
-						Highlight_Cardslot_False(highlighted_cardslot_node)
-						highlighted_cardslot_node = null
-						isMousePressed = false
-						myHIGHLIGHT_STATE = HIGHLIGHT_STATE.NOTHING
-						return
-					#-------------------------------------------------------------------------------
-					if(isMousePressed):
-						if(Input.is_action_just_released("Left_Click")):
-							if(myGAMEPLAY_STATE == GAMEPLAY_STATE.ON_IDLE):
-								if(mySELECTED_STATE == SELECTED_STATE.ON_CARD):
-									Selected_Card_False(selected_card_node)
-								#-------------------------------------------------------------------------------
-								Hide_Button_Node(button1)
-								Hide_Button_Node(button2)
-								mySELECTED_STATE = SELECTED_STATE.NOTHING
-							#-------------------------------------------------------------------------------
-							mouseCounter = 0
-							isMousePressed = false
-							return
-						#-------------------------------------------------------------------------------
-					#-------------------------------------------------------------------------------
-					else:
-						if(Input.is_action_just_pressed("Left_Click")):
-							isMousePressed = true
-							return
-						#-------------------------------------------------------------------------------
-					#-------------------------------------------------------------------------------
-				#-------------------------------------------------------------------------------
-				HIGHLIGHT_STATE.ON_DECK:
-					#-------------------------------------------------------------------------------
-					if(!deck_node.has(highlighted_deck_node)):
-						Highlight_Deck_False(highlighted_deck_node)
-						highlighted_deck_node = null
-						mouseCounter = 0
-						isMousePressed = false
-						myHIGHLIGHT_STATE = HIGHLIGHT_STATE.NOTHING
-						return
-					#-------------------------------------------------------------------------------
-					if(isMousePressed):
-						if(Input.is_action_just_released("Left_Click")):
-							if(myGAMEPLAY_STATE == GAMEPLAY_STATE.ON_IDLE):
-								highlighted_deck_node.pressed.call()
-								#-------------------------------------------------------------------------------
-								if(mySELECTED_STATE == SELECTED_STATE.ON_CARD):
-									Selected_Card_False(selected_card_node)
-								#-------------------------------------------------------------------------------
-								Hide_Button_Node(button1)
-								Hide_Button_Node(button2)
-								mySELECTED_STATE = SELECTED_STATE.NOTHING
-							#-------------------------------------------------------------------------------
-							mouseCounter = 0
-							isMousePressed = false
-							return
-						#-------------------------------------------------------------------------------
-					#-------------------------------------------------------------------------------
-					else:
-						if(Input.is_action_just_pressed("Left_Click")):
-							isMousePressed = true
-							return
-						#-------------------------------------------------------------------------------
-					#-------------------------------------------------------------------------------
-				#-------------------------------------------------------------------------------
-				HIGHLIGHT_STATE.ON_BUTTON:
-					#-------------------------------------------------------------------------------
-					if(!button_node.has(highlighted_button_node)):
-						Highlight_Button_False(highlighted_button_node)
-						highlighted_button_node = null
-						mouseCounter = 0
-						isMousePressed = false
-						myHIGHLIGHT_STATE = HIGHLIGHT_STATE.NOTHING
-						return
-					#-------------------------------------------------------------------------------
-					if(isMousePressed):
-						if(Input.is_action_just_released("Left_Click")):
-							highlighted_button_node.pressed.call()
-							return
-						#-------------------------------------------------------------------------------
-					#-------------------------------------------------------------------------------
-					else:
-						if(Input.is_action_just_pressed("Left_Click")):
-							isMousePressed = true
-							return
-						#-------------------------------------------------------------------------------
-					#-------------------------------------------------------------------------------
-				#-------------------------------------------------------------------------------
-			#-------------------------------------------------------------------------------
-		#-------------------------------------------------------------------------------
-		GAME_STATE.DESCRIPTION_MENU:
-			if(Input.is_action_just_pressed("Right_Click")):
-				descriptionMenu.hide()
-				myGAME_STATE = GAME_STATE.GAMEPLAY
+				mouseCounter = 0
 				isMousePressed = false
 				return
 			#-------------------------------------------------------------------------------
+			if(card_node.size() > 0):
+				highlighted_card_node = card_node[0]
+				card_node[0].highlighted.call()
+				myHIGHLIGHT_STATE = HIGHLIGHT_STATE.ON_CARD
+				#-------------------------------------------------------------------------------
+				mouseCounter = 0
+				isMousePressed = false
+				return
+			#-------------------------------------------------------------------------------
+			if(cardSlot_node.size() > 0):
+				highlighted_cardslot_node = cardSlot_node[0]
+				cardSlot_node[0].highlighted.call()
+				myHIGHLIGHT_STATE = HIGHLIGHT_STATE.ON_CARDSLOT
+				#-------------------------------------------------------------------------------
+				mouseCounter = 0
+				isMousePressed = false
+				return
+			#-------------------------------------------------------------------------------
+			if(deck_node.size() > 0):
+				highlighted_deck_node = deck_node[0]
+				deck_node[0].highlighted.call()
+				myHIGHLIGHT_STATE = HIGHLIGHT_STATE.ON_DECK
+				#-------------------------------------------------------------------------------
+				mouseCounter = 0
+				isMousePressed = false
+				return
+			#-------------------------------------------------------------------------------
+			if(isMousePressed):
+				if(Input.is_action_just_released("Left_Click")):
+					pressed.call()
+					#-------------------------------------------------------------------------------
+					mouseCounter = 0
+					isMousePressed = false
+					return
+				#-------------------------------------------------------------------------------
+			#-------------------------------------------------------------------------------
+			else:
+				if(Input.is_action_just_pressed("Left_Click")):
+					#-------------------------------------------------------------------------------
+					mouseCounter = 0
+					isMousePressed = true
+					return
+				#-------------------------------------------------------------------------------
+			#-------------------------------------------------------------------------------
 		#-------------------------------------------------------------------------------
+		HIGHLIGHT_STATE.ON_CARD:
+			#-------------------------------------------------------------------------------
+			if(button_node.size() > 0):
+				highlighted_card_node.lowlighted.call()
+				highlighted_card_node = null
+				#-------------------------------------------------------------------------------
+				button_node[0].highlighted.call()
+				highlighted_button_node = button_node[0]
+				#-------------------------------------------------------------------------------
+				myHIGHLIGHT_STATE = HIGHLIGHT_STATE.ON_BUTTON
+				#-------------------------------------------------------------------------------
+				mouseCounter = 0
+				isMousePressed = false
+				return
+			#-------------------------------------------------------------------------------
+			if(card_node.has(selected_card_node) and highlighted_card_node != selected_card_node):
+				highlighted_card_node.lowlighted.call()
+				selected_card_node.highlighted.call()
+				highlighted_card_node = selected_card_node
+				#-------------------------------------------------------------------------------
+				mouseCounter = 0
+				isMousePressed = false
+				return
+			#-------------------------------------------------------------------------------
+			if(!card_node.has(highlighted_card_node)):
+				highlighted_card_node.lowlighted.call()
+				highlighted_card_node = null
+				#-------------------------------------------------------------------------------
+				myHIGHLIGHT_STATE = HIGHLIGHT_STATE.NOTHING
+				#-------------------------------------------------------------------------------
+				mouseCounter = 0
+				isMousePressed = false
+				return
+			#-------------------------------------------------------------------------------
+			if(isMousePressed):
+				mouseCounter += 1
+				#-------------------------------------------------------------------------------
+				if(mouseCounter > 40):
+					Open_Description(highlighted_card_node.card_Class.card_Resource)
+					print("Open Description Menu")
+					#-------------------------------------------------------------------------------
+					isMousePressed = false
+					mouseCounter = 0
+					return
+				#-------------------------------------------------------------------------------
+				else:
+					if(Input.is_action_just_released("Left_Click")):
+						highlighted_card_node.pressed.call()
+						#-------------------------------------------------------------------------------
+						isMousePressed = false
+						mouseCounter = 0
+						return
+					#-------------------------------------------------------------------------------
+				#-------------------------------------------------------------------------------
+			#-------------------------------------------------------------------------------
+			else:
+				if(Input.is_action_just_pressed("Left_Click")):
+					mouseLastPosition = get_global_mouse_position()
+					#-------------------------------------------------------------------------------
+					isMousePressed = true
+					mouseCounter = 0
+					return
+			#-------------------------------------------------------------------------------
+		#-------------------------------------------------------------------------------
+		HIGHLIGHT_STATE.ON_CARDSLOT:
+			#-------------------------------------------------------------------------------
+			if(button_node.size() > 0):
+				highlighted_cardslot_node.lowlighted.call()
+				highlighted_cardslot_node = null
+				#-------------------------------------------------------------------------------
+				button_node[0].highlighted.call()
+				highlighted_button_node = button_node[0]
+				#-------------------------------------------------------------------------------
+				myHIGHLIGHT_STATE = HIGHLIGHT_STATE.ON_BUTTON
+				#-------------------------------------------------------------------------------
+				mouseCounter = 0
+				isMousePressed = false
+				return
+			#-------------------------------------------------------------------------------
+			if(card_node.size() > 0):
+				highlighted_cardslot_node.lowlighted.call()
+				highlighted_cardslot_node = null
+				#-------------------------------------------------------------------------------
+				card_node[0].highlighted.call()
+				highlighted_card_node = card_node[0]
+				#-------------------------------------------------------------------------------
+				myHIGHLIGHT_STATE = HIGHLIGHT_STATE.ON_CARD
+				#-------------------------------------------------------------------------------
+				mouseCounter = 0
+				isMousePressed = false
+				return
+			#-------------------------------------------------------------------------------
+			if(!cardSlot_node.has(highlighted_cardslot_node)):
+				highlighted_cardslot_node.lowlighted.call()
+				highlighted_cardslot_node = null
+				#-------------------------------------------------------------------------------
+				myHIGHLIGHT_STATE = HIGHLIGHT_STATE.NOTHING
+				#-------------------------------------------------------------------------------
+				mouseCounter = 0
+				isMousePressed = false
+				return
+			#-------------------------------------------------------------------------------
+			if(isMousePressed):
+				if(Input.is_action_just_released("Left_Click")):
+					highlighted_cardslot_node.pressed.call()
+					#-------------------------------------------------------------------------------
+					mouseCounter = 0
+					isMousePressed = false
+					return
+				#-------------------------------------------------------------------------------
+			#-------------------------------------------------------------------------------
+			else:
+				if(Input.is_action_just_pressed("Left_Click")):
+					#-------------------------------------------------------------------------------
+					mouseCounter = 0
+					isMousePressed = true
+					return
+				#-------------------------------------------------------------------------------
+			#-------------------------------------------------------------------------------
+		#-------------------------------------------------------------------------------
+		HIGHLIGHT_STATE.ON_DECK:
+			#-------------------------------------------------------------------------------
+			if(!deck_node.has(highlighted_deck_node)):
+				highlighted_deck_node.lowlighted.call()
+				highlighted_deck_node = null
+				myHIGHLIGHT_STATE = HIGHLIGHT_STATE.NOTHING
+				#-------------------------------------------------------------------------------
+				mouseCounter = 0
+				isMousePressed = false
+				return
+			#-------------------------------------------------------------------------------
+			if(isMousePressed):
+				if(Input.is_action_just_released("Left_Click")):
+					highlighted_deck_node.pressed.call()
+					#-------------------------------------------------------------------------------
+					mouseCounter = 0
+					isMousePressed = false
+					return
+				#-------------------------------------------------------------------------------
+			#-------------------------------------------------------------------------------
+			else:
+				if(Input.is_action_just_pressed("Left_Click")):
+					#-------------------------------------------------------------------------------
+					mouseCounter = 0
+					isMousePressed = true
+					return
+				#-------------------------------------------------------------------------------
+			#-------------------------------------------------------------------------------
+		#-------------------------------------------------------------------------------
+		HIGHLIGHT_STATE.ON_BUTTON:
+			#-------------------------------------------------------------------------------
+			if(!button_node.has(highlighted_button_node)):
+				highlighted_button_node.lowlighted.call()
+				highlighted_button_node = null
+				myHIGHLIGHT_STATE = HIGHLIGHT_STATE.NOTHING
+				#-------------------------------------------------------------------------------
+				mouseCounter = 0
+				isMousePressed = false
+				return
+			#-------------------------------------------------------------------------------
+			if(isMousePressed):
+				if(Input.is_action_just_released("Left_Click")):
+					highlighted_button_node.pressed.call()
+					#-------------------------------------------------------------------------------
+					mouseCounter = 0
+					isMousePressed = false
+					return
+				#-------------------------------------------------------------------------------
+			#-------------------------------------------------------------------------------
+			else:
+				if(Input.is_action_just_pressed("Left_Click")):
+					#-------------------------------------------------------------------------------
+					mouseCounter = 0
+					isMousePressed = true
+					return
+				#-------------------------------------------------------------------------------
+			#-------------------------------------------------------------------------------
+		#-------------------------------------------------------------------------------
+	#-------------------------------------------------------------------------------
 	#-------------------------------------------------------------------------------
 #endregion
 #-------------------------------------------------------------------------------
@@ -554,6 +515,14 @@ func GetResource_Name(_resource: Card_Resource) -> String:
 	return _resource.resource_path.get_file().trim_suffix('.tres')
 #-------------------------------------------------------------------------------
 func DrawCard():
+	#-------------------------------------------------------------------------------
+	match(mySELECTED_STATE):
+		SELECTED_STATE.ON_CARD:
+			if(selected_card_node != null):
+				Card_Hand_Cancel()
+			#-------------------------------------------------------------------------------
+		#-------------------------------------------------------------------------------
+	#-------------------------------------------------------------------------------
 	if(player.mainDeck.card_Class.size() <= 0):
 		return
 	#-------------------------------------------------------------------------------
@@ -565,7 +534,11 @@ func DrawCard():
 	var _card_Node: Card_Node = card_Node_Prefab.instantiate() as Card_Node
 	_card_Node.global_position = player.mainDeck.global_position
 	_card_Node.z_index = z_index_hand
-	_card_Node.pressed = func(): Card_Hand_Pressed()
+	#-------------------------------------------------------------------------------
+	_card_Node.pressed = func(): Card_Hand_Pressed(_card_Node)
+	_card_Node.highlighted = func(): Highlight_Card_True(_card_Node)
+	_card_Node.lowlighted = func(): Highlight_Card_False(_card_Node)
+	#-------------------------------------------------------------------------------
 	add_child(_card_Node)
 	#-------------------------------------------------------------------------------
 	_card_Node.card_Class = _card_Class
@@ -666,22 +639,111 @@ func Button_Summon_Pressed():
 	mouseCounter = 0
 	isMousePressed = false
 #-------------------------------------------------------------------------------
-func Card_Hand_Pressed():
-	if(myGAMEPLAY_STATE == GAMEPLAY_STATE.ON_IDLE):
-		if(!Is_Current_Selected()):
-			Selected_Card_False(selected_card_node)
-			selected_card_node = highlighted_card_node
-			Selected_Card_True(highlighted_card_node)
+func Card_Hand_Pressed(_card_node: Card_Node):
+	match(mySELECTED_STATE):
+		SELECTED_STATE.ON_CARD:
+			var _last_selected_card_node: Card_Node = selected_card_node	#NOTA IMPORTANTE: Como las clases de referencian, tengo que crear una clase nueva antes de analizarla para que no cambie cada vez que la clase referenciada cambie.
+			if(_last_selected_card_node != _card_node and _last_selected_card_node != null):
+				_last_selected_card_node.highlighted = func(): Highlight_Card_True(_last_selected_card_node)
+				_last_selected_card_node.lowlighted = func(): Highlight_Card_False(_last_selected_card_node)
+				_last_selected_card_node.pressed = func(): Card_Hand_Pressed(_last_selected_card_node)
+				#print(_last_selected_card_node)
+				#-------------------------------------------------------------------------------
+				_last_selected_card_node.lowlighted.call()
 			#-------------------------------------------------------------------------------
-			button1.global_position = selected_card_node.offset_Node2D.global_position + Vector2(-50, -130)
-			button2.global_position = selected_card_node.offset_Node2D.global_position + Vector2(50, -130)
-			button1.pressed = func(): Button_Summon_Pressed()
-			button2.pressed = func(): Button_Summon_Pressed()
-			Show_Button_Node(button1)
-			Show_Button_Node(button2)
 		#-------------------------------------------------------------------------------
-		mySELECTED_STATE = SELECTED_STATE.ON_CARD
+	#-------------------------------------------------------------------------------
+	print("Card Was Pressed")
+	cancel = func(): Card_Hand_Cancel()
+	#-------------------------------------------------------------------------------
+	selected_card_node = _card_node
+	Selected_Card_True(_card_node)
+	#-------------------------------------------------------------------------------
+	_card_node.highlighted = func(): pass
+	_card_node.lowlighted = func(): pass
+	_card_node.pressed = func(): pass
+	#-------------------------------------------------------------------------------
+	button1.global_position = _card_node.offset_Node2D.global_position + Vector2(-50, -130)
+	button2.global_position = _card_node.offset_Node2D.global_position + Vector2(50, -130)
+	#button1.pressed = func(): Button_Summon_Pressed()
+	#button2.pressed = func(): Button_Summon_Pressed()
+	Show_Button_Node(button1)
+	Show_Button_Node(button2)
+	#-------------------------------------------------------------------------------
+	mySELECTED_STATE = SELECTED_STATE.ON_CARD
 	#-------------------------------------------------------------------------------
 	mouseCounter = 0
 	isMousePressed = false
+#-------------------------------------------------------------------------------
+func Card_Hand_Cancel():
+	var _last_selected_card_node: Card_Node = selected_card_node
+	#-------------------------------------------------------------------------------
+	_last_selected_card_node.highlighted = func(): Highlight_Card_True(_last_selected_card_node)
+	_last_selected_card_node.lowlighted = func(): Highlight_Card_False(_last_selected_card_node)
+	_last_selected_card_node.pressed = func(): Card_Hand_Pressed(_last_selected_card_node)
+	#-------------------------------------------------------------------------------
+	if(card_node.has(_last_selected_card_node)):
+		_last_selected_card_node.highlighted.call()
+	else:
+		_last_selected_card_node.lowlighted.call()
+	#-------------------------------------------------------------------------------
+	Hide_Button_Node(button1)
+	Hide_Button_Node(button2)
+	#-------------------------------------------------------------------------------
+	selected_card_node = null
+	mySELECTED_STATE = SELECTED_STATE.NOTHING
+	print("Cancel was pressed.")
+	#-------------------------------------------------------------------------------
+	cancel = func(): pass
+#-------------------------------------------------------------------------------
+func SetStage():
+	player.mainDeck.highlighted = func(): Highlight_Deck_True(player.mainDeck)
+	player.mainDeck.lowlighted = func(): Highlight_Deck_False(player.mainDeck)
+	player.mainDeck.pressed = func(): DrawCard()
+	#-------------------------------------------------------------------------------
+	player.extraDeck.highlighted = func(): Highlight_Deck_True(player.extraDeck)
+	player.extraDeck.lowlighted = func(): Highlight_Deck_False(player.extraDeck)
+	player.extraDeck.pressed = func(): print("Extra Deck Pressed.")
+	#-------------------------------------------------------------------------------
+	player.grave.highlighted = func(): Highlight_Deck_True(player.grave)
+	player.grave.lowlighted = func(): Highlight_Deck_False(player.grave)
+	player.grave.pressed = func(): print("Grave Pressed.")
+	#-------------------------------------------------------------------------------
+	player.removed.highlighted = func(): Highlight_Deck_True(player.removed)
+	player.removed.lowlighted = func(): Highlight_Deck_False(player.removed)
+	player.removed.pressed = func(): print("Removed Pressed.")
+	#-------------------------------------------------------------------------------
+	button1.highlighted = func(): Highlight_Button_True(button1)
+	button1.lowlighted = func(): Highlight_Button_False(button1)
+	button1.pressed = func(): print("Button 1 Pressed.")
+	#-------------------------------------------------------------------------------
+	button2.highlighted = func(): Highlight_Button_True(button2)
+	button2.lowlighted = func(): Highlight_Button_False(button2)
+	button2.pressed = func(): print("Button 2 Pressed.")
+	#-------------------------------------------------------------------------------
+	for _i in player.monsterZone.size():
+		player.monsterZone[_i].highlighted = func(): Highlight_Cardslot_True(player.monsterZone[_i])
+		player.monsterZone[_i].lowlighted = func(): Highlight_Cardslot_False(player.monsterZone[_i])
+		player.monsterZone[_i].pressed = func(): print("Monster Zone "+str(_i)+" Pressed.")
+	#-------------------------------------------------------------------------------
+	for _i in player.magicZone.size():
+		player.magicZone[_i].highlighted = func(): Highlight_Cardslot_True(player.magicZone[_i])
+		player.magicZone[_i].lowlighted = func(): Highlight_Cardslot_False(player.magicZone[_i])
+		player.magicZone[_i].pressed = func(): print("Magic Zone "+str(_i)+" Pressed.")
+	#-------------------------------------------------------------------------------
+#-------------------------------------------------------------------------------
+func Cancel_CardSelect():
+	pass
+#-------------------------------------------------------------------------------
+func Open_Description(_card_Resource: Card_Resource):
+	Set_Card_Node(descriptionMenu_Frame, _card_Resource)
+	descriptionMenu.show()
+	myGAME_STATE = GAME_STATE.DESCRIPTION_MENU
+	var _cancel: Callable = cancel
+	cancel = func(): Close_Description(_cancel)
+#-------------------------------------------------------------------------------
+func Close_Description(_cancel: Callable):
+	descriptionMenu.hide()
+	myGAME_STATE = GAME_STATE.GAMEPLAY
+	cancel = _cancel
 #-------------------------------------------------------------------------------

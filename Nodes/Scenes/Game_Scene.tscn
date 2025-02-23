@@ -165,7 +165,6 @@ theme_override_font_sizes/font_size = 8
 text = "ssdfsdfsdfsdfsdfsdf"
 
 [node name="MarginContainer2" type="MarginContainer" parent="CanvasLayer"]
-visible = false
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
@@ -201,11 +200,11 @@ offset_bottom = 0.0
 grow_horizontal = 2
 grow_vertical = 2
 
-[node name="Top_Label" parent="CanvasLayer/MarginContainer2/Panel/Control/Frame" index="1"]
+[node name="Top_Label" parent="CanvasLayer/MarginContainer2/Panel/Control/Frame" index="2"]
 theme_override_constants/outline_size = 10
 theme_override_font_sizes/font_size = 20
 
-[node name="Botton_Label" parent="CanvasLayer/MarginContainer2/Panel/Control/Frame" index="2"]
+[node name="Botton_Label" parent="CanvasLayer/MarginContainer2/Panel/Control/Frame" index="3"]
 theme_override_constants/outline_size = 10
 theme_override_font_sizes/font_size = 30
 
