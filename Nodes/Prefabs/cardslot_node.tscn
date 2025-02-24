@@ -16,8 +16,6 @@ summoning_TextureRect = NodePath("Node2D/Cardslot_TextureRect/MarginContainer/Su
 [node name="Node2D" type="Node2D" parent="."]
 
 [node name="Area2D" type="Area2D" parent="Node2D"]
-collision_layer = 2
-collision_mask = 2
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="Node2D/Area2D"]
 shape = SubResource("RectangleShape2D_5r41a")

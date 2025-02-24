@@ -1,4 +1,4 @@
-extends Node2D
+extends Object_Node
 class_name CardSlot_Node
 #-------------------------------------------------------------------------------
 enum ZONE_TYPE{MONSTER_ZONE, MAGIC_ZONE}
@@ -9,9 +9,5 @@ enum ZONE_TYPE{MONSTER_ZONE, MAGIC_ZONE}
 @export var summoning_TextureRect: TextureRect
 #-------------------------------------------------------------------------------
 var card_in_slot: Card_Node
-#-------------------------------------------------------------------------------
-var pressed: Callable = func(): pass
-var highlighted: Callable = func(): pass
-var lowlighted: Callable = func(): pass
 #endregion
 #-------------------------------------------------------------------------------

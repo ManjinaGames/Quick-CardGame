@@ -1,4 +1,4 @@
-extends Node2D
+extends Object_Node
 class_name Deck_Node
 #-------------------------------------------------------------------------------
 enum DECK_TYPE{MAIN, EXTRA, GRAVEYARD, REMOVED}
@@ -12,9 +12,5 @@ enum DECK_TYPE{MAIN, EXTRA, GRAVEYARD, REMOVED}
 @export var card_Resource: Array[Card_Resource]
 var card_Class: Array[Card_Class]
 var maxDeckNum: int
-#-------------------------------------------------------------------------------
-var pressed: Callable = func(): pass
-var highlighted: Callable = func(): pass
-var lowlighted: Callable = func(): pass
 #endregion
 #-------------------------------------------------------------------------------

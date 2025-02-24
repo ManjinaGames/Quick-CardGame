@@ -1,4 +1,4 @@
-extends Node2D
+extends Object_Node
 class_name Card_Node
 #region VARIABLES
 @export var area2d: Area2D
@@ -9,9 +9,5 @@ class_name Card_Node
 var starting_position: Vector2
 #-------------------------------------------------------------------------------
 var card_Class: Card_Class
-#-------------------------------------------------------------------------------
-var pressed: Callable = func(): pass
-var highlighted: Callable = func(): pass
-var lowlighted: Callable = func(): pass
 #endregion
 #-------------------------------------------------------------------------------

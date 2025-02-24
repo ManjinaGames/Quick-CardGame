@@ -1,12 +1,8 @@
-extends Node2D
+extends Object_Node
 class_name Button_Node
 #region VARIABLES
 @export var area2D: Area2D
 @export var collisionShape2D: CollisionShape2D
 @export var highlight_TextureRect: TextureRect
-#-------------------------------------------------------------------------------
-var pressed: Callable = func(): pass
-var highlighted: Callable = func(): pass
-var lowlighted: Callable = func(): pass
 #endregion
 #-------------------------------------------------------------------------------
