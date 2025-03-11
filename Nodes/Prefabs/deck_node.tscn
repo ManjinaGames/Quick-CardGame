@@ -1,7 +1,7 @@
 [gd_scene load_steps=17 format=3 uid="uid://idh8uvwwpbjb"]
 
-[ext_resource type="Script" path="res://Scripts/Card_Node/deck_node.gd" id="1_5jrh3"]
-[ext_resource type="Script" path="res://Scripts/Card_Resource/Card_Resource.gd" id="2_bxbnl"]
+[ext_resource type="Script" uid="uid://b5yxc5kcqjlf6" path="res://Scripts/Card_Node/deck_node.gd" id="1_5jrh3"]
+[ext_resource type="Script" uid="uid://dgihdppqsswuh" path="res://Scripts/Card_Resource/Card_Resource.gd" id="2_bxbnl"]
 [ext_resource type="Resource" uid="uid://b8itilv3eupn6" path="res://Cards/Resources/dragonmaid (1).tres" id="3_1hiwk"]
 [ext_resource type="Resource" uid="uid://otg0sqo8h5cp" path="res://Cards/Resources/dragonmaid (2).tres" id="4_fr2cg"]
 [ext_resource type="Resource" uid="uid://latp60wh3sc3" path="res://Cards/Resources/dragonmaid (3).tres" id="5_fkcli"]

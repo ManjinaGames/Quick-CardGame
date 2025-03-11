@@ -4,22 +4,21 @@ class_name GameScene
 enum GAME_STATE{GAMEPLAY, DESCRIPTION_MENU}
 #region VARIABLES
 @export var player: Player_Node
+#-------------------------------------------------------------------------------
 @export var descriptionMenu: Control
 @export var descriptionMenu_Frame: Frame_Node
+#-------------------------------------------------------------------------------
 @export var button1: Button_Node
 @export var button2: Button_Node
 #-------------------------------------------------------------------------------
 @export var card_Node_Prefab: PackedScene
 #-------------------------------------------------------------------------------
-@export_flags_2d_physics var collision_mask_card
-@export_flags_2d_physics var collision_mask_cardslot
-@export_flags_2d_physics var collision_mask_deck
-@export_flags_2d_physics var collision_mask_button
-#-------------------------------------------------------------------------------
 var z_index_field: int = 0
 var z_index_hand: int = 1
-var mouseCounter: int = 0
-var isMousePressed: bool = false
+#-------------------------------------------------------------------------------
+var leftMouseCounter: int = 0
+var isLeftMousePressed: bool = false
+#-------------------------------------------------------------------------------
 var mouseLastPosition: Vector2
 #-------------------------------------------------------------------------------
 @export var debugInfo: Label
@@ -45,8 +44,9 @@ var height: float
 var width: float
 var card_width: float = 90
 #-------------------------------------------------------------------------------
-var pressed: Callable = func(): pass
-var cancel: Callable = func(): pass
+var nothing_pressed: Callable = func(): pass
+var nothing_released: Callable = func(): pass
+var nothing_cancel: Callable = func(): pass
 #endregion
 #-------------------------------------------------------------------------------
 #region MONOVEHAVIOUR
@@ -72,8 +72,8 @@ func _ready() -> void:
 	button1.highlight_TextureRect.hide()
 	button2.highlight_TextureRect.hide()
 	#-------------------------------------------------------------------------------
-	pressed = func(): print("Nothing was Pressed.")
-	cancel = func(): print("Cancel was Pressed.")
+	nothing_released = func(): print("Nothing was Pressed.")
+	nothing_cancel = func(): print("Cancel was Pressed.")
 	SetStage()
 	#-------------------------------------------------------------------------------
 	descriptionMenu.hide()
@@ -97,7 +97,7 @@ func LoadCardDatabase():
 #region STATE MACHINE
 func StateMachine():
 	if(Input.is_action_just_pressed("Right_Click")):
-		cancel.call()
+		nothing_cancel.call()
 		return
 	#-------------------------------------------------------------------------------
 	if(myGAME_STATE != GAME_STATE.GAMEPLAY):
@@ -119,20 +119,20 @@ func StateMachine():
 				_object_node.highlighted.call()
 				highlighted_object_node = _object_node
 				#-------------------------------------------------------------------------------
-				isMousePressed = false
-				mouseCounter = 0
+				isLeftMousePressed = false
+				leftMouseCounter = 0
 				#-------------------------------------------------------------------------------
 				return
 			#-------------------------------------------------------------------------------
 			else:
 				#-------------------------------------------------------------------------------
-				if(isMousePressed):
+				if(isLeftMousePressed):
 					highlighted_object_node.holding.call()
 					if(Input.is_action_just_released("Left_Click")):
 						highlighted_object_node.released.call()
 						#-------------------------------------------------------------------------------
-						isMousePressed = false
-						mouseCounter = 0
+						isLeftMousePressed = false
+						leftMouseCounter = 0
 						return
 					#-------------------------------------------------------------------------------
 				#-------------------------------------------------------------------------------
@@ -140,8 +140,8 @@ func StateMachine():
 					if(Input.is_action_just_pressed("Left_Click")):
 						highlighted_object_node.pressed.call()
 						#-------------------------------------------------------------------------------
-						isMousePressed = true
-						mouseCounter = 0
+						isLeftMousePressed = true
+						leftMouseCounter = 0
 						return
 					#-------------------------------------------------------------------------------
 				#-------------------------------------------------------------------------------
@@ -158,8 +158,8 @@ func StateMachine():
 				_object_node.highlighted.call()
 				highlighted_object_node = _object_node
 				#-------------------------------------------------------------------------------
-				isMousePressed = false
-				mouseCounter = 0
+				isLeftMousePressed = false
+				leftMouseCounter = 0
 				#-------------------------------------------------------------------------------
 				return
 				#-------------------------------------------------------------------------------
@@ -168,8 +168,8 @@ func StateMachine():
 				highlighted_object_node.lowlighted.call()
 				highlighted_object_node = null
 				#-------------------------------------------------------------------------------
-				isMousePressed = false
-				mouseCounter = 0
+				isLeftMousePressed = false
+				leftMouseCounter = 0
 				#-------------------------------------------------------------------------------
 				return
 		#-------------------------------------------------------------------------------
@@ -185,28 +185,29 @@ func StateMachine():
 			_object_node.highlighted.call()
 			highlighted_object_node = _object_node
 			#-------------------------------------------------------------------------------
-			isMousePressed = false
-			mouseCounter = 0
+			isLeftMousePressed = false
+			leftMouseCounter = 0
 			#-------------------------------------------------------------------------------
 			return
 			#-------------------------------------------------------------------------------
 		#-------------------------------------------------------------------------------
 		else:
 			#-------------------------------------------------------------------------------
-			if(isMousePressed):
+			if(isLeftMousePressed):
 				if(Input.is_action_just_released("Left_Click")):
+					nothing_released.call()
 					#-------------------------------------------------------------------------------
-					isMousePressed = false
-					mouseCounter = 0
+					isLeftMousePressed = false
+					leftMouseCounter = 0
 					return
 				#-------------------------------------------------------------------------------
 			#-------------------------------------------------------------------------------
 			else:
 				if(Input.is_action_just_pressed("Left_Click")):
-					pressed.call()
+					nothing_pressed.call()
 					#-------------------------------------------------------------------------------
-					isMousePressed = true
-					mouseCounter = 0
+					isLeftMousePressed = true
+					leftMouseCounter = 0
 					return
 				#-------------------------------------------------------------------------------
 			#-------------------------------------------------------------------------------
@@ -220,8 +221,8 @@ func Debug_Info():
 	var _s: String = ""
 	_s += "GAME_STATE: "+str(GAME_STATE.keys()[myGAME_STATE])+"\n"
 	_s += "______________________________________\n"
-	_s += "Mouse Counter: "+str(mouseCounter)+"\n"
-	_s += "Is Mouse Pressed: "+str(isMousePressed)+"\n"
+	_s += "Mouse Counter: "+str(leftMouseCounter)+"\n"
+	_s += "Is Mouse Pressed: "+str(isLeftMousePressed)+"\n"
 	_s += "______________________________________\n"
 	_s += "Selected Object_Node:\n"
 	_s += "---> "+str(selected_object_node)+"\n"
@@ -314,15 +315,15 @@ func LoadDeck():
 		_card_Class.card_Resource = _cardResource
 		player.mainDeck.card_Class.append(_card_Class)
 	player.mainDeck.card_Class.shuffle()
-	player.mainDeck.released = func(): DrawCard()
+	var _null: Callable = func():pass
+	player.mainDeck.released = func(): DrawCard(_null)
 #-------------------------------------------------------------------------------
 func GetResource_Name(_resource: Card_Resource) -> String:
 	return _resource.resource_path.get_file().trim_suffix('.tres')
 #-------------------------------------------------------------------------------
-func DrawCard():
+func DrawCard(_callable: Callable):
 	#-------------------------------------------------------------------------------
-	if(selected_object_node):
-		selected_object_node.deselected.call()
+	_callable.call()
 	#-------------------------------------------------------------------------------
 	if(player.mainDeck.card_Class.size() <= 0):
 		return
@@ -336,7 +337,8 @@ func DrawCard():
 	_card_Node.global_position = player.mainDeck.global_position
 	_card_Node.z_index = z_index_hand
 	#-------------------------------------------------------------------------------
-	_card_Node.released = func(): HandCard_Selected(_card_Node)
+	var _null: Callable = func():pass
+	_card_Node.released = func(): HandCard_Selected(_card_Node, _null)
 	_card_Node.holding = func(): Card_PressHolding(_card_Node.card_Class.card_Resource)
 	_card_Node.highlighted = func(): Highlight_Card_True(_card_Node)
 	_card_Node.lowlighted = func(): Highlight_Card_False(_card_Node)
@@ -423,85 +425,119 @@ func Remove_card_from_hand(_card:Card_Node):
 		Update_hand_position()
 #endregion
 #-------------------------------------------------------------------------------
+#region IDLE STATE
 func SetStage():
+	var _null: Callable = func():pass
 	player.mainDeck.highlighted = func(): Highlight_Deck_True(player.mainDeck)
 	player.mainDeck.lowlighted = func(): Highlight_Deck_False(player.mainDeck)
-	player.mainDeck.released = func(): DrawCard()
+	player.mainDeck.released = func(): DrawCard(_null)
 	#-------------------------------------------------------------------------------
 	player.extraDeck.highlighted = func(): Highlight_Deck_True(player.extraDeck)
 	player.extraDeck.lowlighted = func(): Highlight_Deck_False(player.extraDeck)
-	player.extraDeck.released = func(): print("Extra Deck Pressed.")
+	player.extraDeck.released = func(): ExtraDeck_Selected(_null)
 	#-------------------------------------------------------------------------------
 	player.grave.highlighted = func(): Highlight_Deck_True(player.grave)
 	player.grave.lowlighted = func(): Highlight_Deck_False(player.grave)
-	player.grave.released = func(): print("Grave Pressed.")
+	player.grave.released = func(): ExtraDeck_Selected(_null)
 	#-------------------------------------------------------------------------------
 	player.removed.highlighted = func(): Highlight_Deck_True(player.removed)
 	player.removed.lowlighted = func(): Highlight_Deck_False(player.removed)
-	player.removed.released = func(): print("Removed Pressed.")
+	player.removed.released = func(): ExtraDeck_Selected(_null)
 	#-------------------------------------------------------------------------------
 	button1.highlighted = func(): Highlight_Button_True(button1)
 	button1.lowlighted = func(): Highlight_Button_False(button1)
-	button1.released = func(): print("Button 1 Pressed.")
+	button1.released = func(): ExtraDeck_Selected(_null)
 	#-------------------------------------------------------------------------------
 	button2.highlighted = func(): Highlight_Button_True(button2)
 	button2.lowlighted = func(): Highlight_Button_False(button2)
-	button2.released = func(): print("Button 2 Pressed.")
+	button2.released = func(): ExtraDeck_Selected(_null)
 	#-------------------------------------------------------------------------------
 	for _i in player.monsterZone.size():
 		player.monsterZone[_i].highlighted = func(): Highlight_Cardslot_True(player.monsterZone[_i])
 		player.monsterZone[_i].lowlighted = func(): Highlight_Cardslot_False(player.monsterZone[_i])
-		player.monsterZone[_i].released = func(): print("Monster Zone "+str(_i)+" Pressed.")
+		player.monsterZone[_i].released = func(): ExtraDeck_Selected(_null)
 	#-------------------------------------------------------------------------------
 	for _i in player.magicZone.size():
 		player.magicZone[_i].highlighted = func(): Highlight_Cardslot_True(player.magicZone[_i])
 		player.magicZone[_i].lowlighted = func(): Highlight_Cardslot_False(player.magicZone[_i])
-		player.magicZone[_i].released = func(): print("Magic Zone "+str(_i)+" Pressed.")
+		player.magicZone[_i].released = func(): ExtraDeck_Selected(_null)
 	#-------------------------------------------------------------------------------
+#endregion
+#-------------------------------------------------------------------------------
+func ExtraDeck_Selected(_callable: Callable):
+	_callable.call()
 #-------------------------------------------------------------------------------
 func Card_PressHolding(_cardResource: Card_Resource):
-	mouseCounter += 1
-	if(mouseCounter > 40):
+	leftMouseCounter += 1
+	if(leftMouseCounter > 40):
 		Set_Card_Node(descriptionMenu_Frame, _cardResource)
 		descriptionMenu.show()
-		cancel = func(): Close_Description(func():pass)
+		nothing_cancel = func(): Close_Description(func():pass)
 		myGAME_STATE = GAME_STATE.DESCRIPTION_MENU
 		#-------------------------------------------------------------------------------
-		mouseCounter = 0
-		isMousePressed = false
+		leftMouseCounter = 0
+		isLeftMousePressed = false
 		#-------------------------------------------------------------------------------
 		return
 #-------------------------------------------------------------------------------
-func HandCard_Selected(_cardNode: Card_Node):
+func HandCard_Selected(_cardNode: Card_Node, _callable:Callable):
+	var _null: Callable = func():pass
 	#-------------------------------------------------------------------------------
-	if(selected_object_node):
-		selected_object_node.deselected.call()
+	_callable.call()
 	#-------------------------------------------------------------------------------
 	selected_object_node = _cardNode
 	Selected_Card_True(_cardNode)
 	_cardNode.highlighted = func():pass
 	_cardNode.lowlighted = func():pass
 	_cardNode.released = func():pass
-	_cardNode.deselected = func(): HandCard_Deselected(_cardNode)
 	#-------------------------------------------------------------------------------
 	button1.global_position = _cardNode.global_position + Vector2(-35, -150)
 	button2.global_position = _cardNode.global_position + Vector2(35, -150)
+	#-------------------------------------------------------------------------------
+	button1.released = func(): Button1_Pressed(_cardNode, func():HandCard_Deselected(_cardNode))
+	button2.released = func(): Button1_Pressed(_cardNode, func():HandCard_Deselected(_cardNode))
+	#-------------------------------------------------------------------------------
 	Show_Button_Node(button1)
 	Show_Button_Node(button2)
 	#-------------------------------------------------------------------------------
-	cancel = func(): HandCard_Canceled(_cardNode)
+	nothing_cancel = func(): HandCard_Canceled(_cardNode)
+	nothing_released = func(): HandCard_Deselected(_cardNode)
+	#-------------------------------------------------------------------------------
+	player.mainDeck.released = func(): DrawCard(func(): HandCard_Deselected(_cardNode))
+	player.extraDeck.released = func(): HandCard_Deselected(_cardNode)
+	player.grave.released = func(): HandCard_Deselected(_cardNode)
+	player.removed.released = func(): HandCard_Deselected(_cardNode)
+	for _i in player.monsterZone.size():
+		player.monsterZone[_i].released = func(): HandCard_Deselected(_cardNode)
+	for _i in player.magicZone.size():
+		player.magicZone[_i].released = func(): HandCard_Deselected(_cardNode)
+	for _i in player.hand.card_Node.size():
+		if(player.hand.card_Node[_i] != _cardNode):
+			player.hand.card_Node[_i].released = func(): HandCard_Selected(player.hand.card_Node[_i], func(): HandCard_Deselected(_cardNode)) 
 #-------------------------------------------------------------------------------
 func HandCard_Deselected(_cardNode: Card_Node):
 	Selected_Card_False(_cardNode)
 	_cardNode.highlighted = func(): Highlight_Card_True(_cardNode)
 	_cardNode.lowlighted = func(): Highlight_Card_False(_cardNode)
-	_cardNode.released = func(): HandCard_Selected(_cardNode)
-	_cardNode.deselected = func(): pass
+	var _null: Callable = func():pass
+	_cardNode.released = func(): HandCard_Selected(_cardNode, _null)
 	#-------------------------------------------------------------------------------
 	selected_object_node = null
 	#-------------------------------------------------------------------------------
 	Hide_Button_Node(button1)
 	Hide_Button_Node(button2)
+	#-------------------------------------------------------------------------------
+	nothing_cancel = func(): pass
+	nothing_released = func(): pass
+	#-------------------------------------------------------------------------------
+	player.mainDeck.released = func(): DrawCard(func():pass)
+	player.extraDeck.released = func():pass
+	player.grave.released = func():pass
+	player.removed.released = func():pass
+	for _i in player.monsterZone.size():
+		player.monsterZone[_i].released = func():pass
+	for _i in player.magicZone.size():
+		player.magicZone[_i].released = func():pass
 #-------------------------------------------------------------------------------
 func HandCard_Canceled(_cardNode: Card_Node):
 	var _selected_card_node: Card_Node = _cardNode as Card_Node
@@ -513,24 +549,43 @@ func HandCard_Canceled(_cardNode: Card_Node):
 	#-------------------------------------------------------------------------------
 	_selected_card_node.highlighted = func(): Highlight_Card_True(_selected_card_node)
 	_selected_card_node.lowlighted = func(): Highlight_Card_False(_selected_card_node)
-	_selected_card_node.released = func(): HandCard_Selected(_selected_card_node)
+	var _null: Callable = func():pass
+	_selected_card_node.released = func(): HandCard_Selected(_selected_card_node, _null)
 	#-------------------------------------------------------------------------------
 	selected_object_node = null
 	#-------------------------------------------------------------------------------
 	Hide_Button_Node(button1)
 	Hide_Button_Node(button2)
 	#-------------------------------------------------------------------------------
-	cancel = func(): pass
+	nothing_cancel = func(): pass
+	nothing_released = func(): pass
 #-------------------------------------------------------------------------------
 func Open_Description(_card_Resource: Card_Resource):
 	Set_Card_Node(descriptionMenu_Frame, _card_Resource)
 	descriptionMenu.show()
 	myGAME_STATE = GAME_STATE.DESCRIPTION_MENU
-	var _cancel: Callable = cancel
-	cancel = func(): Close_Description(_cancel)
+	var _cancel: Callable = nothing_cancel
+	nothing_cancel = func(): Close_Description(_cancel)
 #-------------------------------------------------------------------------------
 func Close_Description(_cancel: Callable):
 	descriptionMenu.hide()
 	myGAME_STATE = GAME_STATE.GAMEPLAY
-	cancel = _cancel
+	nothing_cancel = _cancel
+#-------------------------------------------------------------------------------
+func Button1_Pressed(_card_Node: Card_Node, _callable:Callable):
+	_callable.call()
+	#-------------------------------------------------------------------------------
+	for _i in player.monsterZone.size():
+		player.monsterZone[_i].summoning_TextureRect.show()
+	#-------------------------------------------------------------------------------
+	nothing_cancel = func(): Button1_Canceled(_card_Node)
+#-------------------------------------------------------------------------------
+func Button1_Canceled(_card_Node: Card_Node):
+	var _null: Callable = func():pass
+	HandCard_Selected(_card_Node, _null)
+	#-------------------------------------------------------------------------------
+	for _i in player.monsterZone.size():
+		player.monsterZone[_i].summoning_TextureRect.hide()
+	#-------------------------------------------------------------------------------
+	nothing_cancel = func(): HandCard_Canceled(_card_Node)
 #-------------------------------------------------------------------------------

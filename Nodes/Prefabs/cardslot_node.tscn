@@ -1,6 +1,6 @@
 [gd_scene load_steps=5 format=3 uid="uid://lvkosjxhgre1"]
 
-[ext_resource type="Script" path="res://Scripts/Card_Node/cardslot_node.gd" id="1_iflvv"]
+[ext_resource type="Script" uid="uid://c25gqsqh3gpc3" path="res://Scripts/Card_Node/cardslot_node.gd" id="1_iflvv"]
 [ext_resource type="Texture2D" uid="uid://rfrid568vffs" path="res://Assets/Images/CardSlot.png" id="2_kmnsd"]
 [ext_resource type="Texture2D" uid="uid://dictncau670j4" path="res://Assets/Images/White Square.png" id="3_rvbrm"]
 

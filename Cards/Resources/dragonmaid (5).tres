@@ -1,8 +1,8 @@
 [gd_resource type="Resource" script_class="Card_Resource" load_steps=4 format=3 uid="uid://bont1mo8yn7me"]
 
-[ext_resource type="Script" path="res://Scripts/Card_Resource/Card_Resource.gd" id="1_gt7rm"]
+[ext_resource type="Script" uid="uid://dgihdppqsswuh" path="res://Scripts/Card_Resource/Card_Resource.gd" id="1_gt7rm"]
 [ext_resource type="Texture2D" uid="uid://ckjod10fae8i" path="res://Cards/Artworks/Fey01-A.png" id="1_i64v7"]
-[ext_resource type="Script" path="res://Cards/Scripts/dragonmaid (5).gd" id="2_8cmsw"]
+[ext_resource type="Script" uid="uid://dkp6psum52qb4" path="res://Cards/Scripts/dragonmaid (5).gd" id="2_8cmsw"]
 
 [resource]
 script = ExtResource("1_gt7rm")

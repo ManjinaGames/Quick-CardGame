@@ -1,6 +1,6 @@
 [gd_scene load_steps=4 format=3 uid="uid://dfb2i4o7cr1k1"]
 
-[ext_resource type="Script" path="res://Scripts/Card_Node/card_node.gd" id="1_vx84k"]
+[ext_resource type="Script" uid="uid://dnl0xvm7e6iw1" path="res://Scripts/Card_Node/card_node.gd" id="1_vx84k"]
 [ext_resource type="PackedScene" uid="uid://d00ndvs4nnoku" path="res://Nodes/Prefabs/frame.tscn" id="2_2qivj"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_wf6kc"]

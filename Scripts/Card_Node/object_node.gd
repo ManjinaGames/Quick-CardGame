@@ -6,8 +6,6 @@ var released: Callable = func(): pass
 #-------------------------------------------------------------------------------
 var holding: Callable = func(): pass
 #-------------------------------------------------------------------------------
-var deselected: Callable = func(): pass
-#-------------------------------------------------------------------------------
 var highlighted: Callable = func(): pass
 var lowlighted: Callable = func(): pass
 #endregion

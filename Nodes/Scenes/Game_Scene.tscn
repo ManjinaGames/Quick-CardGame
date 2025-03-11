@@ -1,13 +1,13 @@
 [gd_scene load_steps=28 format=3 uid="uid://dlfgbqjvq7ybh"]
 
 [ext_resource type="PackedScene" uid="uid://dfb2i4o7cr1k1" path="res://Nodes/Prefabs/card_node.tscn" id="1_c0q3d"]
-[ext_resource type="Script" path="res://Scripts/Scenes/game_scene.gd" id="1_txxkl"]
-[ext_resource type="Script" path="res://Scripts/Card_Node/hand_node.gd" id="4_4r13x"]
-[ext_resource type="Script" path="res://Scripts/Card_Node/player_node.gd" id="4_p7vwb"]
+[ext_resource type="Script" uid="uid://bpueynpowmoms" path="res://Scripts/Scenes/game_scene.gd" id="1_txxkl"]
+[ext_resource type="Script" uid="uid://cfjdix5ity7jj" path="res://Scripts/Card_Node/hand_node.gd" id="4_4r13x"]
+[ext_resource type="Script" uid="uid://c5xocf2dc2jap" path="res://Scripts/Card_Node/player_node.gd" id="4_p7vwb"]
 [ext_resource type="PackedScene" uid="uid://idh8uvwwpbjb" path="res://Nodes/Prefabs/deck_node.tscn" id="4_u3nvj"]
 [ext_resource type="Resource" uid="uid://b8itilv3eupn6" path="res://Cards/Resources/dragonmaid (1).tres" id="5_w0rv4"]
 [ext_resource type="Resource" uid="uid://otg0sqo8h5cp" path="res://Cards/Resources/dragonmaid (2).tres" id="6_emvl4"]
-[ext_resource type="Script" path="res://Scripts/Card_Resource/Card_Resource.gd" id="6_mbwul"]
+[ext_resource type="Script" uid="uid://dgihdppqsswuh" path="res://Scripts/Card_Resource/Card_Resource.gd" id="6_mbwul"]
 [ext_resource type="Resource" uid="uid://latp60wh3sc3" path="res://Cards/Resources/dragonmaid (3).tres" id="7_4udd4"]
 [ext_resource type="Resource" uid="uid://guk21f86346y" path="res://Cards/Resources/dragonmaid (4).tres" id="8_rcph7"]
 [ext_resource type="Resource" uid="uid://bont1mo8yn7me" path="res://Cards/Resources/dragonmaid (5).tres" id="9_l1t5s"]
@@ -18,7 +18,7 @@
 [ext_resource type="Resource" uid="uid://g3kw4h8wixrd" path="res://Cards/Resources/dragonmaid (9).tres" id="13_plchi"]
 [ext_resource type="Resource" uid="uid://d2ufpn3wtd18h" path="res://Cards/Resources/dragonmaid (10).tres" id="14_dpwcw"]
 [ext_resource type="PackedScene" uid="uid://d00ndvs4nnoku" path="res://Nodes/Prefabs/frame.tscn" id="18_quvkb"]
-[ext_resource type="Script" path="res://Scripts/Card_Node/button_node.gd" id="19_t8rca"]
+[ext_resource type="Script" uid="uid://ct7sxjhio16p7" path="res://Scripts/Card_Node/button_node.gd" id="19_t8rca"]
 [ext_resource type="Texture2D" uid="uid://c5qceh240gu1n" path="res://Assets/kenney_board-game-icons/card_place.png" id="20_pssv4"]
 [ext_resource type="Texture2D" uid="uid://dhhdcer6s02f6" path="res://Assets/kenney_board-game-icons/d12.png" id="20_s8jol"]
 [ext_resource type="Texture2D" uid="uid://bp0ddi7nqu28b" path="res://Assets/kenney_board-game-icons/card_outline_place.png" id="22_5hnbt"]
@@ -64,10 +64,6 @@ descriptionMenu_Frame = NodePath("CanvasLayer/MarginContainer2/Panel/Control/Fra
 button1 = NodePath("button_node")
 button2 = NodePath("button_node2")
 card_Node_Prefab = ExtResource("1_c0q3d")
-collision_mask_card = 1
-collision_mask_cardslot = 2
-collision_mask_deck = 4
-collision_mask_button = 8
 debugInfo = NodePath("CanvasLayer/MarginContainer/Label")
 cardDatabase = {
 "a1_c1": SubResource("GDScript_scis2"),
@@ -200,7 +196,20 @@ offset_bottom = 0.0
 grow_horizontal = 2
 grow_vertical = 2
 
+[node name="TextureRect" parent="CanvasLayer/MarginContainer2/Panel/Control/Frame" index="1"]
+anchor_left = 0.028
+anchor_top = 0.127
+anchor_bottom = 0.777
+offset_left = -0.00400066
+offset_top = -0.263
+offset_right = 0.182983
+offset_bottom = -0.113007
+
 [node name="Top_Label" parent="CanvasLayer/MarginContainer2/Panel/Control/Frame" index="2"]
+offset_left = -0.436001
+offset_top = 0.0679998
+offset_right = -0.381012
+offset_bottom = -12.074
 theme_override_constants/outline_size = 10
 theme_override_font_sizes/font_size = 20
 

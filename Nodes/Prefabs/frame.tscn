@@ -1,7 +1,7 @@
 [gd_scene load_steps=4 format=3 uid="uid://d00ndvs4nnoku"]
 
 [ext_resource type="Texture2D" uid="uid://dictncau670j4" path="res://Assets/Images/White Square.png" id="1_yk5vk"]
-[ext_resource type="Script" path="res://Scripts/Card_Node/frame_node.gd" id="2_1efc4"]
+[ext_resource type="Script" uid="uid://diqyrsfhpkrxh" path="res://Scripts/Card_Node/frame_node.gd" id="2_1efc4"]
 [ext_resource type="Texture2D" uid="uid://l8eu5bkwm4d1" path="res://Cards/Artworks/Christmas01-A.png" id="3_imp88"]
 
 [node name="Frame" type="TextureRect" node_paths=PackedStringArray("frame", "artwork", "topLabel", "bottonLabel")]
@@ -41,14 +41,14 @@ expand_mode = 1
 self_modulate = Color(0, 0, 0, 1)
 layout_mode = 1
 anchors_preset = -1
-anchor_left = 0.083
-anchor_top = 0.146
-anchor_right = 0.917
-anchor_bottom = 0.722
-offset_left = 0.0319986
-offset_top = -0.024004
-offset_right = -0.0320129
-offset_bottom = 0.0319824
+anchor_left = 0.031
+anchor_top = 0.111
+anchor_right = 0.969
+anchor_bottom = 0.736
+offset_left = 0.0239999
+offset_top = 2.016
+offset_right = -0.0240021
+offset_bottom = 2.01599
 grow_horizontal = 2
 grow_vertical = 2
 mouse_filter = 2
@@ -58,13 +58,14 @@ expand_mode = 1
 [node name="Artwork" type="TextureRect" parent="TextureRect"]
 layout_mode = 1
 anchors_preset = -1
-anchor_left = 0.025
-anchor_top = 0.024
-anchor_right = 0.975
-anchor_bottom = 0.976
-offset_top = 0.00800037
-offset_right = 1.52588e-05
-offset_bottom = -0.00798798
+anchor_left = 0.022
+anchor_top = 0.022
+anchor_right = 0.978
+anchor_bottom = 0.978
+offset_left = 0.0199999
+offset_top = 0.0199999
+offset_right = -0.0200043
+offset_bottom = -0.0200043
 grow_horizontal = 2
 grow_vertical = 2
 mouse_filter = 2
@@ -80,8 +81,8 @@ anchor_right = 0.917
 anchor_bottom = 0.146
 offset_left = 0.0079999
 offset_top = -0.0320001
-offset_right = -0.0320053
-offset_bottom = -0.0240021
+offset_right = -0.0319977
+offset_bottom = -5.024
 grow_horizontal = 2
 grow_vertical = 2
 theme_override_constants/outline_size = 4
