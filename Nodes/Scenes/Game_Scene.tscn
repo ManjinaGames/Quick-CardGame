@@ -56,15 +56,17 @@ myITEM_TYPE = 0
 [sub_resource type="CircleShape2D" id="CircleShape2D_sdvyq"]
 radius = 28.0179
 
-[node name="GameScene" type="Node2D" node_paths=PackedStringArray("player", "descriptionMenu", "descriptionMenu_Frame", "button1", "button2", "debugInfo")]
+[node name="GameScene" type="Node2D" node_paths=PackedStringArray("player", "descriptionMenu", "descriptionMenu_Frame", "banner_panel", "banner_label", "button1", "button2", "debugInfo")]
 script = ExtResource("1_txxkl")
 player = NodePath("Player")
-descriptionMenu = NodePath("CanvasLayer/MarginContainer2")
-descriptionMenu_Frame = NodePath("CanvasLayer/MarginContainer2/Panel/Control/Frame")
+descriptionMenu = NodePath("CanvasLayer/Description_Menu")
+descriptionMenu_Frame = NodePath("CanvasLayer/Description_Menu/Panel/Control/Frame")
+banner_panel = NodePath("CanvasLayer/Banner_PanelContainer")
+banner_label = NodePath("CanvasLayer/Banner_PanelContainer/Banner_Label")
 button1 = NodePath("button_node")
 button2 = NodePath("button_node2")
 card_Node_Prefab = ExtResource("1_c0q3d")
-debugInfo = NodePath("CanvasLayer/MarginContainer/Label")
+debugInfo = NodePath("CanvasLayer/Debug_Info/Label")
 cardDatabase = {
 "a1_c1": SubResource("GDScript_scis2"),
 SubResource("Resource_juy0k"): SubResource("GDScript_scis2")
@@ -143,7 +145,7 @@ myDECK_TYPE = 2
 
 [node name="CanvasLayer" type="CanvasLayer" parent="."]
 
-[node name="MarginContainer" type="MarginContainer" parent="CanvasLayer"]
+[node name="Debug_Info" type="MarginContainer" parent="CanvasLayer"]
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
@@ -154,13 +156,14 @@ theme_override_constants/margin_top = 5
 theme_override_constants/margin_right = 5
 theme_override_constants/margin_bottom = 5
 
-[node name="Label" type="Label" parent="CanvasLayer/MarginContainer"]
+[node name="Label" type="Label" parent="CanvasLayer/Debug_Info"]
 layout_mode = 2
 size_flags_vertical = 1
 theme_override_font_sizes/font_size = 8
 text = "ssdfsdfsdfsdfsdfsdf"
 
-[node name="MarginContainer2" type="MarginContainer" parent="CanvasLayer"]
+[node name="Description_Menu" type="MarginContainer" parent="CanvasLayer"]
+visible = false
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
@@ -169,10 +172,10 @@ grow_vertical = 2
 size_flags_horizontal = 3
 size_flags_vertical = 3
 
-[node name="Panel" type="Panel" parent="CanvasLayer/MarginContainer2"]
+[node name="Panel" type="Panel" parent="CanvasLayer/Description_Menu"]
 layout_mode = 2
 
-[node name="Control" type="Control" parent="CanvasLayer/MarginContainer2/Panel"]
+[node name="Control" type="Control" parent="CanvasLayer/Description_Menu/Panel"]
 layout_mode = 1
 anchors_preset = 4
 anchor_top = 0.5
@@ -184,7 +187,7 @@ offset_bottom = 285.0
 grow_vertical = 2
 size_flags_horizontal = 0
 
-[node name="Frame" parent="CanvasLayer/MarginContainer2/Panel/Control" instance=ExtResource("18_quvkb")]
+[node name="Frame" parent="CanvasLayer/Description_Menu/Panel/Control" instance=ExtResource("18_quvkb")]
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
@@ -196,7 +199,7 @@ offset_bottom = 0.0
 grow_horizontal = 2
 grow_vertical = 2
 
-[node name="TextureRect" parent="CanvasLayer/MarginContainer2/Panel/Control/Frame" index="1"]
+[node name="TextureRect" parent="CanvasLayer/Description_Menu/Panel/Control/Frame" index="1"]
 anchor_left = 0.028
 anchor_top = 0.127
 anchor_bottom = 0.777
@@ -205,19 +208,19 @@ offset_top = -0.263
 offset_right = 0.182983
 offset_bottom = -0.113007
 
-[node name="Top_Label" parent="CanvasLayer/MarginContainer2/Panel/Control/Frame" index="2"]
+[node name="Top_Label" parent="CanvasLayer/Description_Menu/Panel/Control/Frame" index="2"]
 offset_left = -0.436001
 offset_top = 0.0679998
 offset_right = -0.381012
 offset_bottom = -12.074
 theme_override_constants/outline_size = 10
-theme_override_font_sizes/font_size = 20
+theme_override_font_sizes/font_size = 30
 
-[node name="Botton_Label" parent="CanvasLayer/MarginContainer2/Panel/Control/Frame" index="3"]
+[node name="Botton_Label" parent="CanvasLayer/Description_Menu/Panel/Control/Frame" index="3"]
 theme_override_constants/outline_size = 10
 theme_override_font_sizes/font_size = 30
 
-[node name="Label" type="Label" parent="CanvasLayer/MarginContainer2/Panel"]
+[node name="Label" type="Label" parent="CanvasLayer/Description_Menu/Panel"]
 layout_mode = 2
 offset_left = 451.0
 offset_top = 30.0
@@ -238,6 +241,22 @@ Effect:
                Si esta carta es Invocada de Modo Normal o Especial: puedes seleccionar 1 monstruo \"Dragoncella\" de Nivel 4 o menor en tu Cementerio, excepto \"Dragoncella Enfermera\"; Invócalo de Modo Especial. Al comienzo de la Battle Phase: puedes devolver esta carta a la mano y, si lo haces, Invoca de Modo Especial, desde tu mano o Cementerio, 1 monstruo \"Dragoncella\" de Nivel 7. Sólo puedes usar cada efecto de \"Dragoncella Enfermera\" una vez por turno.
 "
 autowrap_mode = 2
+
+[node name="Banner_PanelContainer" type="PanelContainer" parent="CanvasLayer"]
+anchors_preset = 14
+anchor_top = 0.5
+anchor_right = 1.0
+anchor_bottom = 0.5
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="Banner_Label" type="Label" parent="CanvasLayer/Banner_PanelContainer"]
+layout_mode = 2
+theme_override_constants/outline_size = 10
+theme_override_font_sizes/font_size = 70
+text = "Start Phase"
+horizontal_alignment = 1
+vertical_alignment = 1
 
 [node name="button_node" type="Node2D" parent="." node_paths=PackedStringArray("area2D", "collisionShape2D", "highlight_TextureRect")]
 z_index = 5
@@ -387,4 +406,4 @@ horizontal_alignment = 1
 [node name="CollisionShape2D" type="CollisionShape2D" parent="button_node2/offset_Node2D/Area2D"]
 shape = SubResource("CircleShape2D_sdvyq")
 
-[editable path="CanvasLayer/MarginContainer2/Panel/Control/Frame"]
+[editable path="CanvasLayer/Description_Menu/Panel/Control/Frame"]

@@ -8,6 +8,9 @@ enum GAME_STATE{GAMEPLAY, DESCRIPTION_MENU}
 @export var descriptionMenu: Control
 @export var descriptionMenu_Frame: Frame_Node
 #-------------------------------------------------------------------------------
+@export var banner_panel: PanelContainer
+@export var banner_label: Label
+#-------------------------------------------------------------------------------
 @export var button1: Button_Node
 @export var button2: Button_Node
 #-------------------------------------------------------------------------------
@@ -40,8 +43,6 @@ const cardDatabase_path: String = "res://Cards/Resources"
 const cardDatabase_hability_path: String = "res://Cards/Scripts"
 @export var cardDatabase: Dictionary = {}
 #-------------------------------------------------------------------------------
-var height: float
-var width: float
 var card_width: float = 90
 #-------------------------------------------------------------------------------
 var nothing_pressed: Callable = func(): pass
@@ -55,28 +56,7 @@ func _ready() -> void:
 	parameters.collide_with_areas = true
 	space_state = get_world_2d().direct_space_state
 	#-------------------------------------------------------------------------------
-	width = get_viewport_rect().size.x
-	height = get_viewport_rect().size.y
-	#-------------------------------------------------------------------------------
-	screen_size = get_viewport_rect().size
-	#LoadCardDatabase()
-	LoadDeck()
-	player.mainDeck.maxDeckNum = player.mainDeck.card_Class.size()
-	SetDeckNumber1(player.mainDeck)
-	SetDeckNumber1(player.extraDeck)
-	SetDeckNumber2(player.grave)
-	SetDeckNumber2(player.removed)
-	#-------------------------------------------------------------------------------
-	Hide_Button_Node(button1)
-	Hide_Button_Node(button2)
-	button1.highlight_TextureRect.hide()
-	button2.highlight_TextureRect.hide()
-	#-------------------------------------------------------------------------------
-	nothing_released = func(): print("Nothing was Pressed.")
-	nothing_cancel = func(): print("Cancel was Pressed.")
 	SetStage()
-	#-------------------------------------------------------------------------------
-	descriptionMenu.hide()
 #-------------------------------------------------------------------------------
 func _physics_process(_delta: float) -> void:
 	StateMachine()
@@ -235,8 +215,8 @@ func Debug_Info():
 	debugInfo.text = _s
 #-------------------------------------------------------------------------------
 func Organize_Area2Ds():
-	var _x: float = clamp(get_global_mouse_position().x, 0, width)
-	var _y: float = clamp(get_global_mouse_position().y, 0, height)
+	var _x: float = clamp(get_global_mouse_position().x, 0, screen_size.x)
+	var _y: float = clamp(get_global_mouse_position().y, 0, screen_size.y)
 	parameters.position = Vector2(_x, _y)
 	var _result: Array[Dictionary] = space_state.intersect_point(parameters)
 	#-------------------------------------------------------------------------------
@@ -310,45 +290,18 @@ func Highlight_Deck_False(_deck_node: Deck_Node):
 #-------------------------------------------------------------------------------
 #region DECK_HIGHLIGHTED FUNCTIONS
 func LoadDeck():
+	#-------------------------------------------------------------------------------
 	for _cardResource in player.mainDeck.card_Resource:
 		var _card_Class: Card_Class = _cardResource.card_Class.new() as Card_Class
 		_card_Class.card_Resource = _cardResource
 		player.mainDeck.card_Class.append(_card_Class)
+	#-------------------------------------------------------------------------------
 	player.mainDeck.card_Class.shuffle()
 	var _null: Callable = func():pass
-	player.mainDeck.released = func(): DrawCard(_null)
+	player.mainDeck.released = func():pass
 #-------------------------------------------------------------------------------
 func GetResource_Name(_resource: Card_Resource) -> String:
 	return _resource.resource_path.get_file().trim_suffix('.tres')
-#-------------------------------------------------------------------------------
-func DrawCard(_callable: Callable):
-	#-------------------------------------------------------------------------------
-	_callable.call()
-	#-------------------------------------------------------------------------------
-	if(player.mainDeck.card_Class.size() <= 0):
-		return
-	#-------------------------------------------------------------------------------
-	var _card_Class: Card_Class = player.mainDeck.card_Class[0]
-	player.mainDeck.card_Class.erase(_card_Class)
-	#-------------------------------------------------------------------------------
-	SetDeckNumber1(player.mainDeck)
-	#-------------------------------------------------------------------------------
-	var _card_Node: Card_Node = card_Node_Prefab.instantiate() as Card_Node
-	_card_Node.global_position = player.mainDeck.global_position
-	_card_Node.z_index = z_index_hand
-	#-------------------------------------------------------------------------------
-	var _null: Callable = func():pass
-	_card_Node.released = func(): HandCard_Selected(_card_Node, _null)
-	_card_Node.holding = func(): Card_PressHolding(_card_Node.card_Class.card_Resource)
-	_card_Node.highlighted = func(): Highlight_Card_True(_card_Node)
-	_card_Node.lowlighted = func(): Highlight_Card_False(_card_Node)
-	#-------------------------------------------------------------------------------
-	add_child(_card_Node)
-	#-------------------------------------------------------------------------------
-	_card_Node.card_Class = _card_Class
-	Set_Card_Node(_card_Node.frame_Node, _card_Node.card_Class.card_Resource)
-	_card_Class.gameScene = self
-	Add_card_to_hand(_card_Node)
 #-------------------------------------------------------------------------------
 func SetDeckNumber1(_deck_node: Deck_Node):
 	var _num: int = _deck_node.card_Class.size()
@@ -370,32 +323,112 @@ func Set_Card_Node(_frame_node: Frame_Node, _card_Resource:Card_Resource):
 	match(_card_Resource.myCARD_TYPE):
 		Card_Resource.CARD_TYPE.RED:
 			_frame_node.frame.self_modulate = Color.LIGHT_PINK
-			_frame_node.topLabel.text = Get_Stars(_card_Resource)
+			_frame_node.topLabel.text = Get_Level(_card_Resource)
 			_frame_node.bottonLabel.text = Get_Attack_and_Defense(_card_Resource)
 		#-------------------------------------------------------------------------------
 		Card_Resource.CARD_TYPE.BLUE:
 			_frame_node.frame.self_modulate = Color.LIGHT_BLUE
-			_frame_node.topLabel.text = "(Magic Card)"
+			_frame_node.topLabel.text = Get_Magic_Card_Type(_card_Resource)
 			_frame_node.bottonLabel.text = ""
 		#-------------------------------------------------------------------------------
 		Card_Resource.CARD_TYPE.YELLOW:
 			_frame_node.frame.self_modulate = Color.LIGHT_GOLDENROD
-			_frame_node.topLabel.text = Get_Stars(_card_Resource)
+			_frame_node.topLabel.text = Get_Level(_card_Resource)
 			_frame_node.bottonLabel.text = Get_Attack_and_Defense(_card_Resource)
 		#-------------------------------------------------------------------------------
 	#-------------------------------------------------------------------------------
 #-------------------------------------------------------------------------------
 func Get_Attack_and_Defense(_card_Resource: Card_Resource) -> String:
-	return "ATK/"+str(_card_Resource.attack)+"      "+"DEF/"+str(_card_Resource.defense)
+	var _s: String = ""
+	_s += "["+str(Card_Resource.ELEMENT.keys()[_card_Resource.myELEMENT])+" - "+Card_Resource.CLASS.keys()[_card_Resource.myCLASS]+"]"+"\n"
+	_s += "ATK/"+str(_card_Resource.attack)+"      "+"DEF/"+str(_card_Resource.defense)
+	return _s
 #-------------------------------------------------------------------------------
-func Get_Stars(_card_Resource: Card_Resource) -> String:
-	var _s:String = ""
-	for _i in _card_Resource.level:
-		_s += "* "
+func Get_Level(_card_Resource: Card_Resource) -> String:
+	var _s:String = "Lv."+str(_card_Resource.level)
+	return _s
+#-------------------------------------------------------------------------------
+func Get_Magic_Card_Type(_card_Resource: Card_Resource) -> String:
+	var _s: String = ""
+	match(_card_Resource.myITEM_TYPE):
+		Card_Resource.ITEM_TYPE.NORMAL:
+			_s = "(Normal Item Card)"
+		#-------------------------------------------------------------------------------
+		Card_Resource.ITEM_TYPE.EQUIP:
+			_s = "(Equip Item Card)"
+		#-------------------------------------------------------------------------------
+		Card_Resource.ITEM_TYPE.QUICK:
+			_s = "(Quick Item Card)"
+		#-------------------------------------------------------------------------------
+		Card_Resource.ITEM_TYPE.INFINITE:
+			_s = "(Infinite Item Card)"
+		#-------------------------------------------------------------------------------
+	#-------------------------------------------------------------------------------
 	return _s
 #endregion
 #-------------------------------------------------------------------------------
-#region HAND_NODE FUNCTIONS
+#region SET TABLET
+func SetStage():
+	screen_size = get_viewport_rect().size
+	#-------------------------------------------------------------------------------
+	#LoadCardDatabase()
+	LoadDeck()
+	player.mainDeck.maxDeckNum = player.mainDeck.card_Class.size()
+	#-------------------------------------------------------------------------------
+	SetDeckNumber1(player.mainDeck)
+	SetDeckNumber1(player.extraDeck)
+	SetDeckNumber2(player.grave)
+	SetDeckNumber2(player.removed)
+	#-------------------------------------------------------------------------------
+	banner_panel.hide()
+	#-------------------------------------------------------------------------------
+	button1.highlight_TextureRect.hide()
+	button2.highlight_TextureRect.hide()
+	Hide_Button_Node(button1)
+	Hide_Button_Node(button2)
+	#-------------------------------------------------------------------------------
+	nothing_released = func(): print("Nothing was Pressed.")
+	nothing_cancel = func(): print("Cancel was Pressed.")
+	#-------------------------------------------------------------------------------
+	descriptionMenu.hide()
+	#-------------------------------------------------------------------------------
+	await Draw_Cards(5)
+	#-------------------------------------------------------------------------------
+	await StartPhase()
+	#-------------------------------------------------------------------------------
+	await MainPhase1()
+#-------------------------------------------------------------------------------
+func Draw_Cards(_iMax: int):
+	await get_tree().create_timer(0.5).timeout
+	for _i in _iMax:
+		var _card_Node: Card_Node = Draw_1_Card(func():pass)
+		Update_hand_position()
+		await get_tree().create_timer(0.15).timeout
+#-------------------------------------------------------------------------------
+func Draw_1_Card(_callable: Callable) -> Card_Node:
+	_callable.call()
+	#-------------------------------------------------------------------------------
+	if(player.mainDeck.card_Class.size() <= 0):
+		return
+	#-------------------------------------------------------------------------------
+	var _card_Class: Card_Class = player.mainDeck.card_Class[0]
+	player.mainDeck.card_Class.erase(_card_Class)
+	#-------------------------------------------------------------------------------
+	SetDeckNumber1(player.mainDeck)
+	#-------------------------------------------------------------------------------
+	var _card_Node: Card_Node = card_Node_Prefab.instantiate() as Card_Node
+	_card_Node.global_position = player.mainDeck.global_position
+	_card_Node.z_index = z_index_hand
+	#-------------------------------------------------------------------------------
+	player.hand.card_Node.push_back(_card_Node)
+	add_child(_card_Node)
+	#-------------------------------------------------------------------------------
+	_card_Node.card_Class = _card_Class
+	Set_Card_Node(_card_Node.frame_Node, _card_Node.card_Class.card_Resource)
+	_card_Class.gameScene = self
+	#-------------------------------------------------------------------------------
+	return _card_Node
+#-------------------------------------------------------------------------------
 func Add_card_to_hand(_card_Node:Card_Node):
 	if(_card_Node not in player.hand.card_Node):
 		player.hand.card_Node.push_back(_card_Node)
@@ -404,11 +437,13 @@ func Add_card_to_hand(_card_Node:Card_Node):
 		Animate_card_to_position(_card_Node, _card_Node.starting_position)
 #-------------------------------------------------------------------------------
 func Update_hand_position():
+	#-------------------------------------------------------------------------------
 	for _i:int in player.hand.card_Node.size():
 		var _newPosition: Vector2 = Vector2(Calculate_card_position(_i), player.hand.global_position.y)
 		var _card:Card_Node = player.hand.card_Node[_i]
 		_card.starting_position = _newPosition
 		Animate_card_to_position(_card, _newPosition)
+	#-------------------------------------------------------------------------------
 #-------------------------------------------------------------------------------
 func Calculate_card_position(_i:int) -> float:
 	var _total_width: float = (player.hand.card_Node.size()-1)*card_width
@@ -425,61 +460,84 @@ func Remove_card_from_hand(_card:Card_Node):
 		Update_hand_position()
 #endregion
 #-------------------------------------------------------------------------------
-#region IDLE STATE
-func SetStage():
+#region START PHASE
+func StartPhase():
+	await Show_Banner("Start Phase")
+	var _card_Node: Card_Node = Draw_1_Card(func():pass)
+	Update_hand_position()
+	await get_tree().create_timer(0.15).timeout
+#-------------------------------------------------------------------------------
+func Show_Banner(_s:String):
+	banner_label.text = _s
+	banner_panel.show()
+	await get_tree().create_timer(1).timeout
+	banner_panel.hide()
+#endregion
+#-------------------------------------------------------------------------------
+#region MAIN PHASE 1 - IDLE
+func MainPhase1():
+	await Show_Banner("Main Phase 1")
+	MainPhase1_Idle()
+#-------------------------------------------------------------------------------
+func MainPhase1_Idle():
+	#-------------------------------------------------------------------------------
 	var _null: Callable = func():pass
+	#-------------------------------------------------------------------------------
 	player.mainDeck.highlighted = func(): Highlight_Deck_True(player.mainDeck)
 	player.mainDeck.lowlighted = func(): Highlight_Deck_False(player.mainDeck)
-	player.mainDeck.released = func(): DrawCard(_null)
+	player.mainDeck.released = _null
 	#-------------------------------------------------------------------------------
 	player.extraDeck.highlighted = func(): Highlight_Deck_True(player.extraDeck)
 	player.extraDeck.lowlighted = func(): Highlight_Deck_False(player.extraDeck)
-	player.extraDeck.released = func(): ExtraDeck_Selected(_null)
+	player.extraDeck.released = _null
 	#-------------------------------------------------------------------------------
 	player.grave.highlighted = func(): Highlight_Deck_True(player.grave)
 	player.grave.lowlighted = func(): Highlight_Deck_False(player.grave)
-	player.grave.released = func(): ExtraDeck_Selected(_null)
+	player.grave.released = _null
 	#-------------------------------------------------------------------------------
 	player.removed.highlighted = func(): Highlight_Deck_True(player.removed)
 	player.removed.lowlighted = func(): Highlight_Deck_False(player.removed)
-	player.removed.released = func(): ExtraDeck_Selected(_null)
+	player.removed.released = _null
 	#-------------------------------------------------------------------------------
 	button1.highlighted = func(): Highlight_Button_True(button1)
 	button1.lowlighted = func(): Highlight_Button_False(button1)
-	button1.released = func(): ExtraDeck_Selected(_null)
+	button1.released = _null
 	#-------------------------------------------------------------------------------
 	button2.highlighted = func(): Highlight_Button_True(button2)
 	button2.lowlighted = func(): Highlight_Button_False(button2)
-	button2.released = func(): ExtraDeck_Selected(_null)
+	button2.released = _null
 	#-------------------------------------------------------------------------------
 	for _i in player.monsterZone.size():
 		player.monsterZone[_i].highlighted = func(): Highlight_Cardslot_True(player.monsterZone[_i])
 		player.monsterZone[_i].lowlighted = func(): Highlight_Cardslot_False(player.monsterZone[_i])
-		player.monsterZone[_i].released = func(): ExtraDeck_Selected(_null)
+		player.monsterZone[_i].released = _null
 	#-------------------------------------------------------------------------------
 	for _i in player.magicZone.size():
 		player.magicZone[_i].highlighted = func(): Highlight_Cardslot_True(player.magicZone[_i])
 		player.magicZone[_i].lowlighted = func(): Highlight_Cardslot_False(player.magicZone[_i])
-		player.magicZone[_i].released = func(): ExtraDeck_Selected(_null)
+		player.magicZone[_i].released = _null
 	#-------------------------------------------------------------------------------
-#endregion
-#-------------------------------------------------------------------------------
-func ExtraDeck_Selected(_callable: Callable):
-	_callable.call()
+	for _i in player.hand.card_Node.size():
+		var _card_Node: Card_Node = player.hand.card_Node[_i]
+		_card_Node.released = func(): HandCard_Selected(_card_Node, _null)
+		_card_Node.holding = func(): Card_PressHolding(_card_Node.card_Class.card_Resource)
+		_card_Node.highlighted = func(): Highlight_Card_True(_card_Node)
+		_card_Node.lowlighted = func(): Highlight_Card_False(_card_Node)
+	#-------------------------------------------------------------------------------
 #-------------------------------------------------------------------------------
 func Card_PressHolding(_cardResource: Card_Resource):
 	leftMouseCounter += 1
 	if(leftMouseCounter > 40):
-		Set_Card_Node(descriptionMenu_Frame, _cardResource)
-		descriptionMenu.show()
-		nothing_cancel = func(): Close_Description(func():pass)
-		myGAME_STATE = GAME_STATE.DESCRIPTION_MENU
+		Open_Description(_cardResource)
 		#-------------------------------------------------------------------------------
 		leftMouseCounter = 0
 		isLeftMousePressed = false
 		#-------------------------------------------------------------------------------
 		return
+	#-------------------------------------------------------------------------------
+#endregion
 #-------------------------------------------------------------------------------
+#region MAIN PHASE 1 - HAND MENU
 func HandCard_Selected(_cardNode: Card_Node, _callable:Callable):
 	var _null: Callable = func():pass
 	#-------------------------------------------------------------------------------
@@ -503,17 +561,22 @@ func HandCard_Selected(_cardNode: Card_Node, _callable:Callable):
 	nothing_cancel = func(): HandCard_Canceled(_cardNode)
 	nothing_released = func(): HandCard_Deselected(_cardNode)
 	#-------------------------------------------------------------------------------
-	player.mainDeck.released = func(): DrawCard(func(): HandCard_Deselected(_cardNode))
+	player.mainDeck.released = func(): HandCard_Deselected(_cardNode)
 	player.extraDeck.released = func(): HandCard_Deselected(_cardNode)
 	player.grave.released = func(): HandCard_Deselected(_cardNode)
 	player.removed.released = func(): HandCard_Deselected(_cardNode)
+	#-------------------------------------------------------------------------------
 	for _i in player.monsterZone.size():
 		player.monsterZone[_i].released = func(): HandCard_Deselected(_cardNode)
+	#-------------------------------------------------------------------------------
 	for _i in player.magicZone.size():
 		player.magicZone[_i].released = func(): HandCard_Deselected(_cardNode)
+	#-------------------------------------------------------------------------------
 	for _i in player.hand.card_Node.size():
 		if(player.hand.card_Node[_i] != _cardNode):
-			player.hand.card_Node[_i].released = func(): HandCard_Selected(player.hand.card_Node[_i], func(): HandCard_Deselected(_cardNode)) 
+			player.hand.card_Node[_i].released = func(): HandCard_Selected(player.hand.card_Node[_i], func(): HandCard_Deselected(_cardNode))
+		#-------------------------------------------------------------------------------
+	#-------------------------------------------------------------------------------
 #-------------------------------------------------------------------------------
 func HandCard_Deselected(_cardNode: Card_Node):
 	Selected_Card_False(_cardNode)
@@ -530,7 +593,7 @@ func HandCard_Deselected(_cardNode: Card_Node):
 	nothing_cancel = func(): pass
 	nothing_released = func(): pass
 	#-------------------------------------------------------------------------------
-	player.mainDeck.released = func(): DrawCard(func():pass)
+	player.mainDeck.released = func():pass
 	player.extraDeck.released = func():pass
 	player.grave.released = func():pass
 	player.removed.released = func():pass
@@ -559,7 +622,80 @@ func HandCard_Canceled(_cardNode: Card_Node):
 	#-------------------------------------------------------------------------------
 	nothing_cancel = func(): pass
 	nothing_released = func(): pass
+#endregion
 #-------------------------------------------------------------------------------
+#region MAIN PHASE 1 - SUMMON MENU
+func Button1_Pressed(_card_Node: Card_Node, _callable:Callable):
+	_callable.call()
+	#-------------------------------------------------------------------------------
+	if(_card_Node.card_Class.card_Resource.myCARD_TYPE == Card_Resource.CARD_TYPE.BLUE):
+		for _i in player.magicZone.size():
+			player.magicZone[_i].summoning_TextureRect.show()
+			player.magicZone[_i].released = func(): MainPhase1_SummonMenu_ActiveteCard()
+		#-------------------------------------------------------------------------------
+		for _i in player.monsterZone.size():
+			player.monsterZone[_i].released = func(): Button1_Canceled(_card_Node)
+		#-------------------------------------------------------------------------------
+	else:
+		for _i in player.monsterZone.size():
+			player.monsterZone[_i].summoning_TextureRect.show()
+			player.monsterZone[_i].released = func(): MainPhase1_SummonMenu_SummonMonster()
+		#-------------------------------------------------------------------------------
+		for _i in player.magicZone.size():
+			player.magicZone[_i].released = func(): Button1_Canceled(_card_Node)
+		#-------------------------------------------------------------------------------
+	#-------------------------------------------------------------------------------
+	player.mainDeck.released = func(): Button1_Canceled(_card_Node)
+	player.extraDeck.released = func(): Button1_Canceled(_card_Node)
+	player.grave.released = func(): Button1_Canceled(_card_Node)
+	player.removed.released = func(): Button1_Canceled(_card_Node)
+	nothing_released = func(): Button1_Canceled(_card_Node)
+	nothing_cancel = func(): Button1_Canceled(_card_Node)
+	#-------------------------------------------------------------------------------
+	for _i in player.hand.card_Node.size():
+		player.hand.card_Node[_i].released = func(): HandCard_Selected(player.hand.card_Node[_i], func(): Button1_Canceled2(_card_Node, player.hand.card_Node[_i]))
+		#-------------------------------------------------------------------------------
+	#-------------------------------------------------------------------------------
+#-------------------------------------------------------------------------------
+func MainPhase1_SummonMenu_SummonMonster():
+	MainPhase1_Idle()
+	Desactivate_MonsterZone()
+#-------------------------------------------------------------------------------
+func Desactivate_MonsterZone():
+	for _i in player.monsterZone.size():
+		player.monsterZone[_i].summoning_TextureRect.hide()
+	#-------------------------------------------------------------------------------
+#-------------------------------------------------------------------------------
+func MainPhase1_SummonMenu_ActiveteCard():
+	MainPhase1_Idle()
+	Desactivate_MagicZone()
+#-------------------------------------------------------------------------------
+func Desactivate_MagicZone():
+	for _i in player.magicZone.size():
+		player.magicZone[_i].summoning_TextureRect.hide()
+	#-------------------------------------------------------------------------------
+#-------------------------------------------------------------------------------
+func Button1_Canceled(_card_Node: Card_Node):
+	var _null: Callable = func():pass
+	HandCard_Selected(_card_Node, _null)
+	Deselect_Zones(_card_Node)
+	nothing_cancel = func(): HandCard_Canceled(_card_Node)
+#-------------------------------------------------------------------------------
+func Button1_Canceled2(_card_Node1: Card_Node, _card_Node2: Card_Node):
+	var _null: Callable = func():pass
+	HandCard_Selected(_card_Node2, _null)
+	Deselect_Zones(_card_Node1)
+	nothing_cancel = func(): HandCard_Canceled(_card_Node1)
+#-------------------------------------------------------------------------------
+func Deselect_Zones(_card_Node: Card_Node):
+	if(_card_Node.card_Class.card_Resource.myCARD_TYPE == Card_Resource.CARD_TYPE.BLUE):
+		Desactivate_MagicZone()
+	else:
+		Desactivate_MonsterZone()
+	#-------------------------------------------------------------------------------
+#endregion
+#-------------------------------------------------------------------------------
+#region DESCRIPTION MENU
 func Open_Description(_card_Resource: Card_Resource):
 	Set_Card_Node(descriptionMenu_Frame, _card_Resource)
 	descriptionMenu.show()
@@ -571,21 +707,5 @@ func Close_Description(_cancel: Callable):
 	descriptionMenu.hide()
 	myGAME_STATE = GAME_STATE.GAMEPLAY
 	nothing_cancel = _cancel
-#-------------------------------------------------------------------------------
-func Button1_Pressed(_card_Node: Card_Node, _callable:Callable):
-	_callable.call()
-	#-------------------------------------------------------------------------------
-	for _i in player.monsterZone.size():
-		player.monsterZone[_i].summoning_TextureRect.show()
-	#-------------------------------------------------------------------------------
-	nothing_cancel = func(): Button1_Canceled(_card_Node)
-#-------------------------------------------------------------------------------
-func Button1_Canceled(_card_Node: Card_Node):
-	var _null: Callable = func():pass
-	HandCard_Selected(_card_Node, _null)
-	#-------------------------------------------------------------------------------
-	for _i in player.monsterZone.size():
-		player.monsterZone[_i].summoning_TextureRect.hide()
-	#-------------------------------------------------------------------------------
-	nothing_cancel = func(): HandCard_Canceled(_card_Node)
+#endregion
 #-------------------------------------------------------------------------------
