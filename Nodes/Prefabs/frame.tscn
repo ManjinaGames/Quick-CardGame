@@ -4,7 +4,7 @@
 [ext_resource type="Script" uid="uid://diqyrsfhpkrxh" path="res://Scripts/Card_Node/frame_node.gd" id="2_1efc4"]
 [ext_resource type="Texture2D" uid="uid://l8eu5bkwm4d1" path="res://Cards/Artworks/Christmas01-A.png" id="3_imp88"]
 
-[node name="Frame" type="TextureRect" node_paths=PackedStringArray("frame", "artwork", "topLabel", "bottonLabel")]
+[node name="Frame" type="TextureRect" node_paths=PackedStringArray("frame", "artwork", "topLabel", "bottonLabel", "back")]
 self_modulate = Color(0, 0, 0, 1)
 offset_left = -48.0
 offset_top = -72.0
@@ -20,6 +20,7 @@ frame = NodePath("TextureRect2")
 artwork = NodePath("TextureRect/Artwork")
 topLabel = NodePath("Top_Label")
 bottonLabel = NodePath("Botton_Label")
+back = NodePath("Back_TextureRect")
 
 [node name="TextureRect2" type="TextureRect" parent="."]
 layout_mode = 1
@@ -109,3 +110,18 @@ theme_override_font_sizes/font_size = 8
 text = "ATK/500      DEF/1600"
 horizontal_alignment = 1
 vertical_alignment = 2
+
+[node name="Back_TextureRect" type="TextureRect" parent="."]
+visible = false
+layout_mode = 1
+anchors_preset = -1
+anchor_left = 0.021
+anchor_top = 0.014
+anchor_right = 0.979
+anchor_bottom = 0.986
+offset_left = -0.0160003
+offset_top = -0.016
+offset_right = 0.0159988
+offset_bottom = 0.0159912
+texture = ExtResource("1_yk5vk")
+expand_mode = 1

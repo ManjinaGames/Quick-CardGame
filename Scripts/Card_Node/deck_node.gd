@@ -1,10 +1,7 @@
 extends Object_Node
 class_name Deck_Node
-#-------------------------------------------------------------------------------
-enum DECK_TYPE{MAIN, EXTRA, GRAVEYARD, REMOVED}
 #region VARIABLES
 @export var gameScene: GameScene
-@export var myDECK_TYPE: DECK_TYPE
 @export var collisionShape: CollisionShape2D
 @export var highlight_TextureRect: TextureRect
 @export var card_TextureRect: TextureRect

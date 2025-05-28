@@ -69,6 +69,8 @@ texture = ExtResource("14_5n6gc")
 expand_mode = 1
 
 [node name="Area2D" type="Area2D" parent="Node2D"]
+monitoring = false
+monitorable = false
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="Node2D/Area2D"]
 shape = SubResource("RectangleShape2D_5mofp")

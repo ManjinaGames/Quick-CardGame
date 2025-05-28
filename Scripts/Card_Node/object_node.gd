@@ -8,4 +8,6 @@ var holding: Callable = func(): pass
 #-------------------------------------------------------------------------------
 var highlighted: Callable = func(): pass
 var lowlighted: Callable = func(): pass
+#-------------------------------------------------------------------------------
+var canBePressed: bool = true
 #endregion

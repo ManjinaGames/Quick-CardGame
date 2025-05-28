@@ -18,6 +18,8 @@ frame_Node = NodePath("offset_Node2D/Frame")
 [node name="Frame" parent="offset_Node2D" instance=ExtResource("2_2qivj")]
 
 [node name="Area2D" type="Area2D" parent="offset_Node2D"]
+monitoring = false
+monitorable = false
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="offset_Node2D/Area2D"]
 shape = SubResource("RectangleShape2D_wf6kc")

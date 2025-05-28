@@ -56,9 +56,10 @@ myITEM_TYPE = 0
 [sub_resource type="CircleShape2D" id="CircleShape2D_sdvyq"]
 radius = 28.0179
 
-[node name="GameScene" type="Node2D" node_paths=PackedStringArray("player", "descriptionMenu", "descriptionMenu_Frame", "banner_panel", "banner_label", "button1", "button2", "debugInfo")]
+[node name="GameScene" type="Node2D" node_paths=PackedStringArray("player1", "player2", "descriptionMenu", "descriptionMenu_Frame", "banner_panel", "banner_label", "button1", "button2", "debugInfo")]
 script = ExtResource("1_txxkl")
-player = NodePath("Player")
+player1 = NodePath("Player1")
+player2 = NodePath("Player2")
 descriptionMenu = NodePath("CanvasLayer/Description_Menu")
 descriptionMenu_Frame = NodePath("CanvasLayer/Description_Menu/Panel/Control/Frame")
 banner_panel = NodePath("CanvasLayer/Banner_PanelContainer")
@@ -72,76 +73,146 @@ cardDatabase = {
 SubResource("Resource_juy0k"): SubResource("GDScript_scis2")
 }
 
-[node name="Player" type="Node2D" parent="." node_paths=PackedStringArray("mainDeck", "extraDeck", "grave", "removed", "hand", "magicZone", "monsterZone")]
+[node name="Player1" type="Node2D" parent="." node_paths=PackedStringArray("mainDeck", "extraDeck", "grave", "removed", "hand", "magicZone", "monsterZone", "opponent")]
 z_index = -2
-position = Vector2(562, 483)
+position = Vector2(562, 498)
 script = ExtResource("4_p7vwb")
-mainDeck = NodePath("mainDeck_node")
-extraDeck = NodePath("ExtraDeck_node")
-grave = NodePath("GraveDeck_Node")
-removed = NodePath("RemovedDeck_node")
+mainDeck = NodePath("mainDeck")
+extraDeck = NodePath("ExtraDeck")
+grave = NodePath("GraveDeck")
+removed = NodePath("RemovedDeck")
 hand = NodePath("hand")
-magicZone = [NodePath("CardSlot_Node"), NodePath("CardSlot_Node2"), NodePath("CardSlot_Node3"), NodePath("CardSlot_Node4"), NodePath("CardSlot_Node5")]
-monsterZone = [NodePath("CardSlot_Node6"), NodePath("CardSlot_Node7"), NodePath("CardSlot_Node8"), NodePath("CardSlot_Node9"), NodePath("CardSlot_Node10")]
+magicZone = [NodePath("MagicZone1"), NodePath("MagicZone2"), NodePath("MagicZone3"), NodePath("MagicZone4"), NodePath("MagicZone5")]
+monsterZone = [NodePath("MonsterZone1"), NodePath("MonsterZone2"), NodePath("MonsterZone3"), NodePath("MonsterZone4"), NodePath("MonsterZone5")]
+opponent = NodePath("../Player2")
 
-[node name="hand" type="Node2D" parent="Player" node_paths=PackedStringArray("gameScene")]
-position = Vector2(0, 130)
+[node name="hand" type="Node2D" parent="Player1" node_paths=PackedStringArray("gameScene")]
+position = Vector2(0, 112)
 script = ExtResource("4_4r13x")
 gameScene = NodePath("../..")
 
-[node name="ExtraDeck_node" parent="Player" node_paths=PackedStringArray("gameScene") instance=ExtResource("4_u3nvj")]
+[node name="ExtraDeck" parent="Player1" node_paths=PackedStringArray("gameScene") instance=ExtResource("4_u3nvj")]
 position = Vector2(-336, 0)
 gameScene = NodePath("../..")
-myDECK_TYPE = 1
 
-[node name="CardSlot_Node" parent="Player" instance=ExtResource("13_bej0y")]
+[node name="MagicZone1" parent="Player1" instance=ExtResource("13_bej0y")]
 position = Vector2(-224, 0)
 myZONE_TYPE = 1
 
-[node name="CardSlot_Node2" parent="Player" instance=ExtResource("13_bej0y")]
+[node name="MagicZone2" parent="Player1" instance=ExtResource("13_bej0y")]
 position = Vector2(-112, 0)
 myZONE_TYPE = 1
 
-[node name="CardSlot_Node3" parent="Player" instance=ExtResource("13_bej0y")]
+[node name="MagicZone3" parent="Player1" instance=ExtResource("13_bej0y")]
 myZONE_TYPE = 1
 
-[node name="CardSlot_Node4" parent="Player" instance=ExtResource("13_bej0y")]
+[node name="MagicZone4" parent="Player1" instance=ExtResource("13_bej0y")]
 position = Vector2(112, 0)
 myZONE_TYPE = 1
 
-[node name="CardSlot_Node5" parent="Player" instance=ExtResource("13_bej0y")]
+[node name="MagicZone5" parent="Player1" instance=ExtResource("13_bej0y")]
 position = Vector2(224, 0)
 myZONE_TYPE = 1
 
-[node name="mainDeck_node" parent="Player" node_paths=PackedStringArray("gameScene") instance=ExtResource("4_u3nvj")]
+[node name="mainDeck" parent="Player1" node_paths=PackedStringArray("gameScene") instance=ExtResource("4_u3nvj")]
 position = Vector2(336, 0)
 gameScene = NodePath("../..")
 card_Resource = Array[ExtResource("6_mbwul")]([ExtResource("5_w0rv4"), ExtResource("5_w0rv4"), ExtResource("6_emvl4"), ExtResource("6_emvl4"), ExtResource("7_4udd4"), ExtResource("7_4udd4"), ExtResource("8_rcph7"), ExtResource("8_rcph7"), ExtResource("9_l1t5s"), ExtResource("9_l1t5s"), ExtResource("10_v8rp7"), ExtResource("10_v8rp7"), ExtResource("11_fnrwv"), ExtResource("11_fnrwv"), ExtResource("12_fu2j2"), ExtResource("12_fu2j2"), ExtResource("13_plchi"), ExtResource("13_plchi"), ExtResource("14_dpwcw"), ExtResource("14_dpwcw"), ExtResource("5_w0rv4"), ExtResource("5_w0rv4"), ExtResource("6_emvl4"), ExtResource("6_emvl4"), ExtResource("7_4udd4"), ExtResource("7_4udd4"), ExtResource("8_rcph7"), ExtResource("8_rcph7"), ExtResource("9_l1t5s"), ExtResource("9_l1t5s"), ExtResource("10_v8rp7"), ExtResource("10_v8rp7"), ExtResource("11_fnrwv"), ExtResource("11_fnrwv"), ExtResource("12_fu2j2"), ExtResource("12_fu2j2"), ExtResource("13_plchi"), ExtResource("13_plchi"), ExtResource("14_dpwcw"), ExtResource("14_dpwcw")])
 
-[node name="RemovedDeck_node" parent="Player" node_paths=PackedStringArray("gameScene") instance=ExtResource("4_u3nvj")]
-position = Vector2(430, -112)
+[node name="RemovedDeck" parent="Player1" node_paths=PackedStringArray("gameScene") instance=ExtResource("4_u3nvj")]
+position = Vector2(-336, -112)
 gameScene = NodePath("../..")
-myDECK_TYPE = 3
 
-[node name="CardSlot_Node6" parent="Player" instance=ExtResource("13_bej0y")]
+[node name="MonsterZone1" parent="Player1" instance=ExtResource("13_bej0y")]
 position = Vector2(-224, -112)
 
-[node name="CardSlot_Node7" parent="Player" instance=ExtResource("13_bej0y")]
+[node name="MonsterZone2" parent="Player1" instance=ExtResource("13_bej0y")]
 position = Vector2(-112, -112)
 
-[node name="CardSlot_Node8" parent="Player" instance=ExtResource("13_bej0y")]
+[node name="MonsterZone3" parent="Player1" instance=ExtResource("13_bej0y")]
 position = Vector2(0, -112)
 
-[node name="CardSlot_Node9" parent="Player" instance=ExtResource("13_bej0y")]
+[node name="MonsterZone4" parent="Player1" instance=ExtResource("13_bej0y")]
 position = Vector2(112, -112)
 
-[node name="CardSlot_Node10" parent="Player" instance=ExtResource("13_bej0y")]
+[node name="MonsterZone5" parent="Player1" instance=ExtResource("13_bej0y")]
 position = Vector2(224, -112)
 
-[node name="GraveDeck_Node" parent="Player" node_paths=PackedStringArray("gameScene") instance=ExtResource("4_u3nvj")]
+[node name="GraveDeck" parent="Player1" node_paths=PackedStringArray("gameScene") instance=ExtResource("4_u3nvj")]
 position = Vector2(336, -112)
 gameScene = NodePath("../..")
-myDECK_TYPE = 2
+
+[node name="Player2" type="Node2D" parent="." node_paths=PackedStringArray("mainDeck", "extraDeck", "grave", "removed", "hand", "magicZone", "monsterZone", "opponent")]
+z_index = -2
+position = Vector2(562, 150)
+script = ExtResource("4_p7vwb")
+mainDeck = NodePath("mainDeck")
+extraDeck = NodePath("ExtraDeck")
+grave = NodePath("GraveDeck")
+removed = NodePath("RemovedDeck")
+hand = NodePath("hand")
+magicZone = [NodePath("MagicZone1"), NodePath("MagicZone2"), NodePath("MagicZone3"), NodePath("MagicZone4"), NodePath("MagicZone5")]
+monsterZone = [NodePath("MonsterZone1"), NodePath("MonsterZone2"), NodePath("MonsterZone3"), NodePath("MonsterZone4"), NodePath("MonsterZone5")]
+isPlayer1 = false
+opponent = NodePath("../Player1")
+card_pos_y_offset = 25.0
+card_rotation = 180.0
+
+[node name="hand" type="Node2D" parent="Player2" node_paths=PackedStringArray("gameScene")]
+position = Vector2(0, -112)
+script = ExtResource("4_4r13x")
+gameScene = NodePath("../..")
+
+[node name="ExtraDeck" parent="Player2" node_paths=PackedStringArray("gameScene") instance=ExtResource("4_u3nvj")]
+position = Vector2(336, 0)
+gameScene = NodePath("../..")
+
+[node name="MagicZone1" parent="Player2" instance=ExtResource("13_bej0y")]
+position = Vector2(-224, 0)
+myZONE_TYPE = 1
+
+[node name="MagicZone2" parent="Player2" instance=ExtResource("13_bej0y")]
+position = Vector2(-112, 0)
+myZONE_TYPE = 1
+
+[node name="MagicZone3" parent="Player2" instance=ExtResource("13_bej0y")]
+myZONE_TYPE = 1
+
+[node name="MagicZone4" parent="Player2" instance=ExtResource("13_bej0y")]
+position = Vector2(112, 0)
+myZONE_TYPE = 1
+
+[node name="MagicZone5" parent="Player2" instance=ExtResource("13_bej0y")]
+position = Vector2(224, 0)
+myZONE_TYPE = 1
+
+[node name="mainDeck" parent="Player2" node_paths=PackedStringArray("gameScene") instance=ExtResource("4_u3nvj")]
+position = Vector2(-336, 0)
+gameScene = NodePath("../..")
+card_Resource = Array[ExtResource("6_mbwul")]([ExtResource("5_w0rv4"), ExtResource("5_w0rv4"), ExtResource("6_emvl4"), ExtResource("6_emvl4"), ExtResource("7_4udd4"), ExtResource("7_4udd4"), ExtResource("8_rcph7"), ExtResource("8_rcph7"), ExtResource("9_l1t5s"), ExtResource("9_l1t5s"), ExtResource("10_v8rp7"), ExtResource("10_v8rp7"), ExtResource("11_fnrwv"), ExtResource("11_fnrwv"), ExtResource("12_fu2j2"), ExtResource("12_fu2j2"), ExtResource("13_plchi"), ExtResource("13_plchi"), ExtResource("14_dpwcw"), ExtResource("14_dpwcw"), ExtResource("5_w0rv4"), ExtResource("5_w0rv4"), ExtResource("6_emvl4"), ExtResource("6_emvl4"), ExtResource("7_4udd4"), ExtResource("7_4udd4"), ExtResource("8_rcph7"), ExtResource("8_rcph7"), ExtResource("9_l1t5s"), ExtResource("9_l1t5s"), ExtResource("10_v8rp7"), ExtResource("10_v8rp7"), ExtResource("11_fnrwv"), ExtResource("11_fnrwv"), ExtResource("12_fu2j2"), ExtResource("12_fu2j2"), ExtResource("13_plchi"), ExtResource("13_plchi"), ExtResource("14_dpwcw"), ExtResource("14_dpwcw")])
+
+[node name="RemovedDeck" parent="Player2" node_paths=PackedStringArray("gameScene") instance=ExtResource("4_u3nvj")]
+position = Vector2(336, 112)
+gameScene = NodePath("../..")
+
+[node name="MonsterZone1" parent="Player2" instance=ExtResource("13_bej0y")]
+position = Vector2(-224, 112)
+
+[node name="MonsterZone2" parent="Player2" instance=ExtResource("13_bej0y")]
+position = Vector2(-112, 112)
+
+[node name="MonsterZone3" parent="Player2" instance=ExtResource("13_bej0y")]
+position = Vector2(0, 112)
+
+[node name="MonsterZone4" parent="Player2" instance=ExtResource("13_bej0y")]
+position = Vector2(112, 112)
+
+[node name="MonsterZone5" parent="Player2" instance=ExtResource("13_bej0y")]
+position = Vector2(224, 112)
+
+[node name="GraveDeck" parent="Player2" node_paths=PackedStringArray("gameScene") instance=ExtResource("4_u3nvj")]
+position = Vector2(-336, 112)
+gameScene = NodePath("../..")
 
 [node name="CanvasLayer" type="CanvasLayer" parent="."]
 
@@ -327,6 +398,8 @@ text = "Convocar"
 horizontal_alignment = 1
 
 [node name="Area2D" type="Area2D" parent="button_node/offset_Node2D"]
+monitoring = false
+monitorable = false
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="button_node/offset_Node2D/Area2D"]
 shape = SubResource("CircleShape2D_sdvyq")
@@ -402,6 +475,8 @@ text = "Colocar"
 horizontal_alignment = 1
 
 [node name="Area2D" type="Area2D" parent="button_node2/offset_Node2D"]
+monitoring = false
+monitorable = false
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="button_node2/offset_Node2D/Area2D"]
 shape = SubResource("CircleShape2D_sdvyq")
