@@ -8,6 +8,6 @@ enum ZONE_TYPE{MONSTER_ZONE, MAGIC_ZONE}
 @export var highlight_TextureRect: TextureRect
 @export var summoning_TextureRect: TextureRect
 #-------------------------------------------------------------------------------
-var card_in_slot: Card_Node
+var card_in_slot: Card_Node = null
 #endregion
 #-------------------------------------------------------------------------------

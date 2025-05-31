@@ -13,7 +13,8 @@ class_name Player_Node
 #estas son propiedades que tengo que variar a su valor opuesto para que se puedan utilizar las mismas funciones.
 @export var isPlayer1: bool = true
 @export var opponent: Player_Node
-@export var card_pos_y_offset: float = -25
+@export var card_highlight_posY_offset: float = -25
+@export var card_selected_posY_offset: float = -53
 @export var card_rotation: float = 0
 #endregion
 #-------------------------------------------------------------------------------
