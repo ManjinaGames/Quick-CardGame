@@ -2,6 +2,7 @@ extends Node2D
 class_name GameScene
 #-------------------------------------------------------------------------------
 enum GAME_STATE{GAMEPLAY, DESCRIPTION_MENU}
+enum PHASE_STATE{START_PHASE, MAIN_PHASE1, BATTLE_PHASE, MAIN_PHASE2, END_PHASE}
 enum MAINPHASE1_STATE{IDLE, HAND_MENU, SUMMON_MENU}
 #region VARIABLES
 @export var player1: Player_Node
@@ -15,6 +16,9 @@ enum MAINPHASE1_STATE{IDLE, HAND_MENU, SUMMON_MENU}
 #-------------------------------------------------------------------------------
 @export var button1: Button_Node
 @export var button2: Button_Node
+@export var phase_button: Button_Node
+#-------------------------------------------------------------------------------
+@export var phase_menu: Phase_Menu
 #-------------------------------------------------------------------------------
 @export var card_Node_Prefab: PackedScene
 #-------------------------------------------------------------------------------
@@ -32,11 +36,10 @@ var parameters: PhysicsPointQueryParameters2D
 var space_state: PhysicsDirectSpaceState2D
 #-------------------------------------------------------------------------------
 var myGAME_STATE: GAME_STATE = GAME_STATE.GAMEPLAY
-var myMAINPHASE1_STATE: MAINPHASE1_STATE = MAINPHASE1_STATE.IDLE
+var myPHASE_STATE: PHASE_STATE = PHASE_STATE.START_PHASE
 #-------------------------------------------------------------------------------
 var object_node: Array[Object_Node]
 var highlighted_object_node: Object_Node = null
-var selected_object_node: Object_Node = null
 #-------------------------------------------------------------------------------
 var screen_size: Vector2
 var highlight_scale: float = 1.1
@@ -204,19 +207,20 @@ func StateMachine():
 func Debug_Info():
 	var _s: String = ""
 	_s += "GAME_STATE: "+str(GAME_STATE.keys()[myGAME_STATE])+"\n"
-	_s += "MAINPHASE1_STATE: "+str(MAINPHASE1_STATE.keys()[myMAINPHASE1_STATE])+"\n"
-	_s += "______________________________________\n"
+	_s += "GAME_STATE: "+str(PHASE_STATE.keys()[myPHASE_STATE])+"\n"
+	_s += "--------------------------------------\n"
 	_s += "Mouse Counter: "+str(leftMouseCounter)+"\n"
 	_s += "Is Mouse Pressed: "+str(isLeftMousePressed)+"\n"
-	_s += "______________________________________\n"
-	_s += "Selected Object_Node:\n"
-	_s += "---> "+str(selected_object_node)+"\n"
+	_s += "--------------------------------------\n"
+	_s += str(Engine.get_frames_per_second()) + " fps.\n"
+	_s += "--------------------------------------\n"
 	_s += "Highlighted Object_Node:\n"
 	_s += "---> "+str(highlighted_object_node)+"\n"
+	_s += "--------------------------------------\n"
 	_s += "Object_Nodes:\n"
 	for _i in object_node.size():
 		_s += "---> "+str(object_node[_i])+"\n"
-	_s += "______________________________________\n"
+	_s += "--------------------------------------\n"
 	debugInfo.text = _s
 #-------------------------------------------------------------------------------
 func Organize_Area2Ds():
@@ -390,6 +394,37 @@ func Close_Description(_cancel: Callable):
 	nothing_cancel = _cancel
 #endregion
 #-------------------------------------------------------------------------------
+#region PRESSHOLD FUNCS
+func CardSlot_Node_PressHolding(_cardSlot_Node: CardSlot_Node):
+	if(_cardSlot_Node.card_in_slot == null):
+		return
+	#-------------------------------------------------------------------------------
+	Card_Node_PressHolding(_cardSlot_Node.card_in_slot)
+#-------------------------------------------------------------------------------
+func Card_Node_PressHolding(_card_Node: Card_Node):
+	if(_card_Node.card_Class == null):
+		return
+	#-------------------------------------------------------------------------------
+	Card_Class_PressHolding(_card_Node.card_Class)
+#-------------------------------------------------------------------------------
+func Card_Class_PressHolding(_card_Class: Card_Class):
+	if(_card_Class.card_Resource == null):
+		return
+	#-------------------------------------------------------------------------------
+	Card_Resource_PressHolding(_card_Class.card_Resource)
+#-------------------------------------------------------------------------------
+func Card_Resource_PressHolding(_cardResource: Card_Resource):
+	leftMouseCounter += 1
+	if(leftMouseCounter > 40):
+		Open_Description(_cardResource)
+		#-------------------------------------------------------------------------------
+		leftMouseCounter = 0
+		isLeftMousePressed = false
+		#-------------------------------------------------------------------------------
+		return
+	#-------------------------------------------------------------------------------
+#endregion
+#-------------------------------------------------------------------------------
 #region SET TABLET
 func SetStage():
 	screen_size = get_viewport_rect().size
@@ -400,11 +435,10 @@ func SetStage():
 	#-------------------------------------------------------------------------------
 	SetButton(button1)
 	SetButton(button2)
+	SetButton(phase_button)
 	#-------------------------------------------------------------------------------
 	banner_panel.hide()
-	#-------------------------------------------------------------------------------
-	button1.highlight_TextureRect.hide()
-	button2.highlight_TextureRect.hide()
+	phase_menu.hide()
 	#-------------------------------------------------------------------------------
 	Hide_Button_Node(button1)
 	Hide_Button_Node(button2)
@@ -418,12 +452,11 @@ func SetStage():
 	await Draw_Cards(player2, 5)
 	#-------------------------------------------------------------------------------
 	await StartPhase()
-	#-------------------------------------------------------------------------------
-	await MainPhase1()
 #-------------------------------------------------------------------------------
 func SetButton(_button: Button_Node):
 	_button.highlighted = func(): Highlight_Button_True(_button)
 	_button.lowlighted = func(): Highlight_Button_False(_button)
+	_button.highlight_TextureRect.hide()
 #-------------------------------------------------------------------------------
 func SetPlayer(_user:Player_Node, _opponent:Player_Node):
 	LoadDeck(_user)
@@ -533,10 +566,13 @@ func Remove_card_from_hand(_card:Card_Node):
 #-------------------------------------------------------------------------------
 #region START PHASE
 func StartPhase():
+	myPHASE_STATE = PHASE_STATE.START_PHASE
+	await Show_Banner("Your Turn")
 	await Show_Banner("Start Phase")
 	var _card_Node: Card_Node = Draw_1_Card(player1)
 	Update_hand_position(player1.hand)
 	await get_tree().create_timer(0.15).timeout
+	await MainPhase1()
 #-------------------------------------------------------------------------------
 func Show_Banner(_s:String):
 	banner_label.text = _s
@@ -547,48 +583,19 @@ func Show_Banner(_s:String):
 #-------------------------------------------------------------------------------
 #region MAIN PHASE 1
 func MainPhase1():
+	myPHASE_STATE = PHASE_STATE.MAIN_PHASE1
 	await Show_Banner("Main Phase 1")
 	MainPhase1_Idle()
 #endregion
 #-------------------------------------------------------------------------------
-#region PRESSHOLD FUNCS
-func CardSlot_Node_PressHolding(_cardSlot_Node: CardSlot_Node):
-	if(_cardSlot_Node.card_in_slot == null):
-		return
-	#-------------------------------------------------------------------------------
-	Card_Node_PressHolding(_cardSlot_Node.card_in_slot)
-#-------------------------------------------------------------------------------
-func Card_Node_PressHolding(_card_Node: Card_Node):
-	if(_card_Node.card_Class == null):
-		return
-	#-------------------------------------------------------------------------------
-	Card_Class_PressHolding(_card_Node.card_Class)
-#-------------------------------------------------------------------------------
-func Card_Class_PressHolding(_card_Class: Card_Class):
-	if(_card_Class.card_Resource == null):
-		return
-	#-------------------------------------------------------------------------------
-	Card_Resource_PressHolding(_card_Class.card_Resource)
-#-------------------------------------------------------------------------------
-func Card_Resource_PressHolding(_cardResource: Card_Resource):
-	leftMouseCounter += 1
-	if(leftMouseCounter > 40):
-		Open_Description(_cardResource)
-		#-------------------------------------------------------------------------------
-		leftMouseCounter = 0
-		isLeftMousePressed = false
-		#-------------------------------------------------------------------------------
-		return
-	#-------------------------------------------------------------------------------
-#endregion
-#-------------------------------------------------------------------------------
 #region MAIN PHASE 1 - IDLE
 func MainPhase1_Idle():
-	myMAINPHASE1_STATE = MAINPHASE1_STATE.IDLE
-	print("Enter 'MAINPHASE1_STATE.IDLE'")
+	print("Enter - MainPhase1 - Idle")
 	#-------------------------------------------------------------------------------
 	Hide_Button_Node(button1)
 	Hide_Button_Node(button2)
+	#-------------------------------------------------------------------------------
+	phase_button.released = func(): MainPhase1_Exit_Idle_Enter_PhaseMenu()
 	#-------------------------------------------------------------------------------
 	nothing_released = func():pass
 	nothing_cancel = func():pass
@@ -619,13 +626,11 @@ func MainPhase1_Exit_Idle_Enter_HandMenu(_cardNode: Card_Node):
 #-------------------------------------------------------------------------------
 #region MAIN PHASE 1 - HAND MENU
 func MainPhase1_HandMenu(_cardNode: Card_Node):
-	myMAINPHASE1_STATE = MAINPHASE1_STATE.HAND_MENU
-	print("Enter 'MAINPHASE1_STATE.HAND_MENU'")
+	print("Enter - MainPhase1 - HandMenu")
 	#-------------------------------------------------------------------------------
 	MainPhase1_HandMenu_Common(_cardNode)
 #-------------------------------------------------------------------------------
 func MainPhase1_HandMenu_Common(_cardNode: Card_Node):
-	selected_object_node = _cardNode
 	#-------------------------------------------------------------------------------
 	Selected_Card_True(_cardNode)
 	#-------------------------------------------------------------------------------
@@ -636,8 +641,10 @@ func MainPhase1_HandMenu_Common(_cardNode: Card_Node):
 	button1.global_position = _cardNode.global_position + Vector2(-35, -150)
 	button2.global_position = _cardNode.global_position + Vector2(35, -150)
 	#-------------------------------------------------------------------------------
-	button1.released = func(): MainPhase1_Exit_HandMenu_Enter_SummonMenu(_cardNode)
-	button2.released = func(): MainPhase1_Exit_HandMenu_Enter_SummonMenu(_cardNode)
+	button1.released = func(): MainPhase1_Exit_HandMenu_Enter_SummonMenu(_cardNode, true)
+	button2.released = func(): MainPhase1_Exit_HandMenu_Enter_SummonMenu(_cardNode, false)
+	#-------------------------------------------------------------------------------
+	phase_button.released = func(): MainPhase1_Exit_HandMenu_Enter_PhaseMenu(_cardNode)
 	#-------------------------------------------------------------------------------
 	Show_Button_Node(button1)
 	Show_Button_Node(button2)
@@ -645,11 +652,12 @@ func MainPhase1_HandMenu_Common(_cardNode: Card_Node):
 	nothing_cancel = func(): MainPhase1_Exit_HandMenu_Enter_Idle_by_Cancel(_cardNode)
 	nothing_released = func(): MainPhase1_Exit_HandMenu_Enter_Idle(_cardNode)
 	#-------------------------------------------------------------------------------
-	HandCard_Selected_Player(player1, _cardNode)
-	HandCard_Selected_Player(player2, _cardNode)
+	MainPhase1_HandMenu_Player(player1, _cardNode)
+	MainPhase1_HandMenu_Player(player2, _cardNode)
 	#-------------------------------------------------------------------------------
 #-------------------------------------------------------------------------------
-func HandCard_Selected_Player(_player: Player_Node, _cardNode: Card_Node):
+func MainPhase1_HandMenu_Player(_player: Player_Node, _cardNode: Card_Node):
+	#-------------------------------------------------------------------------------
 	_player.mainDeck.released = func(): MainPhase1_Exit_HandMenu_Enter_Idle(_cardNode)
 	_player.extraDeck.released = func(): MainPhase1_Exit_HandMenu_Enter_Idle(_cardNode)
 	_player.grave.released = func(): MainPhase1_Exit_HandMenu_Enter_Idle(_cardNode)
@@ -669,11 +677,14 @@ func HandCard_Selected_Player(_player: Player_Node, _cardNode: Card_Node):
 	#-------------------------------------------------------------------------------
 #-------------------------------------------------------------------------------
 func MainPhase1_HandMenu_2(_cardNode1: Card_Node, _cardNode2: Card_Node):
-	Selected_Card_False(_cardNode2)
-	_cardNode2.highlighted = func(): Highlight_Card_True(_cardNode2)
-	_cardNode2.lowlighted = func(): Highlight_Card_False(_cardNode2)
+	Restablish_Highlight_of_Card_in_Hand(_cardNode2)
 	#-------------------------------------------------------------------------------
 	MainPhase1_HandMenu_Common(_cardNode1)
+#-------------------------------------------------------------------------------
+func Restablish_Highlight_of_Card_in_Hand(_card_node: Card_Node):
+	Selected_Card_False(_card_node)
+	_card_node.highlighted = func(): Highlight_Card_True(_card_node)
+	_card_node.lowlighted = func(): Highlight_Card_False(_card_node)
 #-------------------------------------------------------------------------------
 func MainPhase1_Exit_HandMenu_Enter_Idle(_cardNode: Card_Node):
 	Selected_Card_False(_cardNode)
@@ -690,26 +701,25 @@ func MainPhase1_Exit_HandMenu_Enter_Idle_by_Cancel(_cardNode: Card_Node):
 	HandCard_Canceled_Common(_cardNode)
 	MainPhase1_Idle()
 #-------------------------------------------------------------------------------
-func MainPhase1_Exit_HandMenu_Enter_SummonMenu(_cardNode: Card_Node):
+func MainPhase1_Exit_HandMenu_Enter_SummonMenu(_cardNode: Card_Node, _isInAttackPosition: bool):
+	_cardNode.card_Class.isInAttackPosition = _isInAttackPosition
 	Selected_Card_False(_cardNode)
 	HandCard_Canceled_Common(_cardNode)
 	MainPhase1_SummonMenu(_cardNode)
 #-------------------------------------------------------------------------------
 func HandCard_Canceled_Common(_cardNode: Card_Node):
-	selected_object_node = null
-	#-------------------------------------------------------------------------------
 	_cardNode.highlighted = func(): Highlight_Card_True(_cardNode)
 	_cardNode.lowlighted = func(): Highlight_Card_False(_cardNode)
-#-------------------------------------------------------------------------------
 #endregion
 #-------------------------------------------------------------------------------
 #region MAIN PHASE 1 - SUMMON MENU
 func MainPhase1_SummonMenu(_card_Node:Card_Node):
-	myMAINPHASE1_STATE = MAINPHASE1_STATE.SUMMON_MENU
-	print("Enter 'MAINPHASE1_STATE.SUMMON_MENU'")
+	print("Enter - MainPhase1 - SummonMenu")
 	#-------------------------------------------------------------------------------
 	Hide_Button_Node(button1)
 	Hide_Button_Node(button2)
+	#-------------------------------------------------------------------------------
+	phase_button.released = func(): MainPhase1_Exit_SummonMenu_Enter_PhaseMenu(_card_Node)
 	#-------------------------------------------------------------------------------
 	if(_card_Node.card_Class.card_Resource.myCARD_TYPE == Card_Resource.CARD_TYPE.BLUE):
 		for _i in player1.magicZone.size():
@@ -814,11 +824,511 @@ func MoveCard_fromHand_toSlot(_card_node: Card_Node, _hand: Hand_Node, _cardSlot
 	_tween.set_parallel(true)
 	_tween.tween_property(_card_node.offset_Node2D, "position", Vector2(0, 0), _timer)
 	_tween.tween_property(_card_node.offset_Node2D, "scale", Vector2(_size, _size), _timer)
+	if(_card_node.card_Class.card_Resource.myCARD_TYPE == Card_Resource.CARD_TYPE.BLUE):
+		if(_card_node.card_Class.isInAttackPosition):
+			pass
+		else:
+			_card_node.frame_Node.back.show()
+			_card_node.frame_Node.back.self_modulate.a = 0.9
+	else:
+		if(_card_node.card_Class.isInAttackPosition):
+			pass
+		else:
+			_tween.tween_property(_card_node, "rotation_degrees", _card_node.card_Class.user.card_defense_rotation, _timer)
 	_tween.tween_property(_card_node, "global_position", _cardSlot_Node.global_position, _timer)
 	_tween.set_parallel(false)
 	_tween.tween_callback(func():
 		_card_node.z_index = 0
 	)
 #-------------------------------------------------------------------------------
+#endregion
+#-------------------------------------------------------------------------------
+#region MAIN PHASE 1 - PHASE MENU
+func MainPhase1_Exit_Idle_Enter_PhaseMenu():
+	MainPhase1_Enter_PhaseMenu()
+#-------------------------------------------------------------------------------
+func MainPhase1_Exit_HandMenu_Enter_PhaseMenu(_card_node: Card_Node):
+	Restablish_Highlight_of_Card_in_Hand(_card_node)
+	Hide_Button_Node(button1)
+	Hide_Button_Node(button2)
+	#-------------------------------------------------------------------------------
+	MainPhase1_Enter_PhaseMenu()
+#-------------------------------------------------------------------------------
+func MainPhase1_Exit_SummonMenu_Enter_PhaseMenu(_card_node: Card_Node):
+	Deselect_Zones(_card_node)
+	MainPhase1_Enter_PhaseMenu()
+#-------------------------------------------------------------------------------
+func MainPhase1_Enter_PhaseMenu():
+	print("Enter - MainPhase1 - PhaseMenu")
+	phase_menu.show()
+	myGAME_STATE = GAME_STATE.DESCRIPTION_MENU
+	#-------------------------------------------------------------------------------
+	phase_menu.button_startPhase.disabled = true
+	Connect_PressedSignal_InButton(phase_menu.button_mainPhase1, func():MainPhase1_Exit_PhaseMenu_Enter_Idle())
+	Connect_PressedSignal_InButton(phase_menu.button_battlePhase, func():BattlePhase())
+	phase_menu.button_mainPhase2.disabled = true
+	Connect_PressedSignal_InButton(phase_menu.button_endPhase, func():EndPhase())
+	Connect_PressedSignal_InButton(phase_menu.button_cancel, func():MainPhase1_Exit_PhaseMenu_Enter_Idle())
+	#-------------------------------------------------------------------------------
+	nothing_cancel = func():MainPhase1_Exit_PhaseMenu_Enter_Idle()
+#-------------------------------------------------------------------------------
+func MainPhase1_Exit_PhaseMenu_Enter_Idle():
+	phase_menu.button_startPhase.disabled = false
+	phase_menu.button_mainPhase2.disabled = false
+	Disconnect_Signal(phase_menu.button_cancel.pressed)
+	Disconnect_Signal(phase_menu.button_mainPhase1.pressed)
+	Disconnect_Signal(phase_menu.button_battlePhase.pressed)
+	MainPhase1_Idle()
+	phase_menu.hide()
+	myGAME_STATE = GAME_STATE.GAMEPLAY
+#endregion
+#-------------------------------------------------------------------------------
+#region BATTLE PHASE
+func BattlePhase():
+	phase_menu.hide()
+	myGAME_STATE = GAME_STATE.GAMEPLAY
+	myPHASE_STATE = PHASE_STATE.BATTLE_PHASE
+	await Show_Banner("Battle Phase")
+	BattlePhase_Idle()
+#endregion
+#-------------------------------------------------------------------------------
+#region BATTLE PHASE - IDLE
+func BattlePhase_Idle():
+	print("Enter - BattlePhase - Idle")
+	#-------------------------------------------------------------------------------
+	Hide_Button_Node(button1)
+	Hide_Button_Node(button2)
+	#-------------------------------------------------------------------------------
+	phase_button.released = func(): BattlePhase_Exit_Idle_Enter_PhaseMenu()
+	#-------------------------------------------------------------------------------
+	nothing_released = func():pass
+	nothing_cancel = func():pass
+	#-------------------------------------------------------------------------------
+	BattlePhase_Idle_Player(player1)
+	BattlePhase_Idle_Player(player2)
+#-------------------------------------------------------------------------------
+func BattlePhase_Idle_Player(_player: Player_Node):
+	_player.mainDeck.released = func():pass
+	_player.extraDeck.released = func():pass
+	_player.grave.released = func():pass
+	_player.removed.released = func():pass
+	#-------------------------------------------------------------------------------
+	for _i in _player.monsterZone.size():
+		_player.monsterZone[_i].released = func():pass
+	#-------------------------------------------------------------------------------
+	for _i in _player.magicZone.size():
+		_player.magicZone[_i].released = func():pass
+	#-------------------------------------------------------------------------------
+	for _i in _player.hand.card_Node_Array.size():
+		var _card_Node: Card_Node = _player.hand.card_Node_Array[_i]
+		_card_Node.released = func(): BattlePhase_HandMenu(_card_Node)
+	#-------------------------------------------------------------------------------
+#endregion
+#-------------------------------------------------------------------------------
+#region BATTLE PHASE - HAND MENU
+func BattlePhase_HandMenu(_cardNode: Card_Node):
+	print("Enter - BattlePhase - HandMenu")
+	#-------------------------------------------------------------------------------
+	BattlePhase_HandMenu_Common(_cardNode)
+#-------------------------------------------------------------------------------
+func BattlePhase_HandMenu_Common(_cardNode: Card_Node):
+	#-------------------------------------------------------------------------------
+	Selected_Card_True(_cardNode)
+	#-------------------------------------------------------------------------------
+	_cardNode.highlighted = func():pass
+	_cardNode.lowlighted = func():pass
+	_cardNode.released = func():pass
+	#-------------------------------------------------------------------------------
+	phase_button.released = func(): BattlePhase_Exit_HandMenu_Enter_PhaseMenu(_cardNode)
+	#-------------------------------------------------------------------------------
+	nothing_cancel = func(): BattlePhase_Exit_HandMenu_Enter_Idle_by_Cancel(_cardNode)
+	nothing_released = func(): BattlePhase_Exit_HandMenu_Enter_Idle(_cardNode)
+	#-------------------------------------------------------------------------------
+	BattlePhase_HandMenu_Player(player1, _cardNode)
+	BattlePhase_HandMenu_Player(player2, _cardNode)
+	#-------------------------------------------------------------------------------
+#-------------------------------------------------------------------------------
+func BattlePhase_HandMenu_Player(_player: Player_Node, _cardNode: Card_Node):
+	#-------------------------------------------------------------------------------
+	_player.mainDeck.released = func(): BattlePhase_Exit_HandMenu_Enter_Idle(_cardNode)
+	_player.extraDeck.released = func(): BattlePhase_Exit_HandMenu_Enter_Idle(_cardNode)
+	_player.grave.released = func(): BattlePhase_Exit_HandMenu_Enter_Idle(_cardNode)
+	_player.removed.released = func(): BattlePhase_Exit_HandMenu_Enter_Idle(_cardNode)
+	#-------------------------------------------------------------------------------
+	for _i in _player.monsterZone.size():
+		_player.monsterZone[_i].released = func(): BattlePhase_Exit_HandMenu_Enter_Idle(_cardNode)
+	#-------------------------------------------------------------------------------
+	for _i in _player.magicZone.size():
+		_player.magicZone[_i].released = func(): BattlePhase_Exit_HandMenu_Enter_Idle(_cardNode)
+	#-------------------------------------------------------------------------------
+	for _i in _player.hand.card_Node_Array.size():
+		if(_player.hand.card_Node_Array[_i] != _cardNode):
+			var _card_Node_InHand: Card_Node = _player.hand.card_Node_Array[_i]
+			_card_Node_InHand.released = func(): BattlePhase_HandMenu_2(_card_Node_InHand, _cardNode)
+		#-------------------------------------------------------------------------------
+	#-------------------------------------------------------------------------------
+#-------------------------------------------------------------------------------
+func BattlePhase_HandMenu_2(_cardNode1: Card_Node, _cardNode2: Card_Node):
+	Restablish_Highlight_of_Card_in_Hand(_cardNode2)
+	#-------------------------------------------------------------------------------
+	BattlePhase_HandMenu_Common(_cardNode1)
+#-------------------------------------------------------------------------------
+func BattlePhase_Exit_HandMenu_Enter_Idle(_cardNode: Card_Node):
+	Selected_Card_False(_cardNode)
+	HandCard_Canceled_Common(_cardNode)
+	BattlePhase_Idle()
+#-------------------------------------------------------------------------------
+func BattlePhase_Exit_HandMenu_Enter_Idle_by_Cancel(_cardNode: Card_Node):
+	if(object_node.has(_cardNode)):
+		Highlight_Card_True(_cardNode)
+	#-------------------------------------------------------------------------------
+	else:
+		Selected_Card_False(_cardNode)
+	#-------------------------------------------------------------------------------
+	HandCard_Canceled_Common(_cardNode)
+	BattlePhase_Idle()
+#endregion
+#-------------------------------------------------------------------------------
+#region BATTLE PHASE - PHASE MENU
+func BattlePhase_Exit_Idle_Enter_PhaseMenu():
+	BattlePhase_Enter_PhaseMenu()
+#-------------------------------------------------------------------------------
+func BattlePhase_Exit_HandMenu_Enter_PhaseMenu(_card_node: Card_Node):
+	Restablish_Highlight_of_Card_in_Hand(_card_node)
+	#-------------------------------------------------------------------------------
+	BattlePhase_Enter_PhaseMenu()
+#-------------------------------------------------------------------------------
+func BattlePhase_Enter_PhaseMenu():
+	print("Enter - BattlePhase - PhaseMenu")
+	phase_menu.show()
+	myGAME_STATE = GAME_STATE.DESCRIPTION_MENU
+	#-------------------------------------------------------------------------------
+	phase_menu.button_startPhase.disabled = true
+	phase_menu.button_mainPhase1.disabled = true
+	Connect_PressedSignal_InButton(phase_menu.button_battlePhase, func():BattlePhase_Exit_PhaseMenu_Enter_Idle())
+	Connect_PressedSignal_InButton(phase_menu.button_mainPhase2, func():MainPhase2())
+	Connect_PressedSignal_InButton(phase_menu.button_endPhase, func():EndPhase())
+	Connect_PressedSignal_InButton(phase_menu.button_cancel, func():BattlePhase_Exit_PhaseMenu_Enter_Idle())
+	#-------------------------------------------------------------------------------
+	nothing_cancel = func():BattlePhase_Exit_PhaseMenu_Enter_Idle()
+#-------------------------------------------------------------------------------
+func BattlePhase_Exit_PhaseMenu_Enter_Idle():
+	#-------------------------------------------------------------------------------
+	phase_menu.button_startPhase.disabled = false
+	phase_menu.button_mainPhase1.disabled = false
+	Disconnect_Signal(phase_menu.button_battlePhase.pressed)
+	Disconnect_Signal(phase_menu.button_mainPhase2.pressed)
+	Disconnect_Signal(phase_menu.button_cancel.pressed)
+	#-------------------------------------------------------------------------------
+	BattlePhase_Idle()
+	phase_menu.hide()
+	myGAME_STATE = GAME_STATE.GAMEPLAY
+#endregion
+#-------------------------------------------------------------------------------
+#region MAIN PHASE 2
+func MainPhase2():
+	phase_menu.hide()
+	myGAME_STATE = GAME_STATE.GAMEPLAY
+	myPHASE_STATE = PHASE_STATE.MAIN_PHASE2
+	await Show_Banner("Main Phase 2")
+	MainPhase2_Idle()
+#endregion
+#-------------------------------------------------------------------------------
+#region MAIN PHASE 2 - IDLE
+func MainPhase2_Idle():
+	print("Enter - MainPhase2 - Idle")
+	#-------------------------------------------------------------------------------
+	Hide_Button_Node(button1)
+	Hide_Button_Node(button2)
+	#-------------------------------------------------------------------------------
+	phase_button.released = func(): MainPhase2_Exit_Idle_Enter_PhaseMenu()
+	#-------------------------------------------------------------------------------
+	nothing_released = func():pass
+	nothing_cancel = func():pass
+	#-------------------------------------------------------------------------------
+	MainPhase2_Idle_Player(player1)
+	MainPhase2_Idle_Player(player2)
+#-------------------------------------------------------------------------------
+func MainPhase2_Idle_Player(_player: Player_Node):
+	_player.mainDeck.released = func():pass
+	_player.extraDeck.released = func():pass
+	_player.grave.released = func():pass
+	_player.removed.released = func():pass
+	#-------------------------------------------------------------------------------
+	for _i in _player.monsterZone.size():
+		_player.monsterZone[_i].released = func():pass
+	#-------------------------------------------------------------------------------
+	for _i in _player.magicZone.size():
+		_player.magicZone[_i].released = func():pass
+	#-------------------------------------------------------------------------------
+	for _i in _player.hand.card_Node_Array.size():
+		var _card_Node: Card_Node = _player.hand.card_Node_Array[_i]
+		_card_Node.released = func(): MainPhase2_Exit_Idle_Enter_HandMenu(_card_Node)
+	#-------------------------------------------------------------------------------
+#-------------------------------------------------------------------------------
+func MainPhase2_Exit_Idle_Enter_HandMenu(_cardNode: Card_Node):
+	MainPhase2_HandMenu(_cardNode)
+#endregion
+#-------------------------------------------------------------------------------
+#region MAIN PHASE 2 - HAND MENU
+func MainPhase2_HandMenu(_cardNode: Card_Node):
+	print("Enter - MainPhase2 - HandMenu")
+	#-------------------------------------------------------------------------------
+	MainPhase2_HandMenu_Common(_cardNode)
+#-------------------------------------------------------------------------------
+func MainPhase2_HandMenu_Common(_cardNode: Card_Node):
+	#-------------------------------------------------------------------------------
+	Selected_Card_True(_cardNode)
+	#-------------------------------------------------------------------------------
+	_cardNode.highlighted = func():pass
+	_cardNode.lowlighted = func():pass
+	_cardNode.released = func():pass
+	#-------------------------------------------------------------------------------
+	button1.global_position = _cardNode.global_position + Vector2(-35, -150)
+	button2.global_position = _cardNode.global_position + Vector2(35, -150)
+	#-------------------------------------------------------------------------------
+	button1.released = func(): MainPhase2_Exit_HandMenu_Enter_SummonMenu(_cardNode, true)
+	button2.released = func(): MainPhase2_Exit_HandMenu_Enter_SummonMenu(_cardNode, false)
+	#-------------------------------------------------------------------------------
+	phase_button.released = func(): MainPhase2_Exit_HandMenu_Enter_PhaseMenu(_cardNode)
+	#-------------------------------------------------------------------------------
+	Show_Button_Node(button1)
+	Show_Button_Node(button2)
+	#-------------------------------------------------------------------------------
+	nothing_cancel = func(): MainPhase2_Exit_HandMenu_Enter_Idle_by_Cancel(_cardNode)
+	nothing_released = func(): MainPhase2_Exit_HandMenu_Enter_Idle(_cardNode)
+	#-------------------------------------------------------------------------------
+	MainPhase2_HandMenu_Player(player1, _cardNode)
+	MainPhase2_HandMenu_Player(player2, _cardNode)
+	#-------------------------------------------------------------------------------
+#-------------------------------------------------------------------------------
+func MainPhase2_HandMenu_Player(_player: Player_Node, _cardNode: Card_Node):
+	#-------------------------------------------------------------------------------
+	_player.mainDeck.released = func(): MainPhase2_Exit_HandMenu_Enter_Idle(_cardNode)
+	_player.extraDeck.released = func(): MainPhase2_Exit_HandMenu_Enter_Idle(_cardNode)
+	_player.grave.released = func(): MainPhase2_Exit_HandMenu_Enter_Idle(_cardNode)
+	_player.removed.released = func(): MainPhase2_Exit_HandMenu_Enter_Idle(_cardNode)
+	#-------------------------------------------------------------------------------
+	for _i in _player.monsterZone.size():
+		_player.monsterZone[_i].released = func(): MainPhase2_Exit_HandMenu_Enter_Idle(_cardNode)
+	#-------------------------------------------------------------------------------
+	for _i in _player.magicZone.size():
+		_player.magicZone[_i].released = func(): MainPhase2_Exit_HandMenu_Enter_Idle(_cardNode)
+	#-------------------------------------------------------------------------------
+	for _i in _player.hand.card_Node_Array.size():
+		if(_player.hand.card_Node_Array[_i] != _cardNode):
+			var _card_Node_InHand: Card_Node = _player.hand.card_Node_Array[_i]
+			_card_Node_InHand.released = func(): MainPhase2_HandMenu_2(_card_Node_InHand, _cardNode)
+		#-------------------------------------------------------------------------------
+	#-------------------------------------------------------------------------------
+#-------------------------------------------------------------------------------
+func MainPhase2_HandMenu_2(_cardNode1: Card_Node, _cardNode2: Card_Node):
+	Restablish_Highlight_of_Card_in_Hand(_cardNode2)
+	#-------------------------------------------------------------------------------
+	MainPhase2_HandMenu_Common(_cardNode1)
+#-------------------------------------------------------------------------------
+func MainPhase2_Exit_HandMenu_Enter_Idle(_cardNode: Card_Node):
+	Selected_Card_False(_cardNode)
+	HandCard_Canceled_Common(_cardNode)
+	MainPhase2_Idle()
+#-------------------------------------------------------------------------------
+func MainPhase2_Exit_HandMenu_Enter_Idle_by_Cancel(_cardNode: Card_Node):
+	if(object_node.has(_cardNode)):
+		Highlight_Card_True(_cardNode)
+	#-------------------------------------------------------------------------------
+	else:
+		Selected_Card_False(_cardNode)
+	#-------------------------------------------------------------------------------
+	HandCard_Canceled_Common(_cardNode)
+	MainPhase2_Idle()
+#-------------------------------------------------------------------------------
+func MainPhase2_Exit_HandMenu_Enter_SummonMenu(_cardNode: Card_Node, _isInAttackPosition: bool):
+	_cardNode.card_Class.isInAttackPosition = _isInAttackPosition
+	Selected_Card_False(_cardNode)
+	HandCard_Canceled_Common(_cardNode)
+	MainPhase2_SummonMenu(_cardNode)
+#endregion
+#-------------------------------------------------------------------------------
+#region MAIN PHASE 2 - SUMMON MENU
+func MainPhase2_SummonMenu(_card_Node:Card_Node):
+	print("Enter - MainPhase2 - SummonMenu")
+	#-------------------------------------------------------------------------------
+	Hide_Button_Node(button1)
+	Hide_Button_Node(button2)
+	#-------------------------------------------------------------------------------
+	phase_button.released = func(): MainPhase2_Exit_SummonMenu_Enter_PhaseMenu(_card_Node)
+	#-------------------------------------------------------------------------------
+	if(_card_Node.card_Class.card_Resource.myCARD_TYPE == Card_Resource.CARD_TYPE.BLUE):
+		for _i in player1.magicZone.size():
+			if(player1.magicZone[_i].card_in_slot == null):
+				player1.magicZone[_i].summoning_TextureRect.show()
+				player1.magicZone[_i].released = func(): MainPhase2_SummonMenu_ActiveteCard(player1.magicZone[_i], _card_Node)
+			#-------------------------------------------------------------------------------
+			else:
+				player1.magicZone[_i].released = func(): MainPhase2_Exit_SummonMenu_Enter_HandMenu_1(_card_Node)
+			#-------------------------------------------------------------------------------
+		#-------------------------------------------------------------------------------
+		for _i in player1.monsterZone.size():
+			player1.monsterZone[_i].released = func(): MainPhase2_Exit_SummonMenu_Enter_HandMenu_1(_card_Node)
+		#-------------------------------------------------------------------------------
+	#-------------------------------------------------------------------------------
+	else:
+		for _i in player1.monsterZone.size():
+			if(player1.monsterZone[_i].card_in_slot == null):
+				player1.monsterZone[_i].summoning_TextureRect.show()
+				player1.monsterZone[_i].released = func(): MainPhase2_SummonMenu_SummonMonster(player1.monsterZone[_i], _card_Node)
+			#-------------------------------------------------------------------------------
+			else:
+				player1.monsterZone[_i].released = func(): MainPhase2_Exit_SummonMenu_Enter_HandMenu_1(_card_Node)
+			#-------------------------------------------------------------------------------
+		#-------------------------------------------------------------------------------
+		for _i in player1.magicZone.size():
+			player1.magicZone[_i].released = func(): MainPhase2_Exit_SummonMenu_Enter_HandMenu_1(_card_Node)
+		#-------------------------------------------------------------------------------
+	#-------------------------------------------------------------------------------
+	for _i in player2.monsterZone.size():
+		player2.monsterZone[_i].released = func(): MainPhase2_Exit_SummonMenu_Enter_HandMenu_1(_card_Node)
+	#-------------------------------------------------------------------------------
+	for _i in player2.magicZone.size():
+		player2.magicZone[_i].released = func(): MainPhase2_Exit_SummonMenu_Enter_HandMenu_1(_card_Node)
+	#-------------------------------------------------------------------------------
+	nothing_released = func(): MainPhase2_Exit_SummonMenu_Enter_HandMenu_1(_card_Node)
+	nothing_cancel = func(): MainPhase2_Exit_SummonMenu_Enter_HandMenu_1(_card_Node)
+	#-------------------------------------------------------------------------------
+	MainPhase2_SummonMenu_Player(player1, _card_Node)
+	MainPhase2_SummonMenu_Player(player2, _card_Node)
+#-------------------------------------------------------------------------------
+func MainPhase2_SummonMenu_Player(_player:Player_Node, _card_Node: Card_Node):
+	#-------------------------------------------------------------------------------
+	_player.mainDeck.released = func(): MainPhase2_Exit_SummonMenu_Enter_HandMenu_1(_card_Node)
+	_player.extraDeck.released = func(): MainPhase2_Exit_SummonMenu_Enter_HandMenu_1(_card_Node)
+	_player.grave.released = func(): MainPhase2_Exit_SummonMenu_Enter_HandMenu_1(_card_Node)
+	_player.removed.released = func(): MainPhase2_Exit_SummonMenu_Enter_HandMenu_1(_card_Node)
+	#-------------------------------------------------------------------------------
+	for _i in _player.hand.card_Node_Array.size():
+		var _card_Node_inHand: Card_Node = _player.hand.card_Node_Array[_i]
+		_card_Node_inHand.released = func(): MainPhase2_Exit_SummonMenu_Enter_HandMenu_2(_card_Node_inHand, _card_Node)
+	#-------------------------------------------------------------------------------
+#-------------------------------------------------------------------------------
+func MainPhase2_SummonMenu_SummonMonster(_cardSlot_Node: CardSlot_Node, _card_Node: Card_Node):
+	MainPhase2_Exit_SummonMenu_Enter_Idle(_cardSlot_Node, _card_Node)
+	Desactivate_MonsterZone()
+#-------------------------------------------------------------------------------
+func MainPhase2_SummonMenu_ActiveteCard(_cardSlot_Node: CardSlot_Node, _card_Node: Card_Node):
+	MainPhase2_Exit_SummonMenu_Enter_Idle(_cardSlot_Node, _card_Node)
+	Desactivate_MagicZone()
+#-------------------------------------------------------------------------------
+func MainPhase2_Exit_SummonMenu_Enter_Idle(_cardSlot_Node: CardSlot_Node, _card_Node: Card_Node):
+	MoveCard_fromHand_toSlot(_card_Node, player1.hand, _cardSlot_Node)
+	MainPhase2_Idle()
+#-------------------------------------------------------------------------------
+func MainPhase2_Exit_SummonMenu_Enter_HandMenu_1(_card_Node: Card_Node):
+	MainPhase2_HandMenu(_card_Node)
+	Deselect_Zones(_card_Node)
+	#-------------------------------------------------------------------------------
+func MainPhase2_Exit_SummonMenu_Enter_HandMenu_2(_card_Node1: Card_Node, _card_Node2: Card_Node):
+	MainPhase2_HandMenu(_card_Node1)
+	Deselect_Zones(_card_Node2)
+#-------------------------------------------------------------------------------
+#endregion
+#-------------------------------------------------------------------------------
+#region MAIN PHASE 2 - PHASE MENU
+func MainPhase2_Exit_Idle_Enter_PhaseMenu():
+	MainPhase2_Enter_PhaseMenu()
+#-------------------------------------------------------------------------------
+func MainPhase2_Exit_HandMenu_Enter_PhaseMenu(_card_node: Card_Node):
+	Restablish_Highlight_of_Card_in_Hand(_card_node)
+	Hide_Button_Node(button1)
+	Hide_Button_Node(button2)
+	#-------------------------------------------------------------------------------
+	MainPhase2_Enter_PhaseMenu()
+#-------------------------------------------------------------------------------
+func MainPhase2_Exit_SummonMenu_Enter_PhaseMenu(_card_node: Card_Node):
+	Deselect_Zones(_card_node)
+	MainPhase2_Enter_PhaseMenu()
+#-------------------------------------------------------------------------------
+func MainPhase2_Enter_PhaseMenu():
+	print("Enter - MainPhase2 - PhaseMenu")
+	phase_menu.show()
+	myGAME_STATE = GAME_STATE.DESCRIPTION_MENU
+	#-------------------------------------------------------------------------------
+	phase_menu.button_startPhase.disabled = true
+	phase_menu.button_mainPhase1.disabled = true
+	phase_menu.button_battlePhase.disabled = true
+	Connect_PressedSignal_InButton(phase_menu.button_mainPhase2, func():MainPhase2_Exit_PhaseMenu_Enter_Idle())
+	Connect_PressedSignal_InButton(phase_menu.button_endPhase, func():EndPhase())
+	Connect_PressedSignal_InButton(phase_menu.button_cancel, func():MainPhase2_Exit_PhaseMenu_Enter_Idle())
+	#-------------------------------------------------------------------------------
+	nothing_cancel = func():MainPhase2_Exit_PhaseMenu_Enter_Idle()
+#-------------------------------------------------------------------------------
+func MainPhase2_Exit_PhaseMenu_Enter_Idle():
+	phase_menu.button_startPhase.disabled = false
+	phase_menu.button_mainPhase2.disabled = false
+	phase_menu.button_battlePhase.disabled = false
+	Disconnect_Signal(phase_menu.button_mainPhase2.pressed)
+	Disconnect_Signal(phase_menu.button_cancel.pressed)
+	#-------------------------------------------------------------------------------
+	MainPhase2_Idle()
+	phase_menu.hide()
+	myGAME_STATE = GAME_STATE.GAMEPLAY
+#endregion
+#-------------------------------------------------------------------------------
+#region END PHASE
+func EndPhase():
+	phase_menu.hide()
+	myGAME_STATE = GAME_STATE.GAMEPLAY
+	myPHASE_STATE = PHASE_STATE.END_PHASE
+	EndPhase_Idle()
+	await Show_Banner("End Phase")
+	await Show_Banner("Opponent Turn")
+	StartPhase()
+#endregion
+#-------------------------------------------------------------------------------
+#region MAIN PHASE 1 - IDLE
+func EndPhase_Idle():
+	print("Enter - EndPhase - Idle")
+	#-------------------------------------------------------------------------------
+	Hide_Button_Node(button1)
+	Hide_Button_Node(button2)
+	#-------------------------------------------------------------------------------
+	phase_button.released = func(): pass
+	#-------------------------------------------------------------------------------
+	nothing_released = func():pass
+	nothing_cancel = func():pass
+	#-------------------------------------------------------------------------------
+	MainPhase1_Idle_Player(player1)
+	MainPhase1_Idle_Player(player2)
+#-------------------------------------------------------------------------------
+func EndPhase_Idle_Player(_player: Player_Node):
+	_player.mainDeck.released = func():pass
+	_player.extraDeck.released = func():pass
+	_player.grave.released = func():pass
+	_player.removed.released = func():pass
+	#-------------------------------------------------------------------------------
+	for _i in _player.monsterZone.size():
+		_player.monsterZone[_i].released = func():pass
+	#-------------------------------------------------------------------------------
+	for _i in _player.magicZone.size():
+		_player.magicZone[_i].released = func():pass
+	#-------------------------------------------------------------------------------
+	for _i in _player.hand.card_Node_Array.size():
+		var _card_Node: Card_Node = _player.hand.card_Node_Array[_i]
+		_card_Node.released = func(): pass
+	#-------------------------------------------------------------------------------
+#endregion
+#-------------------------------------------------------------------------------
+#region MISC
+func Connect_PressedSignal_InButton(_button:Button, _callable: Callable):
+	_button.disabled = false
+	Connect_Signal(_button.pressed, _callable)
+#-------------------------------------------------------------------------------
+func Connect_Signal(_signal:Signal, _callable: Callable):
+	Disconnect_Signal(_signal)
+	_signal.connect(_callable)
+#-------------------------------------------------------------------------------
+func Disconnect_Signal(_signal:Signal):
+	var _dictionaryArray : Array = _signal.get_connections()
+	for _dictionary in _dictionaryArray:
+		_signal.disconnect(_dictionary["callable"])
 #endregion
 #-------------------------------------------------------------------------------

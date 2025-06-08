@@ -1,9 +1,10 @@
-[gd_scene load_steps=28 format=3 uid="uid://dlfgbqjvq7ybh"]
+[gd_scene load_steps=30 format=3 uid="uid://dlfgbqjvq7ybh"]
 
 [ext_resource type="PackedScene" uid="uid://dfb2i4o7cr1k1" path="res://Nodes/Prefabs/card_node.tscn" id="1_c0q3d"]
 [ext_resource type="Script" uid="uid://bpueynpowmoms" path="res://Scripts/Scenes/game_scene.gd" id="1_txxkl"]
 [ext_resource type="Script" uid="uid://cfjdix5ity7jj" path="res://Scripts/Card_Node/hand_node.gd" id="4_4r13x"]
 [ext_resource type="Script" uid="uid://c5xocf2dc2jap" path="res://Scripts/Card_Node/player_node.gd" id="4_p7vwb"]
+[ext_resource type="Script" uid="uid://3m5hsd72ln5o" path="res://Scripts/phase_menu.gd" id="4_qxicl"]
 [ext_resource type="PackedScene" uid="uid://idh8uvwwpbjb" path="res://Nodes/Prefabs/deck_node.tscn" id="4_u3nvj"]
 [ext_resource type="Resource" uid="uid://b8itilv3eupn6" path="res://Cards/Resources/dragonmaid (1).tres" id="5_w0rv4"]
 [ext_resource type="Resource" uid="uid://otg0sqo8h5cp" path="res://Cards/Resources/dragonmaid (2).tres" id="6_emvl4"]
@@ -22,6 +23,7 @@
 [ext_resource type="Texture2D" uid="uid://c5qceh240gu1n" path="res://Assets/kenney_board-game-icons/card_place.png" id="20_pssv4"]
 [ext_resource type="Texture2D" uid="uid://dhhdcer6s02f6" path="res://Assets/kenney_board-game-icons/d12.png" id="20_s8jol"]
 [ext_resource type="Texture2D" uid="uid://bp0ddi7nqu28b" path="res://Assets/kenney_board-game-icons/card_outline_place.png" id="22_5hnbt"]
+[ext_resource type="Texture2D" uid="uid://dri83e5mgldkc" path="res://Assets/kenney_board-game-icons/crown_a.png" id="23_xc4ps"]
 
 [sub_resource type="GDScript" id="GDScript_scis2"]
 script/source = "extends Card_Class
@@ -56,7 +58,7 @@ myITEM_TYPE = 0
 [sub_resource type="CircleShape2D" id="CircleShape2D_sdvyq"]
 radius = 28.0179
 
-[node name="GameScene" type="Node2D" node_paths=PackedStringArray("player1", "player2", "descriptionMenu", "descriptionMenu_Frame", "banner_panel", "banner_label", "button1", "button2", "debugInfo")]
+[node name="GameScene" type="Node2D" node_paths=PackedStringArray("player1", "player2", "descriptionMenu", "descriptionMenu_Frame", "banner_panel", "banner_label", "button1", "button2", "phase_button", "phase_menu", "debugInfo")]
 script = ExtResource("1_txxkl")
 player1 = NodePath("Player1")
 player2 = NodePath("Player2")
@@ -64,157 +66,16 @@ descriptionMenu = NodePath("CanvasLayer/Description_Menu")
 descriptionMenu_Frame = NodePath("CanvasLayer/Description_Menu/Panel/Control/Frame")
 banner_panel = NodePath("CanvasLayer/Banner_PanelContainer")
 banner_label = NodePath("CanvasLayer/Banner_PanelContainer/Banner_Label")
-button1 = NodePath("button_node")
-button2 = NodePath("button_node2")
+button1 = NodePath("card_button_1")
+button2 = NodePath("card_button_2")
+phase_button = NodePath("phase_button")
+phase_menu = NodePath("CanvasLayer/Phase_Menu")
 card_Node_Prefab = ExtResource("1_c0q3d")
 debugInfo = NodePath("CanvasLayer/Debug_Info/Label")
 cardDatabase = {
 "a1_c1": SubResource("GDScript_scis2"),
 SubResource("Resource_juy0k"): SubResource("GDScript_scis2")
 }
-
-[node name="Player1" type="Node2D" parent="." node_paths=PackedStringArray("mainDeck", "extraDeck", "grave", "removed", "hand", "magicZone", "monsterZone", "opponent")]
-z_index = -2
-position = Vector2(562, 498)
-script = ExtResource("4_p7vwb")
-mainDeck = NodePath("mainDeck")
-extraDeck = NodePath("ExtraDeck")
-grave = NodePath("GraveDeck")
-removed = NodePath("RemovedDeck")
-hand = NodePath("hand")
-magicZone = [NodePath("MagicZone1"), NodePath("MagicZone2"), NodePath("MagicZone3"), NodePath("MagicZone4"), NodePath("MagicZone5")]
-monsterZone = [NodePath("MonsterZone1"), NodePath("MonsterZone2"), NodePath("MonsterZone3"), NodePath("MonsterZone4"), NodePath("MonsterZone5")]
-opponent = NodePath("../Player2")
-card_selected_posY_offset = -50.0
-
-[node name="hand" type="Node2D" parent="Player1" node_paths=PackedStringArray("gameScene")]
-position = Vector2(0, 112)
-script = ExtResource("4_4r13x")
-gameScene = NodePath("../..")
-
-[node name="ExtraDeck" parent="Player1" node_paths=PackedStringArray("gameScene") instance=ExtResource("4_u3nvj")]
-position = Vector2(-336, 0)
-gameScene = NodePath("../..")
-
-[node name="MagicZone1" parent="Player1" instance=ExtResource("13_bej0y")]
-position = Vector2(-224, 0)
-myZONE_TYPE = 1
-
-[node name="MagicZone2" parent="Player1" instance=ExtResource("13_bej0y")]
-position = Vector2(-112, 0)
-myZONE_TYPE = 1
-
-[node name="MagicZone3" parent="Player1" instance=ExtResource("13_bej0y")]
-myZONE_TYPE = 1
-
-[node name="MagicZone4" parent="Player1" instance=ExtResource("13_bej0y")]
-position = Vector2(112, 0)
-myZONE_TYPE = 1
-
-[node name="MagicZone5" parent="Player1" instance=ExtResource("13_bej0y")]
-position = Vector2(224, 0)
-myZONE_TYPE = 1
-
-[node name="mainDeck" parent="Player1" node_paths=PackedStringArray("gameScene") instance=ExtResource("4_u3nvj")]
-position = Vector2(336, 0)
-gameScene = NodePath("../..")
-card_Resource = Array[ExtResource("6_mbwul")]([ExtResource("5_w0rv4"), ExtResource("5_w0rv4"), ExtResource("6_emvl4"), ExtResource("6_emvl4"), ExtResource("7_4udd4"), ExtResource("7_4udd4"), ExtResource("8_rcph7"), ExtResource("8_rcph7"), ExtResource("9_l1t5s"), ExtResource("9_l1t5s"), ExtResource("10_v8rp7"), ExtResource("10_v8rp7"), ExtResource("11_fnrwv"), ExtResource("11_fnrwv"), ExtResource("12_fu2j2"), ExtResource("12_fu2j2"), ExtResource("13_plchi"), ExtResource("13_plchi"), ExtResource("14_dpwcw"), ExtResource("14_dpwcw"), ExtResource("5_w0rv4"), ExtResource("5_w0rv4"), ExtResource("6_emvl4"), ExtResource("6_emvl4"), ExtResource("7_4udd4"), ExtResource("7_4udd4"), ExtResource("8_rcph7"), ExtResource("8_rcph7"), ExtResource("9_l1t5s"), ExtResource("9_l1t5s"), ExtResource("10_v8rp7"), ExtResource("10_v8rp7"), ExtResource("11_fnrwv"), ExtResource("11_fnrwv"), ExtResource("12_fu2j2"), ExtResource("12_fu2j2"), ExtResource("13_plchi"), ExtResource("13_plchi"), ExtResource("14_dpwcw"), ExtResource("14_dpwcw")])
-
-[node name="RemovedDeck" parent="Player1" node_paths=PackedStringArray("gameScene") instance=ExtResource("4_u3nvj")]
-position = Vector2(-336, -112)
-gameScene = NodePath("../..")
-
-[node name="MonsterZone1" parent="Player1" instance=ExtResource("13_bej0y")]
-position = Vector2(-224, -112)
-
-[node name="MonsterZone2" parent="Player1" instance=ExtResource("13_bej0y")]
-position = Vector2(-112, -112)
-
-[node name="MonsterZone3" parent="Player1" instance=ExtResource("13_bej0y")]
-position = Vector2(0, -112)
-
-[node name="MonsterZone4" parent="Player1" instance=ExtResource("13_bej0y")]
-position = Vector2(112, -112)
-
-[node name="MonsterZone5" parent="Player1" instance=ExtResource("13_bej0y")]
-position = Vector2(224, -112)
-
-[node name="GraveDeck" parent="Player1" node_paths=PackedStringArray("gameScene") instance=ExtResource("4_u3nvj")]
-position = Vector2(336, -112)
-gameScene = NodePath("../..")
-
-[node name="Player2" type="Node2D" parent="." node_paths=PackedStringArray("mainDeck", "extraDeck", "grave", "removed", "hand", "magicZone", "monsterZone", "opponent")]
-z_index = -2
-position = Vector2(562, 150)
-script = ExtResource("4_p7vwb")
-mainDeck = NodePath("mainDeck")
-extraDeck = NodePath("ExtraDeck")
-grave = NodePath("GraveDeck")
-removed = NodePath("RemovedDeck")
-hand = NodePath("hand")
-magicZone = [NodePath("MagicZone1"), NodePath("MagicZone2"), NodePath("MagicZone3"), NodePath("MagicZone4"), NodePath("MagicZone5")]
-monsterZone = [NodePath("MonsterZone1"), NodePath("MonsterZone2"), NodePath("MonsterZone3"), NodePath("MonsterZone4"), NodePath("MonsterZone5")]
-isPlayer1 = false
-opponent = NodePath("../Player1")
-card_highlight_posY_offset = 25.0
-card_selected_posY_offset = 50.0
-card_rotation = 180.0
-
-[node name="hand" type="Node2D" parent="Player2" node_paths=PackedStringArray("gameScene")]
-position = Vector2(0, -112)
-script = ExtResource("4_4r13x")
-gameScene = NodePath("../..")
-
-[node name="ExtraDeck" parent="Player2" node_paths=PackedStringArray("gameScene") instance=ExtResource("4_u3nvj")]
-position = Vector2(336, 0)
-gameScene = NodePath("../..")
-
-[node name="MagicZone1" parent="Player2" instance=ExtResource("13_bej0y")]
-position = Vector2(-224, 0)
-myZONE_TYPE = 1
-
-[node name="MagicZone2" parent="Player2" instance=ExtResource("13_bej0y")]
-position = Vector2(-112, 0)
-myZONE_TYPE = 1
-
-[node name="MagicZone3" parent="Player2" instance=ExtResource("13_bej0y")]
-myZONE_TYPE = 1
-
-[node name="MagicZone4" parent="Player2" instance=ExtResource("13_bej0y")]
-position = Vector2(112, 0)
-myZONE_TYPE = 1
-
-[node name="MagicZone5" parent="Player2" instance=ExtResource("13_bej0y")]
-position = Vector2(224, 0)
-myZONE_TYPE = 1
-
-[node name="mainDeck" parent="Player2" node_paths=PackedStringArray("gameScene") instance=ExtResource("4_u3nvj")]
-position = Vector2(-336, 0)
-gameScene = NodePath("../..")
-card_Resource = Array[ExtResource("6_mbwul")]([ExtResource("5_w0rv4"), ExtResource("5_w0rv4"), ExtResource("6_emvl4"), ExtResource("6_emvl4"), ExtResource("7_4udd4"), ExtResource("7_4udd4"), ExtResource("8_rcph7"), ExtResource("8_rcph7"), ExtResource("9_l1t5s"), ExtResource("9_l1t5s"), ExtResource("10_v8rp7"), ExtResource("10_v8rp7"), ExtResource("11_fnrwv"), ExtResource("11_fnrwv"), ExtResource("12_fu2j2"), ExtResource("12_fu2j2"), ExtResource("13_plchi"), ExtResource("13_plchi"), ExtResource("14_dpwcw"), ExtResource("14_dpwcw"), ExtResource("5_w0rv4"), ExtResource("5_w0rv4"), ExtResource("6_emvl4"), ExtResource("6_emvl4"), ExtResource("7_4udd4"), ExtResource("7_4udd4"), ExtResource("8_rcph7"), ExtResource("8_rcph7"), ExtResource("9_l1t5s"), ExtResource("9_l1t5s"), ExtResource("10_v8rp7"), ExtResource("10_v8rp7"), ExtResource("11_fnrwv"), ExtResource("11_fnrwv"), ExtResource("12_fu2j2"), ExtResource("12_fu2j2"), ExtResource("13_plchi"), ExtResource("13_plchi"), ExtResource("14_dpwcw"), ExtResource("14_dpwcw")])
-
-[node name="RemovedDeck" parent="Player2" node_paths=PackedStringArray("gameScene") instance=ExtResource("4_u3nvj")]
-position = Vector2(336, 112)
-gameScene = NodePath("../..")
-
-[node name="MonsterZone1" parent="Player2" instance=ExtResource("13_bej0y")]
-position = Vector2(-224, 112)
-
-[node name="MonsterZone2" parent="Player2" instance=ExtResource("13_bej0y")]
-position = Vector2(-112, 112)
-
-[node name="MonsterZone3" parent="Player2" instance=ExtResource("13_bej0y")]
-position = Vector2(0, 112)
-
-[node name="MonsterZone4" parent="Player2" instance=ExtResource("13_bej0y")]
-position = Vector2(112, 112)
-
-[node name="MonsterZone5" parent="Player2" instance=ExtResource("13_bej0y")]
-position = Vector2(224, 112)
-
-[node name="GraveDeck" parent="Player2" node_paths=PackedStringArray("gameScene") instance=ExtResource("4_u3nvj")]
-position = Vector2(-336, 112)
-gameScene = NodePath("../..")
 
 [node name="CanvasLayer" type="CanvasLayer" parent="."]
 
@@ -316,6 +177,7 @@ Effect:
 autowrap_mode = 2
 
 [node name="Banner_PanelContainer" type="PanelContainer" parent="CanvasLayer"]
+visible = false
 anchors_preset = 14
 anchor_top = 0.5
 anchor_right = 1.0
@@ -331,7 +193,230 @@ text = "Start Phase"
 horizontal_alignment = 1
 vertical_alignment = 1
 
-[node name="button_node" type="Node2D" parent="." node_paths=PackedStringArray("area2D", "collisionShape2D", "highlight_TextureRect")]
+[node name="Phase_Menu" type="PanelContainer" parent="CanvasLayer" node_paths=PackedStringArray("button_startPhase", "button_mainPhase1", "button_battlePhase", "button_mainPhase2", "button_endPhase", "button_cancel")]
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -20.0
+offset_top = -20.0
+offset_right = 20.0
+offset_bottom = 20.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("4_qxicl")
+button_startPhase = NodePath("MarginContainer/VBoxContainer/HBoxContainer/Button")
+button_mainPhase1 = NodePath("MarginContainer/VBoxContainer/HBoxContainer/Button2")
+button_battlePhase = NodePath("MarginContainer/VBoxContainer/HBoxContainer/Button3")
+button_mainPhase2 = NodePath("MarginContainer/VBoxContainer/HBoxContainer/Button4")
+button_endPhase = NodePath("MarginContainer/VBoxContainer/HBoxContainer/Button5")
+button_cancel = NodePath("MarginContainer/VBoxContainer/Button")
+
+[node name="MarginContainer" type="MarginContainer" parent="CanvasLayer/Phase_Menu"]
+layout_mode = 2
+theme_override_constants/margin_left = 30
+theme_override_constants/margin_top = 30
+theme_override_constants/margin_right = 30
+theme_override_constants/margin_bottom = 30
+
+[node name="VBoxContainer" type="VBoxContainer" parent="CanvasLayer/Phase_Menu/MarginContainer"]
+layout_mode = 2
+theme_override_constants/separation = 30
+
+[node name="HBoxContainer" type="HBoxContainer" parent="CanvasLayer/Phase_Menu/MarginContainer/VBoxContainer"]
+layout_mode = 2
+theme_override_constants/separation = 30
+alignment = 1
+
+[node name="Button" type="Button" parent="CanvasLayer/Phase_Menu/MarginContainer/VBoxContainer/HBoxContainer"]
+layout_mode = 2
+focus_mode = 0
+theme_override_font_sizes/font_size = 30
+text = "Start
+Phase"
+
+[node name="Button2" type="Button" parent="CanvasLayer/Phase_Menu/MarginContainer/VBoxContainer/HBoxContainer"]
+layout_mode = 2
+focus_mode = 0
+theme_override_font_sizes/font_size = 30
+text = "Main
+Phase 1"
+
+[node name="Button3" type="Button" parent="CanvasLayer/Phase_Menu/MarginContainer/VBoxContainer/HBoxContainer"]
+layout_mode = 2
+focus_mode = 0
+theme_override_font_sizes/font_size = 30
+text = "Battle
+Phase"
+
+[node name="Button4" type="Button" parent="CanvasLayer/Phase_Menu/MarginContainer/VBoxContainer/HBoxContainer"]
+layout_mode = 2
+focus_mode = 0
+theme_override_font_sizes/font_size = 30
+text = "Main
+Phase 2"
+
+[node name="Button5" type="Button" parent="CanvasLayer/Phase_Menu/MarginContainer/VBoxContainer/HBoxContainer"]
+layout_mode = 2
+focus_mode = 0
+theme_override_font_sizes/font_size = 30
+text = "End
+Phase"
+
+[node name="Button" type="Button" parent="CanvasLayer/Phase_Menu/MarginContainer/VBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 4
+size_flags_vertical = 4
+focus_mode = 0
+theme_override_font_sizes/font_size = 30
+text = "Cancel"
+
+[node name="Player1" type="Node2D" parent="." node_paths=PackedStringArray("mainDeck", "extraDeck", "grave", "removed", "hand", "magicZone", "monsterZone", "opponent")]
+z_index = -2
+position = Vector2(562, 498)
+script = ExtResource("4_p7vwb")
+mainDeck = NodePath("mainDeck")
+extraDeck = NodePath("ExtraDeck")
+grave = NodePath("GraveDeck")
+removed = NodePath("RemovedDeck")
+hand = NodePath("hand")
+magicZone = [NodePath("MagicZone1"), NodePath("MagicZone2"), NodePath("MagicZone3"), NodePath("MagicZone4"), NodePath("MagicZone5")]
+monsterZone = [NodePath("MonsterZone1"), NodePath("MonsterZone2"), NodePath("MonsterZone3"), NodePath("MonsterZone4"), NodePath("MonsterZone5")]
+opponent = NodePath("../Player2")
+card_selected_posY_offset = -50.0
+
+[node name="hand" type="Node2D" parent="Player1" node_paths=PackedStringArray("gameScene")]
+position = Vector2(0, 112)
+script = ExtResource("4_4r13x")
+gameScene = NodePath("../..")
+
+[node name="ExtraDeck" parent="Player1" node_paths=PackedStringArray("gameScene") instance=ExtResource("4_u3nvj")]
+position = Vector2(-336, 0)
+gameScene = NodePath("../..")
+
+[node name="MagicZone1" parent="Player1" instance=ExtResource("13_bej0y")]
+position = Vector2(-224, 0)
+myZONE_TYPE = 1
+
+[node name="MagicZone2" parent="Player1" instance=ExtResource("13_bej0y")]
+position = Vector2(-112, 0)
+myZONE_TYPE = 1
+
+[node name="MagicZone3" parent="Player1" instance=ExtResource("13_bej0y")]
+myZONE_TYPE = 1
+
+[node name="MagicZone4" parent="Player1" instance=ExtResource("13_bej0y")]
+position = Vector2(112, 0)
+myZONE_TYPE = 1
+
+[node name="MagicZone5" parent="Player1" instance=ExtResource("13_bej0y")]
+position = Vector2(224, 0)
+myZONE_TYPE = 1
+
+[node name="mainDeck" parent="Player1" node_paths=PackedStringArray("gameScene") instance=ExtResource("4_u3nvj")]
+position = Vector2(336, 0)
+gameScene = NodePath("../..")
+card_Resource = Array[ExtResource("6_mbwul")]([ExtResource("5_w0rv4"), ExtResource("5_w0rv4"), ExtResource("6_emvl4"), ExtResource("6_emvl4"), ExtResource("7_4udd4"), ExtResource("7_4udd4"), ExtResource("8_rcph7"), ExtResource("8_rcph7"), ExtResource("9_l1t5s"), ExtResource("9_l1t5s"), ExtResource("10_v8rp7"), ExtResource("10_v8rp7"), ExtResource("11_fnrwv"), ExtResource("11_fnrwv"), ExtResource("12_fu2j2"), ExtResource("12_fu2j2"), ExtResource("13_plchi"), ExtResource("13_plchi"), ExtResource("14_dpwcw"), ExtResource("14_dpwcw"), ExtResource("5_w0rv4"), ExtResource("5_w0rv4"), ExtResource("6_emvl4"), ExtResource("6_emvl4"), ExtResource("7_4udd4"), ExtResource("7_4udd4"), ExtResource("8_rcph7"), ExtResource("8_rcph7"), ExtResource("9_l1t5s"), ExtResource("9_l1t5s"), ExtResource("10_v8rp7"), ExtResource("10_v8rp7"), ExtResource("11_fnrwv"), ExtResource("11_fnrwv"), ExtResource("12_fu2j2"), ExtResource("12_fu2j2"), ExtResource("13_plchi"), ExtResource("13_plchi"), ExtResource("14_dpwcw"), ExtResource("14_dpwcw")])
+
+[node name="RemovedDeck" parent="Player1" node_paths=PackedStringArray("gameScene") instance=ExtResource("4_u3nvj")]
+position = Vector2(-336, -112)
+gameScene = NodePath("../..")
+
+[node name="MonsterZone1" parent="Player1" instance=ExtResource("13_bej0y")]
+position = Vector2(-224, -112)
+
+[node name="MonsterZone2" parent="Player1" instance=ExtResource("13_bej0y")]
+position = Vector2(-112, -112)
+
+[node name="MonsterZone3" parent="Player1" instance=ExtResource("13_bej0y")]
+position = Vector2(0, -112)
+
+[node name="MonsterZone4" parent="Player1" instance=ExtResource("13_bej0y")]
+position = Vector2(112, -112)
+
+[node name="MonsterZone5" parent="Player1" instance=ExtResource("13_bej0y")]
+position = Vector2(224, -112)
+
+[node name="GraveDeck" parent="Player1" node_paths=PackedStringArray("gameScene") instance=ExtResource("4_u3nvj")]
+position = Vector2(336, -112)
+gameScene = NodePath("../..")
+
+[node name="Player2" type="Node2D" parent="." node_paths=PackedStringArray("mainDeck", "extraDeck", "grave", "removed", "hand", "magicZone", "monsterZone", "opponent")]
+z_index = -2
+position = Vector2(562, 150)
+script = ExtResource("4_p7vwb")
+mainDeck = NodePath("mainDeck")
+extraDeck = NodePath("ExtraDeck")
+grave = NodePath("GraveDeck")
+removed = NodePath("RemovedDeck")
+hand = NodePath("hand")
+magicZone = [NodePath("MagicZone1"), NodePath("MagicZone2"), NodePath("MagicZone3"), NodePath("MagicZone4"), NodePath("MagicZone5")]
+monsterZone = [NodePath("MonsterZone1"), NodePath("MonsterZone2"), NodePath("MonsterZone3"), NodePath("MonsterZone4"), NodePath("MonsterZone5")]
+isPlayer1 = false
+opponent = NodePath("../Player1")
+card_highlight_posY_offset = 25.0
+card_selected_posY_offset = 50.0
+card_rotation = 180.0
+card_defense_rotation = 90.0
+
+[node name="hand" type="Node2D" parent="Player2" node_paths=PackedStringArray("gameScene")]
+position = Vector2(0, -112)
+script = ExtResource("4_4r13x")
+gameScene = NodePath("../..")
+
+[node name="ExtraDeck" parent="Player2" node_paths=PackedStringArray("gameScene") instance=ExtResource("4_u3nvj")]
+position = Vector2(336, 0)
+gameScene = NodePath("../..")
+
+[node name="MagicZone1" parent="Player2" instance=ExtResource("13_bej0y")]
+position = Vector2(-224, 0)
+myZONE_TYPE = 1
+
+[node name="MagicZone2" parent="Player2" instance=ExtResource("13_bej0y")]
+position = Vector2(-112, 0)
+myZONE_TYPE = 1
+
+[node name="MagicZone3" parent="Player2" instance=ExtResource("13_bej0y")]
+myZONE_TYPE = 1
+
+[node name="MagicZone4" parent="Player2" instance=ExtResource("13_bej0y")]
+position = Vector2(112, 0)
+myZONE_TYPE = 1
+
+[node name="MagicZone5" parent="Player2" instance=ExtResource("13_bej0y")]
+position = Vector2(224, 0)
+myZONE_TYPE = 1
+
+[node name="mainDeck" parent="Player2" node_paths=PackedStringArray("gameScene") instance=ExtResource("4_u3nvj")]
+position = Vector2(-336, 0)
+gameScene = NodePath("../..")
+card_Resource = Array[ExtResource("6_mbwul")]([ExtResource("5_w0rv4"), ExtResource("5_w0rv4"), ExtResource("6_emvl4"), ExtResource("6_emvl4"), ExtResource("7_4udd4"), ExtResource("7_4udd4"), ExtResource("8_rcph7"), ExtResource("8_rcph7"), ExtResource("9_l1t5s"), ExtResource("9_l1t5s"), ExtResource("10_v8rp7"), ExtResource("10_v8rp7"), ExtResource("11_fnrwv"), ExtResource("11_fnrwv"), ExtResource("12_fu2j2"), ExtResource("12_fu2j2"), ExtResource("13_plchi"), ExtResource("13_plchi"), ExtResource("14_dpwcw"), ExtResource("14_dpwcw"), ExtResource("5_w0rv4"), ExtResource("5_w0rv4"), ExtResource("6_emvl4"), ExtResource("6_emvl4"), ExtResource("7_4udd4"), ExtResource("7_4udd4"), ExtResource("8_rcph7"), ExtResource("8_rcph7"), ExtResource("9_l1t5s"), ExtResource("9_l1t5s"), ExtResource("10_v8rp7"), ExtResource("10_v8rp7"), ExtResource("11_fnrwv"), ExtResource("11_fnrwv"), ExtResource("12_fu2j2"), ExtResource("12_fu2j2"), ExtResource("13_plchi"), ExtResource("13_plchi"), ExtResource("14_dpwcw"), ExtResource("14_dpwcw")])
+
+[node name="RemovedDeck" parent="Player2" node_paths=PackedStringArray("gameScene") instance=ExtResource("4_u3nvj")]
+position = Vector2(336, 112)
+gameScene = NodePath("../..")
+
+[node name="MonsterZone1" parent="Player2" instance=ExtResource("13_bej0y")]
+position = Vector2(-224, 112)
+
+[node name="MonsterZone2" parent="Player2" instance=ExtResource("13_bej0y")]
+position = Vector2(-112, 112)
+
+[node name="MonsterZone3" parent="Player2" instance=ExtResource("13_bej0y")]
+position = Vector2(0, 112)
+
+[node name="MonsterZone4" parent="Player2" instance=ExtResource("13_bej0y")]
+position = Vector2(112, 112)
+
+[node name="MonsterZone5" parent="Player2" instance=ExtResource("13_bej0y")]
+position = Vector2(224, 112)
+
+[node name="GraveDeck" parent="Player2" node_paths=PackedStringArray("gameScene") instance=ExtResource("4_u3nvj")]
+position = Vector2(-336, 112)
+gameScene = NodePath("../..")
+
+[node name="card_button_1" type="Node2D" parent="." node_paths=PackedStringArray("area2D", "collisionShape2D", "highlight_TextureRect")]
 z_index = 5
 position = Vector2(353, 464)
 script = ExtResource("19_t8rca")
@@ -339,9 +424,9 @@ area2D = NodePath("offset_Node2D/Area2D")
 collisionShape2D = NodePath("offset_Node2D/Area2D/CollisionShape2D")
 highlight_TextureRect = NodePath("offset_Node2D/TextureRect3/TextureRect2")
 
-[node name="offset_Node2D" type="Node2D" parent="button_node"]
+[node name="offset_Node2D" type="Node2D" parent="card_button_1"]
 
-[node name="TextureRect3" type="TextureRect" parent="button_node/offset_Node2D"]
+[node name="TextureRect3" type="TextureRect" parent="card_button_1/offset_Node2D"]
 self_modulate = Color(0, 0, 0, 0.607843)
 anchors_preset = 8
 anchor_left = 0.5
@@ -357,7 +442,7 @@ grow_vertical = 2
 texture = ExtResource("20_s8jol")
 expand_mode = 1
 
-[node name="TextureRect2" type="TextureRect" parent="button_node/offset_Node2D/TextureRect3"]
+[node name="TextureRect2" type="TextureRect" parent="card_button_1/offset_Node2D/TextureRect3"]
 self_modulate = Color(1, 0.392157, 0.396078, 1)
 layout_mode = 1
 anchors_preset = 15
@@ -368,7 +453,7 @@ grow_vertical = 2
 texture = ExtResource("20_s8jol")
 expand_mode = 1
 
-[node name="TextureRect" type="TextureRect" parent="button_node/offset_Node2D"]
+[node name="TextureRect" type="TextureRect" parent="card_button_1/offset_Node2D"]
 anchors_preset = 8
 anchor_left = 0.5
 anchor_top = 0.5
@@ -385,7 +470,7 @@ size_flags_vertical = 4
 texture = ExtResource("20_pssv4")
 expand_mode = 1
 
-[node name="Label" type="Label" parent="button_node/offset_Node2D"]
+[node name="Label" type="Label" parent="card_button_1/offset_Node2D"]
 anchors_preset = 5
 anchor_left = 0.5
 anchor_right = 0.5
@@ -399,14 +484,14 @@ theme_override_font_sizes/font_size = 15
 text = "Convocar"
 horizontal_alignment = 1
 
-[node name="Area2D" type="Area2D" parent="button_node/offset_Node2D"]
+[node name="Area2D" type="Area2D" parent="card_button_1/offset_Node2D"]
 monitoring = false
 monitorable = false
 
-[node name="CollisionShape2D" type="CollisionShape2D" parent="button_node/offset_Node2D/Area2D"]
+[node name="CollisionShape2D" type="CollisionShape2D" parent="card_button_1/offset_Node2D/Area2D"]
 shape = SubResource("CircleShape2D_sdvyq")
 
-[node name="button_node2" type="Node2D" parent="." node_paths=PackedStringArray("area2D", "collisionShape2D", "highlight_TextureRect")]
+[node name="card_button_2" type="Node2D" parent="." node_paths=PackedStringArray("area2D", "collisionShape2D", "highlight_TextureRect")]
 z_index = 5
 position = Vector2(404, 464)
 script = ExtResource("19_t8rca")
@@ -414,9 +499,9 @@ area2D = NodePath("offset_Node2D/Area2D")
 collisionShape2D = NodePath("offset_Node2D/Area2D/CollisionShape2D")
 highlight_TextureRect = NodePath("offset_Node2D/TextureRect3/TextureRect2")
 
-[node name="offset_Node2D" type="Node2D" parent="button_node2"]
+[node name="offset_Node2D" type="Node2D" parent="card_button_2"]
 
-[node name="TextureRect3" type="TextureRect" parent="button_node2/offset_Node2D"]
+[node name="TextureRect3" type="TextureRect" parent="card_button_2/offset_Node2D"]
 self_modulate = Color(0, 0, 0, 0.607843)
 anchors_preset = 8
 anchor_left = 0.5
@@ -432,7 +517,7 @@ grow_vertical = 2
 texture = ExtResource("20_s8jol")
 expand_mode = 1
 
-[node name="TextureRect2" type="TextureRect" parent="button_node2/offset_Node2D/TextureRect3"]
+[node name="TextureRect2" type="TextureRect" parent="card_button_2/offset_Node2D/TextureRect3"]
 visible = false
 self_modulate = Color(1, 0.392157, 0.396078, 1)
 layout_mode = 1
@@ -444,7 +529,7 @@ grow_vertical = 2
 texture = ExtResource("20_s8jol")
 expand_mode = 1
 
-[node name="TextureRect" type="TextureRect" parent="button_node2/offset_Node2D"]
+[node name="TextureRect" type="TextureRect" parent="card_button_2/offset_Node2D"]
 anchors_preset = 8
 anchor_left = 0.5
 anchor_top = 0.5
@@ -461,7 +546,7 @@ size_flags_vertical = 4
 texture = ExtResource("22_5hnbt")
 expand_mode = 1
 
-[node name="Label" type="Label" parent="button_node2/offset_Node2D"]
+[node name="Label" type="Label" parent="card_button_2/offset_Node2D"]
 anchors_preset = 5
 anchor_left = 0.5
 anchor_right = 0.5
@@ -476,11 +561,88 @@ theme_override_font_sizes/font_size = 15
 text = "Colocar"
 horizontal_alignment = 1
 
-[node name="Area2D" type="Area2D" parent="button_node2/offset_Node2D"]
+[node name="Area2D" type="Area2D" parent="card_button_2/offset_Node2D"]
 monitoring = false
 monitorable = false
 
-[node name="CollisionShape2D" type="CollisionShape2D" parent="button_node2/offset_Node2D/Area2D"]
+[node name="CollisionShape2D" type="CollisionShape2D" parent="card_button_2/offset_Node2D/Area2D"]
+shape = SubResource("CircleShape2D_sdvyq")
+
+[node name="phase_button" type="Node2D" parent="." node_paths=PackedStringArray("area2D", "collisionShape2D", "highlight_TextureRect")]
+z_index = 5
+position = Vector2(985, 321)
+script = ExtResource("19_t8rca")
+area2D = NodePath("offset_Node2D/Area2D")
+collisionShape2D = NodePath("offset_Node2D/Area2D/CollisionShape2D")
+highlight_TextureRect = NodePath("offset_Node2D/TextureRect3/TextureRect2")
+
+[node name="offset_Node2D" type="Node2D" parent="phase_button"]
+
+[node name="TextureRect3" type="TextureRect" parent="phase_button/offset_Node2D"]
+self_modulate = Color(0, 0, 0, 0.607843)
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -38.0
+offset_top = -38.0
+offset_right = 38.0
+offset_bottom = 38.0
+grow_horizontal = 2
+grow_vertical = 2
+texture = ExtResource("20_s8jol")
+expand_mode = 1
+
+[node name="TextureRect2" type="TextureRect" parent="phase_button/offset_Node2D/TextureRect3"]
+visible = false
+self_modulate = Color(1, 0.392157, 0.396078, 1)
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+texture = ExtResource("20_s8jol")
+expand_mode = 1
+
+[node name="TextureRect" type="TextureRect" parent="phase_button/offset_Node2D"]
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -25.0
+offset_top = -25.0
+offset_right = 25.0
+offset_bottom = 25.0
+grow_horizontal = 2
+grow_vertical = 2
+size_flags_horizontal = 4
+size_flags_vertical = 4
+texture = ExtResource("23_xc4ps")
+expand_mode = 1
+
+[node name="Label" type="Label" parent="phase_button/offset_Node2D"]
+anchors_preset = 5
+anchor_left = 0.5
+anchor_right = 0.5
+offset_left = -22.5
+offset_top = 28.0
+offset_right = 22.5
+offset_bottom = 42.0
+grow_horizontal = 2
+size_flags_vertical = 1
+theme_override_constants/outline_size = 4
+theme_override_font_sizes/font_size = 15
+text = "Fase"
+horizontal_alignment = 1
+
+[node name="Area2D" type="Area2D" parent="phase_button/offset_Node2D"]
+monitoring = false
+monitorable = false
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="phase_button/offset_Node2D/Area2D"]
 shape = SubResource("CircleShape2D_sdvyq")
 
 [editable path="CanvasLayer/Description_Menu/Panel/Control/Frame"]

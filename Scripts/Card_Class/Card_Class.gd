@@ -6,6 +6,9 @@ var gameScene: GameScene
 var user: Player_Node
 var opponent: Player_Node
 #-------------------------------------------------------------------------------
+var isInAttackPosition: bool
+var isFaceUp: bool
+#-------------------------------------------------------------------------------
 var card_Resource: Card_Resource
 #endregion
 #-------------------------------------------------------------------------------

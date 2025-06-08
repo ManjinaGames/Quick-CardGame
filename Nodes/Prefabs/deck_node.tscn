@@ -17,7 +17,7 @@
 [ext_resource type="Texture2D" uid="uid://cc152q6tuxnfr" path="res://Assets/Images/Deck.png" id="15_waik6"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_5mofp"]
-size = Vector2(74, 112)
+size = Vector2(78, 112)
 
 [node name="deck_node" type="Node2D" node_paths=PackedStringArray("collisionShape", "highlight_TextureRect", "card_TextureRect", "label")]
 script = ExtResource("1_5jrh3")
@@ -36,9 +36,9 @@ anchor_top = 0.5
 anchor_right = 0.5
 anchor_bottom = 0.5
 offset_left = -37.0
-offset_top = -55.0
+offset_top = -54.0
 offset_right = 37.0
-offset_bottom = 55.0
+offset_bottom = 54.0
 grow_horizontal = 2
 grow_vertical = 2
 size_flags_horizontal = 3
@@ -48,9 +48,15 @@ expand_mode = 1
 
 [node name="Card_TextureRect" type="TextureRect" parent="Node2D/Cardslot_TextureRect"]
 layout_mode = 1
-anchors_preset = 15
-anchor_right = 1.0
-anchor_bottom = 1.0
+anchors_preset = -1
+anchor_left = 0.041
+anchor_top = 0.028
+anchor_right = 0.959
+anchor_bottom = 0.972
+offset_left = -0.0340002
+offset_top = -0.0240002
+offset_right = 0.0339966
+offset_bottom = 0.0239944
 grow_horizontal = 2
 grow_vertical = 2
 texture = ExtResource("15_waik6")
