@@ -11,7 +11,11 @@ class_name Player_Node
 @export var monsterZone: Array[CardSlot_Node]
 #-------------------------------------------------------------------------------
 var lifePoints: int = 8000
+var summonCounter: int = 1
 var turnCounter: int = 0
+#-------------------------------------------------------------------------------
+@export var label_LifePoints: Label
+@export var label_Summons: Label
 #-------------------------------------------------------------------------------
 #estas son propiedades que tengo que variar a su valor opuesto para que se puedan utilizar las mismas funciones.
 @export var isPlayer1: bool = true
@@ -19,6 +23,6 @@ var turnCounter: int = 0
 @export var card_highlight_posY_offset: float = -25
 @export var card_selected_posY_offset: float = -53
 @export var card_rotation: float = 0
-@export var card_defense_rotation: float = -90
+@export var card_defense_rotation: float = 90
 #endregion
 #-------------------------------------------------------------------------------
