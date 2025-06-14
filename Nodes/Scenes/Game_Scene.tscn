@@ -1,4 +1,4 @@
-[gd_scene load_steps=30 format=3 uid="uid://dlfgbqjvq7ybh"]
+[gd_scene load_steps=32 format=3 uid="uid://dlfgbqjvq7ybh"]
 
 [ext_resource type="PackedScene" uid="uid://dfb2i4o7cr1k1" path="res://Nodes/Prefabs/card_node.tscn" id="1_c0q3d"]
 [ext_resource type="Script" uid="uid://bpueynpowmoms" path="res://Scripts/Scenes/game_scene.gd" id="1_txxkl"]
@@ -24,6 +24,8 @@
 [ext_resource type="Texture2D" uid="uid://dhhdcer6s02f6" path="res://Assets/kenney_board-game-icons/d12.png" id="20_s8jol"]
 [ext_resource type="Texture2D" uid="uid://bp0ddi7nqu28b" path="res://Assets/kenney_board-game-icons/card_outline_place.png" id="22_5hnbt"]
 [ext_resource type="Texture2D" uid="uid://dri83e5mgldkc" path="res://Assets/kenney_board-game-icons/crown_a.png" id="23_xc4ps"]
+[ext_resource type="Texture2D" uid="uid://cckrpyhdw2kl3" path="res://Assets/kenney_board-game-icons/sword.png" id="24_17t3c"]
+[ext_resource type="Texture2D" uid="uid://clm007disd3xv" path="res://Assets/kenney_board-game-icons/card_rotate.png" id="25_gg15g"]
 
 [sub_resource type="GDScript" id="GDScript_scis2"]
 script/source = "extends Card_Class
@@ -56,9 +58,9 @@ level = 1
 myITEM_TYPE = 0
 
 [sub_resource type="CircleShape2D" id="CircleShape2D_sdvyq"]
-radius = 28.0179
+radius = 33.0
 
-[node name="GameScene" type="Node2D" node_paths=PackedStringArray("player1", "player2", "descriptionMenu", "descriptionMenu_Frame", "banner_panel", "banner_label", "button1", "button2", "phase_button", "phase_menu", "debugInfo")]
+[node name="GameScene" type="Node2D" node_paths=PackedStringArray("player1", "player2", "descriptionMenu", "descriptionMenu_Frame", "banner_panel", "banner_label", "button_Summon", "button_Set", "button_attack", "button_position", "button_phase", "phase_menu", "debugInfo")]
 script = ExtResource("1_txxkl")
 player1 = NodePath("Player1")
 player2 = NodePath("Player2")
@@ -66,9 +68,11 @@ descriptionMenu = NodePath("CanvasLayer/Description_Menu")
 descriptionMenu_Frame = NodePath("CanvasLayer/Description_Menu/Panel/Control/Frame")
 banner_panel = NodePath("CanvasLayer/Banner_PanelContainer")
 banner_label = NodePath("CanvasLayer/Banner_PanelContainer/Banner_Label")
-button1 = NodePath("card_button_1")
-button2 = NodePath("card_button_2")
-phase_button = NodePath("phase_button")
+button_Summon = NodePath("button_Summon")
+button_Set = NodePath("button_Set")
+button_attack = NodePath("button_attack")
+button_position = NodePath("button_position")
+button_phase = NodePath("button_phase")
 phase_menu = NodePath("CanvasLayer/Phase_Menu")
 card_Node_Prefab = ExtResource("1_c0q3d")
 debugInfo = NodePath("CanvasLayer/Debug_Info/Label")
@@ -310,7 +314,7 @@ horizontal_alignment = 2
 
 [node name="VBoxContainer_Player1" type="VBoxContainer" parent="CanvasLayer/MarginContainer"]
 layout_mode = 2
-size_flags_horizontal = 8
+size_flags_horizontal = 0
 size_flags_vertical = 8
 
 [node name="Label_Summons" type="Label" parent="CanvasLayer/MarginContainer/VBoxContainer_Player1"]
@@ -350,9 +354,9 @@ position = Vector2(0, 112)
 script = ExtResource("4_4r13x")
 gameScene = NodePath("../..")
 
-[node name="ExtraDeck" parent="Player1" node_paths=PackedStringArray("gameScene") instance=ExtResource("4_u3nvj")]
+[node name="ExtraDeck" parent="Player1" instance=ExtResource("4_u3nvj")]
 position = Vector2(-336, 0)
-gameScene = NodePath("../..")
+myDECK_TYPE = 1
 
 [node name="MagicZone1" parent="Player1" instance=ExtResource("13_bej0y")]
 position = Vector2(-224, 0)
@@ -373,14 +377,13 @@ myZONE_TYPE = 1
 position = Vector2(224, 0)
 myZONE_TYPE = 1
 
-[node name="mainDeck" parent="Player1" node_paths=PackedStringArray("gameScene") instance=ExtResource("4_u3nvj")]
+[node name="mainDeck" parent="Player1" instance=ExtResource("4_u3nvj")]
 position = Vector2(336, 0)
-gameScene = NodePath("../..")
 card_Resource = Array[ExtResource("6_mbwul")]([ExtResource("5_w0rv4"), ExtResource("5_w0rv4"), ExtResource("6_emvl4"), ExtResource("6_emvl4"), ExtResource("7_4udd4"), ExtResource("7_4udd4"), ExtResource("8_rcph7"), ExtResource("8_rcph7"), ExtResource("9_l1t5s"), ExtResource("9_l1t5s"), ExtResource("10_v8rp7"), ExtResource("10_v8rp7"), ExtResource("11_fnrwv"), ExtResource("11_fnrwv"), ExtResource("12_fu2j2"), ExtResource("12_fu2j2"), ExtResource("13_plchi"), ExtResource("13_plchi"), ExtResource("14_dpwcw"), ExtResource("14_dpwcw"), ExtResource("5_w0rv4"), ExtResource("5_w0rv4"), ExtResource("6_emvl4"), ExtResource("6_emvl4"), ExtResource("7_4udd4"), ExtResource("7_4udd4"), ExtResource("8_rcph7"), ExtResource("8_rcph7"), ExtResource("9_l1t5s"), ExtResource("9_l1t5s"), ExtResource("10_v8rp7"), ExtResource("10_v8rp7"), ExtResource("11_fnrwv"), ExtResource("11_fnrwv"), ExtResource("12_fu2j2"), ExtResource("12_fu2j2"), ExtResource("13_plchi"), ExtResource("13_plchi"), ExtResource("14_dpwcw"), ExtResource("14_dpwcw")])
 
-[node name="RemovedDeck" parent="Player1" node_paths=PackedStringArray("gameScene") instance=ExtResource("4_u3nvj")]
+[node name="RemovedDeck" parent="Player1" instance=ExtResource("4_u3nvj")]
 position = Vector2(-336, -112)
-gameScene = NodePath("../..")
+myDECK_TYPE = 3
 
 [node name="MonsterZone1" parent="Player1" instance=ExtResource("13_bej0y")]
 position = Vector2(-224, -112)
@@ -397,9 +400,9 @@ position = Vector2(112, -112)
 [node name="MonsterZone5" parent="Player1" instance=ExtResource("13_bej0y")]
 position = Vector2(224, -112)
 
-[node name="GraveDeck" parent="Player1" node_paths=PackedStringArray("gameScene") instance=ExtResource("4_u3nvj")]
+[node name="GraveDeck" parent="Player1" instance=ExtResource("4_u3nvj")]
 position = Vector2(336, -112)
-gameScene = NodePath("../..")
+myDECK_TYPE = 2
 
 [node name="Player2" type="Node2D" parent="." node_paths=PackedStringArray("mainDeck", "extraDeck", "grave", "removed", "hand", "magicZone", "monsterZone", "label_LifePoints", "label_Summons", "opponent")]
 z_index = -2
@@ -426,9 +429,9 @@ position = Vector2(0, -112)
 script = ExtResource("4_4r13x")
 gameScene = NodePath("../..")
 
-[node name="ExtraDeck" parent="Player2" node_paths=PackedStringArray("gameScene") instance=ExtResource("4_u3nvj")]
+[node name="ExtraDeck" parent="Player2" instance=ExtResource("4_u3nvj")]
 position = Vector2(336, 0)
-gameScene = NodePath("../..")
+myDECK_TYPE = 1
 
 [node name="MagicZone1" parent="Player2" instance=ExtResource("13_bej0y")]
 position = Vector2(-224, 0)
@@ -449,14 +452,13 @@ myZONE_TYPE = 1
 position = Vector2(224, 0)
 myZONE_TYPE = 1
 
-[node name="mainDeck" parent="Player2" node_paths=PackedStringArray("gameScene") instance=ExtResource("4_u3nvj")]
+[node name="mainDeck" parent="Player2" instance=ExtResource("4_u3nvj")]
 position = Vector2(-336, 0)
-gameScene = NodePath("../..")
 card_Resource = Array[ExtResource("6_mbwul")]([ExtResource("5_w0rv4"), ExtResource("5_w0rv4"), ExtResource("6_emvl4"), ExtResource("6_emvl4"), ExtResource("7_4udd4"), ExtResource("7_4udd4"), ExtResource("8_rcph7"), ExtResource("8_rcph7"), ExtResource("9_l1t5s"), ExtResource("9_l1t5s"), ExtResource("10_v8rp7"), ExtResource("10_v8rp7"), ExtResource("11_fnrwv"), ExtResource("11_fnrwv"), ExtResource("12_fu2j2"), ExtResource("12_fu2j2"), ExtResource("13_plchi"), ExtResource("13_plchi"), ExtResource("14_dpwcw"), ExtResource("14_dpwcw"), ExtResource("5_w0rv4"), ExtResource("5_w0rv4"), ExtResource("6_emvl4"), ExtResource("6_emvl4"), ExtResource("7_4udd4"), ExtResource("7_4udd4"), ExtResource("8_rcph7"), ExtResource("8_rcph7"), ExtResource("9_l1t5s"), ExtResource("9_l1t5s"), ExtResource("10_v8rp7"), ExtResource("10_v8rp7"), ExtResource("11_fnrwv"), ExtResource("11_fnrwv"), ExtResource("12_fu2j2"), ExtResource("12_fu2j2"), ExtResource("13_plchi"), ExtResource("13_plchi"), ExtResource("14_dpwcw"), ExtResource("14_dpwcw")])
 
-[node name="RemovedDeck" parent="Player2" node_paths=PackedStringArray("gameScene") instance=ExtResource("4_u3nvj")]
+[node name="RemovedDeck" parent="Player2" instance=ExtResource("4_u3nvj")]
 position = Vector2(336, 112)
-gameScene = NodePath("../..")
+myDECK_TYPE = 3
 
 [node name="MonsterZone1" parent="Player2" instance=ExtResource("13_bej0y")]
 position = Vector2(-224, 112)
@@ -473,173 +475,22 @@ position = Vector2(112, 112)
 [node name="MonsterZone5" parent="Player2" instance=ExtResource("13_bej0y")]
 position = Vector2(224, 112)
 
-[node name="GraveDeck" parent="Player2" node_paths=PackedStringArray("gameScene") instance=ExtResource("4_u3nvj")]
+[node name="GraveDeck" parent="Player2" instance=ExtResource("4_u3nvj")]
 position = Vector2(-336, 112)
-gameScene = NodePath("../..")
+myDECK_TYPE = 2
 
-[node name="card_button_1" type="Node2D" parent="." node_paths=PackedStringArray("area2D", "collisionShape2D", "highlight_TextureRect")]
-z_index = 5
-position = Vector2(353, 464)
-script = ExtResource("19_t8rca")
-area2D = NodePath("offset_Node2D/Area2D")
-collisionShape2D = NodePath("offset_Node2D/Area2D/CollisionShape2D")
-highlight_TextureRect = NodePath("offset_Node2D/TextureRect3/TextureRect2")
-
-[node name="offset_Node2D" type="Node2D" parent="card_button_1"]
-
-[node name="TextureRect3" type="TextureRect" parent="card_button_1/offset_Node2D"]
-self_modulate = Color(0, 0, 0, 0.607843)
-anchors_preset = 8
-anchor_left = 0.5
-anchor_top = 0.5
-anchor_right = 0.5
-anchor_bottom = 0.5
-offset_left = -38.0
-offset_top = -38.0
-offset_right = 38.0
-offset_bottom = 38.0
-grow_horizontal = 2
-grow_vertical = 2
-texture = ExtResource("20_s8jol")
-expand_mode = 1
-
-[node name="TextureRect2" type="TextureRect" parent="card_button_1/offset_Node2D/TextureRect3"]
-self_modulate = Color(1, 0.392157, 0.396078, 1)
-layout_mode = 1
-anchors_preset = 15
-anchor_right = 1.0
-anchor_bottom = 1.0
-grow_horizontal = 2
-grow_vertical = 2
-texture = ExtResource("20_s8jol")
-expand_mode = 1
-
-[node name="TextureRect" type="TextureRect" parent="card_button_1/offset_Node2D"]
-anchors_preset = 8
-anchor_left = 0.5
-anchor_top = 0.5
-anchor_right = 0.5
-anchor_bottom = 0.5
-offset_left = -25.0
-offset_top = -25.0
-offset_right = 25.0
-offset_bottom = 25.0
-grow_horizontal = 2
-grow_vertical = 2
-size_flags_horizontal = 4
-size_flags_vertical = 4
-texture = ExtResource("20_pssv4")
-expand_mode = 1
-
-[node name="Label" type="Label" parent="card_button_1/offset_Node2D"]
-anchors_preset = 5
-anchor_left = 0.5
-anchor_right = 0.5
-offset_left = -36.5
-offset_top = 28.0
-offset_right = 36.5
-offset_bottom = 51.0
-grow_horizontal = 2
-theme_override_constants/outline_size = 4
-theme_override_font_sizes/font_size = 15
-text = "Convocar"
-horizontal_alignment = 1
-
-[node name="Area2D" type="Area2D" parent="card_button_1/offset_Node2D"]
-monitoring = false
-monitorable = false
-
-[node name="CollisionShape2D" type="CollisionShape2D" parent="card_button_1/offset_Node2D/Area2D"]
-shape = SubResource("CircleShape2D_sdvyq")
-
-[node name="card_button_2" type="Node2D" parent="." node_paths=PackedStringArray("area2D", "collisionShape2D", "highlight_TextureRect")]
-z_index = 5
-position = Vector2(404, 464)
-script = ExtResource("19_t8rca")
-area2D = NodePath("offset_Node2D/Area2D")
-collisionShape2D = NodePath("offset_Node2D/Area2D/CollisionShape2D")
-highlight_TextureRect = NodePath("offset_Node2D/TextureRect3/TextureRect2")
-
-[node name="offset_Node2D" type="Node2D" parent="card_button_2"]
-
-[node name="TextureRect3" type="TextureRect" parent="card_button_2/offset_Node2D"]
-self_modulate = Color(0, 0, 0, 0.607843)
-anchors_preset = 8
-anchor_left = 0.5
-anchor_top = 0.5
-anchor_right = 0.5
-anchor_bottom = 0.5
-offset_left = -38.0
-offset_top = -38.0
-offset_right = 38.0
-offset_bottom = 38.0
-grow_horizontal = 2
-grow_vertical = 2
-texture = ExtResource("20_s8jol")
-expand_mode = 1
-
-[node name="TextureRect2" type="TextureRect" parent="card_button_2/offset_Node2D/TextureRect3"]
-visible = false
-self_modulate = Color(1, 0.392157, 0.396078, 1)
-layout_mode = 1
-anchors_preset = 15
-anchor_right = 1.0
-anchor_bottom = 1.0
-grow_horizontal = 2
-grow_vertical = 2
-texture = ExtResource("20_s8jol")
-expand_mode = 1
-
-[node name="TextureRect" type="TextureRect" parent="card_button_2/offset_Node2D"]
-anchors_preset = 8
-anchor_left = 0.5
-anchor_top = 0.5
-anchor_right = 0.5
-anchor_bottom = 0.5
-offset_left = -25.0
-offset_top = -25.0
-offset_right = 25.0
-offset_bottom = 25.0
-grow_horizontal = 2
-grow_vertical = 2
-size_flags_horizontal = 4
-size_flags_vertical = 4
-texture = ExtResource("22_5hnbt")
-expand_mode = 1
-
-[node name="Label" type="Label" parent="card_button_2/offset_Node2D"]
-anchors_preset = 5
-anchor_left = 0.5
-anchor_right = 0.5
-offset_left = -22.5
-offset_top = 28.0
-offset_right = 22.5
-offset_bottom = 42.0
-grow_horizontal = 2
-size_flags_vertical = 1
-theme_override_constants/outline_size = 4
-theme_override_font_sizes/font_size = 15
-text = "Colocar"
-horizontal_alignment = 1
-
-[node name="Area2D" type="Area2D" parent="card_button_2/offset_Node2D"]
-monitoring = false
-monitorable = false
-
-[node name="CollisionShape2D" type="CollisionShape2D" parent="card_button_2/offset_Node2D/Area2D"]
-shape = SubResource("CircleShape2D_sdvyq")
-
-[node name="phase_button" type="Node2D" parent="." node_paths=PackedStringArray("area2D", "collisionShape2D", "highlight_TextureRect")]
+[node name="button_phase" type="Node2D" parent="." node_paths=PackedStringArray("area2D", "collisionShape2D", "highlight_TextureRect", "label")]
 z_index = 5
 position = Vector2(985, 321)
 script = ExtResource("19_t8rca")
 area2D = NodePath("offset_Node2D/Area2D")
 collisionShape2D = NodePath("offset_Node2D/Area2D/CollisionShape2D")
 highlight_TextureRect = NodePath("offset_Node2D/TextureRect3/TextureRect2")
+label = NodePath("offset_Node2D/Label")
 
-[node name="offset_Node2D" type="Node2D" parent="phase_button"]
+[node name="offset_Node2D" type="Node2D" parent="button_phase"]
 
-[node name="TextureRect3" type="TextureRect" parent="phase_button/offset_Node2D"]
+[node name="TextureRect3" type="TextureRect" parent="button_phase/offset_Node2D"]
 self_modulate = Color(0, 0, 0, 0.607843)
 anchors_preset = 8
 anchor_left = 0.5
@@ -655,7 +506,7 @@ grow_vertical = 2
 texture = ExtResource("20_s8jol")
 expand_mode = 1
 
-[node name="TextureRect2" type="TextureRect" parent="phase_button/offset_Node2D/TextureRect3"]
+[node name="TextureRect2" type="TextureRect" parent="button_phase/offset_Node2D/TextureRect3"]
 visible = false
 self_modulate = Color(1, 0.392157, 0.396078, 1)
 layout_mode = 1
@@ -667,7 +518,7 @@ grow_vertical = 2
 texture = ExtResource("20_s8jol")
 expand_mode = 1
 
-[node name="TextureRect" type="TextureRect" parent="phase_button/offset_Node2D"]
+[node name="TextureRect" type="TextureRect" parent="button_phase/offset_Node2D"]
 anchors_preset = 8
 anchor_left = 0.5
 anchor_top = 0.5
@@ -684,7 +535,7 @@ size_flags_vertical = 4
 texture = ExtResource("23_xc4ps")
 expand_mode = 1
 
-[node name="Label" type="Label" parent="phase_button/offset_Node2D"]
+[node name="Label" type="Label" parent="button_phase/offset_Node2D"]
 anchors_preset = 5
 anchor_left = 0.5
 anchor_right = 0.5
@@ -699,11 +550,322 @@ theme_override_font_sizes/font_size = 15
 text = "Fase"
 horizontal_alignment = 1
 
-[node name="Area2D" type="Area2D" parent="phase_button/offset_Node2D"]
+[node name="Area2D" type="Area2D" parent="button_phase/offset_Node2D"]
 monitoring = false
 monitorable = false
 
-[node name="CollisionShape2D" type="CollisionShape2D" parent="phase_button/offset_Node2D/Area2D"]
+[node name="CollisionShape2D" type="CollisionShape2D" parent="button_phase/offset_Node2D/Area2D"]
+shape = SubResource("CircleShape2D_sdvyq")
+
+[node name="button_Summon" type="Node2D" parent="." node_paths=PackedStringArray("area2D", "collisionShape2D", "highlight_TextureRect", "label")]
+z_index = 5
+position = Vector2(223, 592)
+script = ExtResource("19_t8rca")
+area2D = NodePath("offset_Node2D/Area2D")
+collisionShape2D = NodePath("offset_Node2D/Area2D/CollisionShape2D")
+highlight_TextureRect = NodePath("offset_Node2D/TextureRect3/TextureRect2")
+label = NodePath("offset_Node2D/Label")
+
+[node name="offset_Node2D" type="Node2D" parent="button_Summon"]
+
+[node name="TextureRect3" type="TextureRect" parent="button_Summon/offset_Node2D"]
+self_modulate = Color(0, 0, 0, 0.607843)
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -38.0
+offset_top = -38.0
+offset_right = 38.0
+offset_bottom = 38.0
+grow_horizontal = 2
+grow_vertical = 2
+texture = ExtResource("20_s8jol")
+expand_mode = 1
+
+[node name="TextureRect2" type="TextureRect" parent="button_Summon/offset_Node2D/TextureRect3"]
+self_modulate = Color(1, 0.392157, 0.396078, 1)
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+texture = ExtResource("20_s8jol")
+expand_mode = 1
+
+[node name="TextureRect" type="TextureRect" parent="button_Summon/offset_Node2D"]
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -25.0
+offset_top = -25.0
+offset_right = 25.0
+offset_bottom = 25.0
+grow_horizontal = 2
+grow_vertical = 2
+size_flags_horizontal = 4
+size_flags_vertical = 4
+texture = ExtResource("20_pssv4")
+expand_mode = 1
+
+[node name="Label" type="Label" parent="button_Summon/offset_Node2D"]
+anchors_preset = 5
+anchor_left = 0.5
+anchor_right = 0.5
+offset_left = -36.5
+offset_top = 28.0
+offset_right = 36.5
+offset_bottom = 51.0
+grow_horizontal = 2
+theme_override_constants/outline_size = 4
+theme_override_font_sizes/font_size = 15
+text = "Convocar"
+horizontal_alignment = 1
+
+[node name="Area2D" type="Area2D" parent="button_Summon/offset_Node2D"]
+monitoring = false
+monitorable = false
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="button_Summon/offset_Node2D/Area2D"]
+shape = SubResource("CircleShape2D_sdvyq")
+
+[node name="button_Set" type="Node2D" parent="." node_paths=PackedStringArray("area2D", "collisionShape2D", "highlight_TextureRect", "label")]
+z_index = 5
+position = Vector2(298, 592)
+script = ExtResource("19_t8rca")
+area2D = NodePath("offset_Node2D/Area2D")
+collisionShape2D = NodePath("offset_Node2D/Area2D/CollisionShape2D")
+highlight_TextureRect = NodePath("offset_Node2D/TextureRect3/TextureRect2")
+label = NodePath("offset_Node2D/Label")
+
+[node name="offset_Node2D" type="Node2D" parent="button_Set"]
+
+[node name="TextureRect3" type="TextureRect" parent="button_Set/offset_Node2D"]
+self_modulate = Color(0, 0, 0, 0.607843)
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -38.0
+offset_top = -38.0
+offset_right = 38.0
+offset_bottom = 38.0
+grow_horizontal = 2
+grow_vertical = 2
+texture = ExtResource("20_s8jol")
+expand_mode = 1
+
+[node name="TextureRect2" type="TextureRect" parent="button_Set/offset_Node2D/TextureRect3"]
+visible = false
+self_modulate = Color(1, 0.392157, 0.396078, 1)
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+texture = ExtResource("20_s8jol")
+expand_mode = 1
+
+[node name="TextureRect" type="TextureRect" parent="button_Set/offset_Node2D"]
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -25.0
+offset_top = -25.0
+offset_right = 25.0
+offset_bottom = 25.0
+grow_horizontal = 2
+grow_vertical = 2
+size_flags_horizontal = 4
+size_flags_vertical = 4
+texture = ExtResource("22_5hnbt")
+expand_mode = 1
+
+[node name="Label" type="Label" parent="button_Set/offset_Node2D"]
+anchors_preset = 5
+anchor_left = 0.5
+anchor_right = 0.5
+offset_left = -22.5
+offset_top = 28.0
+offset_right = 22.5
+offset_bottom = 42.0
+grow_horizontal = 2
+size_flags_vertical = 1
+theme_override_constants/outline_size = 4
+theme_override_font_sizes/font_size = 15
+text = "Colocar"
+horizontal_alignment = 1
+
+[node name="Area2D" type="Area2D" parent="button_Set/offset_Node2D"]
+monitoring = false
+monitorable = false
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="button_Set/offset_Node2D/Area2D"]
+shape = SubResource("CircleShape2D_sdvyq")
+
+[node name="button_attack" type="Node2D" parent="." node_paths=PackedStringArray("area2D", "collisionShape2D", "highlight_TextureRect", "label")]
+z_index = 5
+position = Vector2(372, 592)
+script = ExtResource("19_t8rca")
+area2D = NodePath("offset_Node2D/Area2D")
+collisionShape2D = NodePath("offset_Node2D/Area2D/CollisionShape2D")
+highlight_TextureRect = NodePath("offset_Node2D/TextureRect3/TextureRect2")
+label = NodePath("offset_Node2D/Label")
+
+[node name="offset_Node2D" type="Node2D" parent="button_attack"]
+
+[node name="TextureRect3" type="TextureRect" parent="button_attack/offset_Node2D"]
+self_modulate = Color(0, 0, 0, 0.607843)
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -38.0
+offset_top = -38.0
+offset_right = 38.0
+offset_bottom = 38.0
+grow_horizontal = 2
+grow_vertical = 2
+texture = ExtResource("20_s8jol")
+expand_mode = 1
+
+[node name="TextureRect2" type="TextureRect" parent="button_attack/offset_Node2D/TextureRect3"]
+visible = false
+self_modulate = Color(1, 0.392157, 0.396078, 1)
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+texture = ExtResource("20_s8jol")
+expand_mode = 1
+
+[node name="TextureRect" type="TextureRect" parent="button_attack/offset_Node2D"]
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -25.0
+offset_top = -25.0
+offset_right = 25.0
+offset_bottom = 25.0
+grow_horizontal = 2
+grow_vertical = 2
+size_flags_horizontal = 4
+size_flags_vertical = 4
+texture = ExtResource("24_17t3c")
+expand_mode = 1
+
+[node name="Label" type="Label" parent="button_attack/offset_Node2D"]
+anchors_preset = 5
+anchor_left = 0.5
+anchor_right = 0.5
+offset_left = -22.5
+offset_top = 28.0
+offset_right = 22.5
+offset_bottom = 42.0
+grow_horizontal = 2
+size_flags_vertical = 1
+theme_override_constants/outline_size = 4
+theme_override_font_sizes/font_size = 15
+text = "Atacar"
+horizontal_alignment = 1
+
+[node name="Area2D" type="Area2D" parent="button_attack/offset_Node2D"]
+monitoring = false
+monitorable = false
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="button_attack/offset_Node2D/Area2D"]
+shape = SubResource("CircleShape2D_sdvyq")
+
+[node name="button_position" type="Node2D" parent="." node_paths=PackedStringArray("area2D", "collisionShape2D", "highlight_TextureRect", "label")]
+z_index = 5
+position = Vector2(445, 592)
+script = ExtResource("19_t8rca")
+area2D = NodePath("offset_Node2D/Area2D")
+collisionShape2D = NodePath("offset_Node2D/Area2D/CollisionShape2D")
+highlight_TextureRect = NodePath("offset_Node2D/TextureRect3/TextureRect2")
+label = NodePath("offset_Node2D/Label")
+
+[node name="offset_Node2D" type="Node2D" parent="button_position"]
+
+[node name="TextureRect3" type="TextureRect" parent="button_position/offset_Node2D"]
+self_modulate = Color(0, 0, 0, 0.607843)
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -38.0
+offset_top = -38.0
+offset_right = 38.0
+offset_bottom = 38.0
+grow_horizontal = 2
+grow_vertical = 2
+texture = ExtResource("20_s8jol")
+expand_mode = 1
+
+[node name="TextureRect2" type="TextureRect" parent="button_position/offset_Node2D/TextureRect3"]
+visible = false
+self_modulate = Color(1, 0.392157, 0.396078, 1)
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+texture = ExtResource("20_s8jol")
+expand_mode = 1
+
+[node name="TextureRect" type="TextureRect" parent="button_position/offset_Node2D"]
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -25.0
+offset_top = -25.0
+offset_right = 25.0
+offset_bottom = 25.0
+grow_horizontal = 2
+grow_vertical = 2
+size_flags_horizontal = 4
+size_flags_vertical = 4
+texture = ExtResource("25_gg15g")
+expand_mode = 1
+
+[node name="Label" type="Label" parent="button_position/offset_Node2D"]
+anchors_preset = 5
+anchor_left = 0.5
+anchor_right = 0.5
+offset_left = -22.5
+offset_top = 28.0
+offset_right = 22.5
+offset_bottom = 42.0
+grow_horizontal = 2
+size_flags_vertical = 1
+theme_override_constants/outline_size = 4
+theme_override_font_sizes/font_size = 15
+text = "Change
+Position"
+horizontal_alignment = 1
+
+[node name="Area2D" type="Area2D" parent="button_position/offset_Node2D"]
+monitoring = false
+monitorable = false
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="button_position/offset_Node2D/Area2D"]
 shape = SubResource("CircleShape2D_sdvyq")
 
 [editable path="CanvasLayer/Description_Menu/Panel/Control/Frame"]

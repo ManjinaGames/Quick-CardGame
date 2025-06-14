@@ -4,7 +4,7 @@
 [ext_resource type="PackedScene" uid="uid://d00ndvs4nnoku" path="res://Nodes/Prefabs/frame.tscn" id="2_2qivj"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_wf6kc"]
-size = Vector2(90, 138)
+size = Vector2(98, 146)
 
 [node name="Card_Node" type="Node2D" node_paths=PackedStringArray("area2d", "offset_Node2D", "collisionShape", "frame_Node")]
 script = ExtResource("1_vx84k")

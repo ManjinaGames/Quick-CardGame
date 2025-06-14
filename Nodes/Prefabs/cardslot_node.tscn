@@ -56,7 +56,6 @@ self_modulate = Color(1, 1, 0.572549, 0.607843)
 layout_mode = 2
 texture = ExtResource("3_rvbrm")
 expand_mode = 1
-metadata/_edit_group_ = true
 
 [node name="Highlight_TextureRect" type="TextureRect" parent="Node2D/Cardslot_TextureRect"]
 visible = false
