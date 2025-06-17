@@ -1,0 +1,446 @@
+[gd_scene load_steps=17 format=3 uid="uid://cfwl8u6p4ahrw"]
+
+[ext_resource type="PackedScene" uid="uid://dv6whgihfngrl" path="res://Nodes/Prefabs/deck_node.tscn" id="1_5nl73"]
+[ext_resource type="Script" uid="uid://f0w3blfg5exs" path="res://Scripts/game_scene.gd" id="1_75qs1"]
+[ext_resource type="Script" uid="uid://ud077ar2y3co" path="res://Scripts/UI_Scripts/player_node.gd" id="1_tc6i7"]
+[ext_resource type="PackedScene" uid="uid://j77le6sdcrmn" path="res://Nodes/Prefabs/card_slot_node.tscn" id="2_5bdh4"]
+[ext_resource type="PackedScene" uid="uid://cv17k8wd7crtk" path="res://Nodes/Prefabs/frame_node.tscn" id="3_5bdh4"]
+[ext_resource type="Script" uid="uid://cfyggikamp6i5" path="res://Scripts/UI_Scripts/hand_node.gd" id="3_bgfx6"]
+[ext_resource type="Script" uid="uid://bdna46pk7w50g" path="res://Scripts/phase_menu.gd" id="4_yvodw"]
+[ext_resource type="Script" uid="uid://bjpdhij6bwvkf" path="res://Scripts/Card_Scripts/Card_Resource.gd" id="7_bcwnx"]
+[ext_resource type="PackedScene" uid="uid://wqaq6kbv7hh4" path="res://Nodes/Prefabs/card_node.tscn" id="7_d52tv"]
+[ext_resource type="Resource" uid="uid://2c8n8fbuchmk" path="res://Cards/Resource/dragonmaid (1).tres" id="8_qvpfs"]
+[ext_resource type="Texture2D" uid="uid://bliqx8v8tdiqq" path="res://Assets/Images/kenney_board-game-icons/Double (128px)/card_lift.png" id="11_g6gf4"]
+[ext_resource type="Texture2D" uid="uid://lng8gt1k82p0" path="res://Assets/Images/kenney_board-game-icons/Double (128px)/card_outline_place.png" id="12_pu66q"]
+[ext_resource type="Texture2D" uid="uid://d1mldbn2m665c" path="res://Assets/Images/kenney_board-game-icons/Double (128px)/book_closed.png" id="13_bcwnx"]
+[ext_resource type="Texture2D" uid="uid://ct72h82st0ux4" path="res://Assets/Images/kenney_board-game-icons/Double (128px)/sword.png" id="14_qvpfs"]
+[ext_resource type="Texture2D" uid="uid://cqgg13e4seqsw" path="res://Assets/Images/kenney_board-game-icons/Double (128px)/card_tap_down.png" id="16_pu66q"]
+[ext_resource type="PackedScene" uid="uid://b51u1s2h4886m" path="res://Nodes/Prefabs/button_node.tscn" id="18_qvpfs"]
+
+[node name="GameSystem" type="Node2D" node_paths=PackedStringArray("player1", "player2", "descriptionMenu", "descriptionMenu_Frame", "banner_panel", "banner_label", "button_Summon", "button_Set", "button_attack", "button_position", "button_phase", "phase_menu", "debugInfo")]
+script = ExtResource("1_75qs1")
+player1 = NodePath("Player1_Node")
+player2 = NodePath("Player2_Node")
+descriptionMenu = NodePath("CanvasLayer/Description_Panel")
+descriptionMenu_Frame = NodePath("CanvasLayer/Description_Panel/Description_Frame_Node")
+banner_panel = NodePath("CanvasLayer/Banner_PanelContainer")
+banner_label = NodePath("CanvasLayer/Banner_PanelContainer/Label")
+button_Summon = NodePath("Button_Node_Summon")
+button_Set = NodePath("Button_Node_Set")
+button_attack = NodePath("Button_Nod_Attack")
+button_position = NodePath("Button_Node_Position")
+button_phase = NodePath("Button_Node_Phase")
+phase_menu = NodePath("CanvasLayer/Phase_Menu")
+card_Node_Prefab = ExtResource("7_d52tv")
+debugInfo = NodePath("CanvasLayer/MarginContainer2/Label")
+
+[node name="CanvasLayer" type="CanvasLayer" parent="."]
+
+[node name="MarginContainer" type="MarginContainer" parent="CanvasLayer"]
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_constants/margin_left = 30
+theme_override_constants/margin_top = 30
+theme_override_constants/margin_right = 30
+theme_override_constants/margin_bottom = 30
+
+[node name="Player1_VBoxContainer" type="VBoxContainer" parent="CanvasLayer/MarginContainer"]
+layout_mode = 2
+size_flags_horizontal = 8
+size_flags_vertical = 8
+
+[node name="Summon_Label" type="Label" parent="CanvasLayer/MarginContainer/Player1_VBoxContainer"]
+layout_mode = 2
+theme_override_constants/outline_size = 5
+text = "1/1 NS"
+horizontal_alignment = 2
+
+[node name="LifePoints_Label" type="Label" parent="CanvasLayer/MarginContainer/Player1_VBoxContainer"]
+layout_mode = 2
+theme_override_constants/outline_size = 7
+theme_override_font_sizes/font_size = 30
+text = "8000 LP"
+horizontal_alignment = 2
+
+[node name="Player2_VBoxContainer" type="VBoxContainer" parent="CanvasLayer/MarginContainer"]
+layout_mode = 2
+size_flags_horizontal = 8
+size_flags_vertical = 0
+
+[node name="LifePoints_Label" type="Label" parent="CanvasLayer/MarginContainer/Player2_VBoxContainer"]
+layout_mode = 2
+theme_override_constants/outline_size = 7
+theme_override_font_sizes/font_size = 30
+text = "8000 LP"
+horizontal_alignment = 2
+
+[node name="Summon_Label" type="Label" parent="CanvasLayer/MarginContainer/Player2_VBoxContainer"]
+layout_mode = 2
+theme_override_constants/outline_size = 5
+text = "1/1 NS"
+horizontal_alignment = 2
+
+[node name="Banner_PanelContainer" type="PanelContainer" parent="CanvasLayer"]
+anchors_preset = 14
+anchor_top = 0.5
+anchor_right = 1.0
+anchor_bottom = 0.5
+offset_top = -34.5
+offset_bottom = 34.5
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="Label" type="Label" parent="CanvasLayer/Banner_PanelContainer"]
+layout_mode = 2
+theme_override_constants/outline_size = 5
+theme_override_font_sizes/font_size = 100
+text = "Draw Phase"
+horizontal_alignment = 1
+
+[node name="Phase_Menu" type="PanelContainer" parent="CanvasLayer" node_paths=PackedStringArray("button_startPhase", "button_mainPhase1", "button_battlePhase", "button_mainPhase2", "button_endPhase", "button_cancel")]
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -257.5
+offset_top = -53.0
+offset_right = 257.5
+offset_bottom = 53.0
+grow_horizontal = 2
+grow_vertical = 2
+size_flags_horizontal = 4
+size_flags_vertical = 4
+script = ExtResource("4_yvodw")
+button_startPhase = NodePath("MarginContainer/VBoxContainer/HBoxContainer/Button")
+button_mainPhase1 = NodePath("MarginContainer/VBoxContainer/HBoxContainer/Button2")
+button_battlePhase = NodePath("MarginContainer/VBoxContainer/HBoxContainer/Button3")
+button_mainPhase2 = NodePath("MarginContainer/VBoxContainer/HBoxContainer/Button4")
+button_endPhase = NodePath("MarginContainer/VBoxContainer/HBoxContainer/Button5")
+button_cancel = NodePath("MarginContainer/VBoxContainer/Button")
+
+[node name="MarginContainer" type="MarginContainer" parent="CanvasLayer/Phase_Menu"]
+layout_mode = 2
+theme_override_constants/margin_left = 15
+theme_override_constants/margin_top = 15
+theme_override_constants/margin_right = 15
+theme_override_constants/margin_bottom = 15
+
+[node name="VBoxContainer" type="VBoxContainer" parent="CanvasLayer/Phase_Menu/MarginContainer"]
+layout_mode = 2
+
+[node name="HBoxContainer" type="HBoxContainer" parent="CanvasLayer/Phase_Menu/MarginContainer/VBoxContainer"]
+layout_mode = 2
+theme_override_constants/separation = 15
+
+[node name="Button" type="Button" parent="CanvasLayer/Phase_Menu/MarginContainer/VBoxContainer/HBoxContainer"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 50
+text = "Star
+Phase"
+
+[node name="Button2" type="Button" parent="CanvasLayer/Phase_Menu/MarginContainer/VBoxContainer/HBoxContainer"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 50
+text = "Main
+Phase 1"
+
+[node name="Button3" type="Button" parent="CanvasLayer/Phase_Menu/MarginContainer/VBoxContainer/HBoxContainer"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 50
+text = "Battle
+Phase"
+
+[node name="Button4" type="Button" parent="CanvasLayer/Phase_Menu/MarginContainer/VBoxContainer/HBoxContainer"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 50
+text = "Main
+Phase 2"
+
+[node name="Button5" type="Button" parent="CanvasLayer/Phase_Menu/MarginContainer/VBoxContainer/HBoxContainer"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 50
+text = "End
+Phase"
+
+[node name="Button" type="Button" parent="CanvasLayer/Phase_Menu/MarginContainer/VBoxContainer"]
+visible = false
+layout_mode = 2
+size_flags_horizontal = 4
+theme_override_font_sizes/font_size = 50
+text = "Cancel
+"
+
+[node name="Description_Panel" type="Panel" parent="CanvasLayer"]
+visible = false
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="Description_Frame_Node" parent="CanvasLayer/Description_Panel" instance=ExtResource("3_5bdh4")]
+layout_mode = 1
+anchors_preset = 4
+anchor_left = 0.0
+anchor_right = 0.0
+offset_left = 64.0
+offset_top = -386.0
+offset_right = 576.0
+offset_bottom = 382.0
+grow_horizontal = 1
+
+[node name="Top_Label" parent="CanvasLayer/Description_Panel/Description_Frame_Node" index="3"]
+theme_override_font_sizes/font_size = 30
+
+[node name="Botton_Label" parent="CanvasLayer/Description_Panel/Description_Frame_Node" index="4"]
+anchor_left = 0.062
+anchor_top = 0.75
+anchor_right = 0.937
+anchor_bottom = 0.906
+offset_left = 0.255999
+offset_top = -6.10352e-05
+offset_right = 0.255981
+offset_bottom = 0.192017
+theme_override_font_sizes/font_size = 30
+
+[node name="Description_Label" type="Label" parent="CanvasLayer/Description_Panel"]
+layout_mode = 1
+anchors_preset = -1
+anchor_left = 0.396
+anchor_top = 0.074
+anchor_right = 0.972
+anchor_bottom = 0.926
+offset_left = -0.192017
+offset_top = 0.0480003
+offset_right = 0.255981
+offset_bottom = -0.0480347
+theme_override_constants/outline_size = 5
+theme_override_font_sizes/font_size = 24
+text = "---------------------------------------------------------------------------------------------------
+Dragonmaid Nurse
+---------------------------------------------------------------------------------------------------
+[ Dragon / EARTH / Lv-2 ]
+Atk / 500          Def / 1600
+---------------------------------------------------------------------------------------------------
+Effect:
+               Si esta carta es Invocada de Modo Normal o Especial: puedes seleccionar 1 monstruo \"Dragoncella\" de Nivel 4 o menor en tu Cementerio, excepto \"Dragoncella Enfermera\"; Invócalo de Modo Especial. Al comienzo de la Battle Phase: puedes devolver esta carta a la mano y, si lo haces, Invoca de Modo Especial, desde tu mano o Cementerio, 1 monstruo \"Dragoncella\" de Nivel 7. Sólo puedes usar cada efecto de \"Dragoncella Enfermera\" una vez por turno.
+"
+autowrap_mode = 2
+
+[node name="MarginContainer2" type="MarginContainer" parent="CanvasLayer"]
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+theme_override_constants/margin_left = 15
+theme_override_constants/margin_top = 15
+theme_override_constants/margin_right = 15
+theme_override_constants/margin_bottom = 15
+
+[node name="Label" type="Label" parent="CanvasLayer/MarginContainer2"]
+layout_mode = 2
+size_flags_vertical = 1
+theme_override_constants/outline_size = 5
+theme_override_font_sizes/font_size = 10
+text = "asdasdasd"
+
+[node name="Player1_Hand_Node" type="Node2D" parent="."]
+position = Vector2(800, 835)
+script = ExtResource("3_bgfx6")
+
+[node name="Player1_Node" type="Node2D" parent="." node_paths=PackedStringArray("mainDeck", "extraDeck", "grave", "removed", "hand", "magicZone", "monsterZone", "label_LifePoints", "label_Summons", "opponent")]
+position = Vector2(800, 704)
+script = ExtResource("1_tc6i7")
+mainDeck = NodePath("mainDeck_Node")
+extraDeck = NodePath("extraDeck_Node")
+grave = NodePath("graveDeck_Node")
+removed = NodePath("removeDeck_Node")
+hand = NodePath("../Player1_Hand_Node")
+magicZone = [NodePath("magicCardSlot_Node"), NodePath("magicCardSlot_Node2"), NodePath("magicCardSlot_Node3"), NodePath("magicCardSlot_Node4"), NodePath("magicCardSlot_Node5")]
+monsterZone = [NodePath("monsterCardSlot_Node"), NodePath("monsterCardSlot_Node2"), NodePath("monsterCardSlot_Node3"), NodePath("monsterCardSlot_Node4"), NodePath("monsterCardSlot_Node5")]
+label_LifePoints = NodePath("../CanvasLayer/MarginContainer/Player1_VBoxContainer/LifePoints_Label")
+label_Summons = NodePath("../CanvasLayer/MarginContainer/Player1_VBoxContainer/Summon_Label")
+opponent = NodePath("../Player2_Node")
+
+[node name="mainDeck_Node" parent="Player1_Node" instance=ExtResource("1_5nl73")]
+position = Vector2(472, 0)
+card_Resource = Array[ExtResource("7_bcwnx")]([ExtResource("8_qvpfs"), ExtResource("8_qvpfs"), ExtResource("8_qvpfs"), ExtResource("8_qvpfs"), ExtResource("8_qvpfs"), ExtResource("8_qvpfs"), ExtResource("8_qvpfs"), ExtResource("8_qvpfs"), ExtResource("8_qvpfs"), ExtResource("8_qvpfs")])
+
+[node name="extraDeck_Node" parent="Player1_Node" instance=ExtResource("1_5nl73")]
+position = Vector2(-472, 0)
+myDECK_TYPE = 1
+
+[node name="graveDeck_Node" parent="Player1_Node" instance=ExtResource("1_5nl73")]
+position = Vector2(472, -160)
+myDECK_TYPE = 2
+
+[node name="removeDeck_Node" parent="Player1_Node" instance=ExtResource("1_5nl73")]
+position = Vector2(-472, -160)
+myDECK_TYPE = 3
+
+[node name="monsterCardSlot_Node" parent="Player1_Node" instance=ExtResource("2_5bdh4")]
+position = Vector2(-320, -160)
+
+[node name="monsterCardSlot_Node2" parent="Player1_Node" instance=ExtResource("2_5bdh4")]
+position = Vector2(-160, -160)
+
+[node name="monsterCardSlot_Node3" parent="Player1_Node" instance=ExtResource("2_5bdh4")]
+position = Vector2(0, -160)
+
+[node name="monsterCardSlot_Node4" parent="Player1_Node" instance=ExtResource("2_5bdh4")]
+position = Vector2(160, -160)
+
+[node name="monsterCardSlot_Node5" parent="Player1_Node" instance=ExtResource("2_5bdh4")]
+position = Vector2(320, -160)
+
+[node name="magicCardSlot_Node" parent="Player1_Node" instance=ExtResource("2_5bdh4")]
+position = Vector2(-320, 0)
+myZONE_TYPE = 1
+
+[node name="magicCardSlot_Node2" parent="Player1_Node" instance=ExtResource("2_5bdh4")]
+position = Vector2(-160, 0)
+myZONE_TYPE = 1
+
+[node name="magicCardSlot_Node3" parent="Player1_Node" instance=ExtResource("2_5bdh4")]
+myZONE_TYPE = 1
+
+[node name="magicCardSlot_Node4" parent="Player1_Node" instance=ExtResource("2_5bdh4")]
+position = Vector2(160, 0)
+myZONE_TYPE = 1
+
+[node name="magicCardSlot_Node5" parent="Player1_Node" instance=ExtResource("2_5bdh4")]
+position = Vector2(320, 0)
+myZONE_TYPE = 1
+
+[node name="Player2_Hand_Node" type="Node2D" parent="."]
+position = Vector2(800, 65)
+script = ExtResource("3_bgfx6")
+
+[node name="Player2_Node" type="Node2D" parent="." node_paths=PackedStringArray("mainDeck", "extraDeck", "grave", "removed", "hand", "magicZone", "monsterZone", "label_LifePoints", "label_Summons", "opponent")]
+position = Vector2(800, 192)
+script = ExtResource("1_tc6i7")
+mainDeck = NodePath("mainDeck_Node")
+extraDeck = NodePath("extraDeck_Node")
+grave = NodePath("graveDeck_Node")
+removed = NodePath("removeDeck_Node")
+hand = NodePath("../Player2_Hand_Node")
+magicZone = [NodePath("magicCardSlot_Node"), NodePath("magicCardSlot_Node2"), NodePath("magicCardSlot_Node3"), NodePath("magicCardSlot_Node4"), NodePath("magicCardSlot_Node5")]
+monsterZone = [NodePath("monsterCardSlot_Node"), NodePath("monsterCardSlot_Node2"), NodePath("monsterCardSlot_Node3"), NodePath("monsterCardSlot_Node4"), NodePath("monsterCardSlot_Node5")]
+label_LifePoints = NodePath("../CanvasLayer/MarginContainer/Player2_VBoxContainer/LifePoints_Label")
+label_Summons = NodePath("../CanvasLayer/MarginContainer/Player2_VBoxContainer/Summon_Label")
+isPlayer1 = false
+opponent = NodePath("../Player1_Node")
+card_highlight_posY_offset = 25.0
+card_selected_posY_offset = 53.0
+card_rotation = 180.0
+card_defense_rotation = -90.0
+
+[node name="mainDeck_Node" parent="Player2_Node" instance=ExtResource("1_5nl73")]
+position = Vector2(-472, 0)
+card_Resource = Array[ExtResource("7_bcwnx")]([ExtResource("8_qvpfs"), ExtResource("8_qvpfs"), ExtResource("8_qvpfs"), ExtResource("8_qvpfs"), ExtResource("8_qvpfs"), ExtResource("8_qvpfs"), ExtResource("8_qvpfs"), ExtResource("8_qvpfs"), ExtResource("8_qvpfs"), ExtResource("8_qvpfs"), ExtResource("8_qvpfs")])
+
+[node name="extraDeck_Node" parent="Player2_Node" instance=ExtResource("1_5nl73")]
+position = Vector2(472, 0)
+myDECK_TYPE = 1
+
+[node name="graveDeck_Node" parent="Player2_Node" instance=ExtResource("1_5nl73")]
+position = Vector2(-472, 160)
+myDECK_TYPE = 2
+
+[node name="removeDeck_Node" parent="Player2_Node" instance=ExtResource("1_5nl73")]
+position = Vector2(472, 160)
+myDECK_TYPE = 3
+
+[node name="monsterCardSlot_Node" parent="Player2_Node" instance=ExtResource("2_5bdh4")]
+position = Vector2(-320, 160)
+
+[node name="monsterCardSlot_Node2" parent="Player2_Node" instance=ExtResource("2_5bdh4")]
+position = Vector2(-160, 160)
+
+[node name="monsterCardSlot_Node3" parent="Player2_Node" instance=ExtResource("2_5bdh4")]
+position = Vector2(0, 160)
+
+[node name="monsterCardSlot_Node4" parent="Player2_Node" instance=ExtResource("2_5bdh4")]
+position = Vector2(160, 160)
+
+[node name="monsterCardSlot_Node5" parent="Player2_Node" instance=ExtResource("2_5bdh4")]
+position = Vector2(320, 160)
+
+[node name="magicCardSlot_Node" parent="Player2_Node" instance=ExtResource("2_5bdh4")]
+position = Vector2(-320, 0)
+myZONE_TYPE = 1
+
+[node name="magicCardSlot_Node2" parent="Player2_Node" instance=ExtResource("2_5bdh4")]
+position = Vector2(-160, 0)
+myZONE_TYPE = 1
+
+[node name="magicCardSlot_Node3" parent="Player2_Node" instance=ExtResource("2_5bdh4")]
+myZONE_TYPE = 1
+
+[node name="magicCardSlot_Node4" parent="Player2_Node" instance=ExtResource("2_5bdh4")]
+position = Vector2(160, 0)
+myZONE_TYPE = 1
+
+[node name="magicCardSlot_Node5" parent="Player2_Node" instance=ExtResource("2_5bdh4")]
+position = Vector2(320, 0)
+myZONE_TYPE = 1
+
+[node name="Button_Node_Phase" parent="." instance=ExtResource("18_qvpfs")]
+position = Vector2(1450, 450)
+
+[node name="Icon_TextureRect" parent="Button_Node_Phase/Node2D/Background_TextureRect" index="1"]
+texture = ExtResource("13_bcwnx")
+
+[node name="Label" parent="Button_Node_Phase/Node2D" index="1"]
+text = "Phase
+Button"
+
+[node name="Button_Node_Summon" parent="." instance=ExtResource("18_qvpfs")]
+position = Vector2(80, 0)
+
+[node name="Icon_TextureRect" parent="Button_Node_Summon/Node2D/Background_TextureRect" index="1"]
+texture = ExtResource("11_g6gf4")
+
+[node name="Label" parent="Button_Node_Summon/Node2D" index="1"]
+text = "Summon"
+
+[node name="Button_Node_Set" parent="." instance=ExtResource("18_qvpfs")]
+position = Vector2(184, 0)
+
+[node name="Icon_TextureRect" parent="Button_Node_Set/Node2D/Background_TextureRect" index="1"]
+texture = ExtResource("12_pu66q")
+
+[node name="Label" parent="Button_Node_Set/Node2D" index="1"]
+text = "Set"
+
+[node name="Button_Nod_Attack" parent="." instance=ExtResource("18_qvpfs")]
+position = Vector2(288, 0)
+
+[node name="Icon_TextureRect" parent="Button_Nod_Attack/Node2D/Background_TextureRect" index="1"]
+texture = ExtResource("14_qvpfs")
+
+[node name="Label" parent="Button_Nod_Attack/Node2D" index="1"]
+text = "Attack"
+
+[node name="Button_Node_Position" parent="." instance=ExtResource("18_qvpfs")]
+position = Vector2(392, 0)
+
+[node name="Icon_TextureRect" parent="Button_Node_Position/Node2D/Background_TextureRect" index="1"]
+texture = ExtResource("16_pu66q")
+
+[node name="Label" parent="Button_Node_Position/Node2D" index="1"]
+text = "Change
+Position"
+
+[editable path="CanvasLayer/Description_Panel/Description_Frame_Node"]
+[editable path="Button_Node_Phase"]
+[editable path="Button_Node_Summon"]
+[editable path="Button_Node_Set"]
+[editable path="Button_Nod_Attack"]
+[editable path="Button_Node_Position"]

@@ -1,0 +1,79 @@
+[gd_scene load_steps=5 format=3 uid="uid://b51u1s2h4886m"]
+
+[ext_resource type="Script" uid="uid://54ybuxc2ylal" path="res://Scripts/UI_Scripts/button_node.gd" id="1_lr8qs"]
+[ext_resource type="Texture2D" uid="uid://b53fudd1eugfu" path="res://Assets/Images/kenney_board-game-icons/Double (128px)/d12.png" id="2_gne4g"]
+[ext_resource type="Texture2D" uid="uid://dsmngspec64ue" path="res://Assets/Images/kenney_board-game-icons/Double (128px)/d8.png" id="3_ua5ww"]
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_qvpfs"]
+radius = 40.0
+
+[node name="Button_Node" type="Node2D" node_paths=PackedStringArray("area2D", "collisionShape2D", "highlight_TextureRect", "label", "icon")]
+z_index = 5
+script = ExtResource("1_lr8qs")
+area2D = NodePath("Node2D/Area2D")
+collisionShape2D = NodePath("Node2D/Area2D/CollisionShape2D")
+highlight_TextureRect = NodePath("Node2D/Background_TextureRect/Highlight_TextureRect")
+label = NodePath("Node2D/Label")
+icon = NodePath("Node2D/Background_TextureRect/Icon_TextureRect")
+metadata/_custom_type_script = "uid://54ybuxc2ylal"
+
+[node name="Node2D" type="Node2D" parent="."]
+
+[node name="Background_TextureRect" type="TextureRect" parent="Node2D"]
+self_modulate = Color(0, 0, 0, 0.607843)
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -48.0
+offset_top = -48.0
+offset_right = 48.0
+offset_bottom = 48.0
+grow_horizontal = 2
+grow_vertical = 2
+texture = ExtResource("2_gne4g")
+expand_mode = 1
+
+[node name="Highlight_TextureRect" type="TextureRect" parent="Node2D/Background_TextureRect"]
+visible = false
+self_modulate = Color(1, 0, 0, 1)
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+texture = ExtResource("2_gne4g")
+expand_mode = 1
+
+[node name="Icon_TextureRect" type="TextureRect" parent="Node2D/Background_TextureRect"]
+layout_mode = 1
+anchors_preset = -1
+anchor_left = 0.125
+anchor_top = 0.125
+anchor_right = 0.875
+anchor_bottom = 0.875
+grow_horizontal = 2
+grow_vertical = 2
+texture = ExtResource("3_ua5ww")
+expand_mode = 1
+
+[node name="Label" type="Label" parent="Node2D"]
+anchors_preset = 5
+anchor_left = 0.5
+anchor_right = 0.5
+offset_left = -44.5
+offset_top = 40.0
+offset_right = 44.5
+offset_bottom = 89.0
+grow_horizontal = 2
+theme_override_constants/outline_size = 5
+text = "Button
+Description"
+horizontal_alignment = 1
+
+[node name="Area2D" type="Area2D" parent="Node2D"]
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Node2D/Area2D"]
+shape = SubResource("CircleShape2D_qvpfs")

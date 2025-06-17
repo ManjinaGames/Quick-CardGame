@@ -1,1 +1,0 @@
-extends Card_Class

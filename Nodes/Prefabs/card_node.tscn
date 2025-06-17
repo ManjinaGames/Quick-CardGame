@@ -1,25 +1,28 @@
-[gd_scene load_steps=4 format=3 uid="uid://dfb2i4o7cr1k1"]
+[gd_scene load_steps=4 format=3 uid="uid://wqaq6kbv7hh4"]
 
-[ext_resource type="Script" uid="uid://dnl0xvm7e6iw1" path="res://Scripts/Card_Node/card_node.gd" id="1_vx84k"]
-[ext_resource type="PackedScene" uid="uid://d00ndvs4nnoku" path="res://Nodes/Prefabs/frame.tscn" id="2_2qivj"]
+[ext_resource type="Script" uid="uid://cedrxo1e23o45" path="res://Scripts/UI_Scripts/card_node.gd" id="1_vq4jl"]
+[ext_resource type="PackedScene" uid="uid://cv17k8wd7crtk" path="res://Nodes/Prefabs/frame_node.tscn" id="2_xcohy"]
 
-[sub_resource type="RectangleShape2D" id="RectangleShape2D_wf6kc"]
-size = Vector2(98, 146)
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_yvodw"]
+size = Vector2(128, 192)
 
 [node name="Card_Node" type="Node2D" node_paths=PackedStringArray("area2d", "offset_Node2D", "collisionShape", "frame_Node")]
-script = ExtResource("1_vx84k")
+z_index = 1
+script = ExtResource("1_vq4jl")
 area2d = NodePath("offset_Node2D/Area2D")
 offset_Node2D = NodePath("offset_Node2D")
 collisionShape = NodePath("offset_Node2D/Area2D/CollisionShape2D")
-frame_Node = NodePath("offset_Node2D/Frame")
+frame_Node = NodePath("offset_Node2D/Frame_Node")
 
 [node name="offset_Node2D" type="Node2D" parent="."]
 
-[node name="Frame" parent="offset_Node2D" instance=ExtResource("2_2qivj")]
+[node name="Frame_Node" parent="offset_Node2D" instance=ExtResource("2_xcohy")]
+offset_left = -64.0
+offset_top = -96.0
+offset_right = 64.0
+offset_bottom = 96.0
 
 [node name="Area2D" type="Area2D" parent="offset_Node2D"]
-monitoring = false
-monitorable = false
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="offset_Node2D/Area2D"]
-shape = SubResource("RectangleShape2D_wf6kc")
+shape = SubResource("RectangleShape2D_yvodw")
