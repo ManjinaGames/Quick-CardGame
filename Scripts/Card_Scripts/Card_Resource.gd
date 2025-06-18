@@ -31,3 +31,4 @@ enum ITEM_TYPE{NORMAL, EQUIP, QUICK, INFINITE}
 @export_category("BLUE")
 @export var myITEM_TYPE: ITEM_TYPE
 #endregion
+#-------------------------------------------------------------------------------

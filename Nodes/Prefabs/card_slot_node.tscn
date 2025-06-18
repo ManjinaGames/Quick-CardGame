@@ -14,6 +14,11 @@ summoning_TextureRect = NodePath("offset_Node2D/MarginContainer2/MarginContainer
 
 [node name="offset_Node2D" type="Node2D" parent="."]
 
+[node name="Area2D" type="Area2D" parent="offset_Node2D"]
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="offset_Node2D/Area2D"]
+shape = SubResource("RectangleShape2D_bgfx6")
+
 [node name="MarginContainer2" type="MarginContainer" parent="offset_Node2D"]
 offset_left = -80.0
 offset_top = -80.0
@@ -28,7 +33,7 @@ theme_override_constants/margin_right = 2
 theme_override_constants/margin_bottom = 2
 
 [node name="Cardslot_TextureRect" type="TextureRect" parent="offset_Node2D/MarginContainer2/MarginContainer"]
-self_modulate = Color(0, 0, 0, 0.607843)
+self_modulate = Color(0, 0, 0, 0.411765)
 layout_mode = 2
 texture = ExtResource("2_jwnd6")
 expand_mode = 1
@@ -41,20 +46,13 @@ theme_override_constants/margin_right = 5
 theme_override_constants/margin_bottom = 5
 
 [node name="Summoning_TextureRect" type="TextureRect" parent="offset_Node2D/MarginContainer2/MarginContainer2"]
-visible = false
-self_modulate = Color(1, 1, 0, 0.607843)
+self_modulate = Color(1, 1, 0.458824, 1)
 layout_mode = 2
 texture = ExtResource("2_jwnd6")
 expand_mode = 1
 
 [node name="Highlight_TextureRect" type="TextureRect" parent="offset_Node2D/MarginContainer2"]
-visible = false
 self_modulate = Color(1, 1, 1, 0.607843)
 layout_mode = 2
 texture = ExtResource("2_jwnd6")
 expand_mode = 1
-
-[node name="Area2D" type="Area2D" parent="offset_Node2D"]
-
-[node name="CollisionShape2D" type="CollisionShape2D" parent="offset_Node2D/Area2D"]
-shape = SubResource("RectangleShape2D_bgfx6")

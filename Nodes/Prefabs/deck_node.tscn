@@ -16,6 +16,11 @@ label = NodePath("offset_Node2D/MarginContainer/Label")
 
 [node name="offset_Node2D" type="Node2D" parent="."]
 
+[node name="Area2D" type="Area2D" parent="offset_Node2D"]
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="offset_Node2D/Area2D"]
+shape = SubResource("RectangleShape2D_5bdh4")
+
 [node name="MarginContainer" type="MarginContainer" parent="offset_Node2D"]
 offset_left = -56.0
 offset_top = -80.0
@@ -30,7 +35,7 @@ theme_override_constants/margin_right = 2
 theme_override_constants/margin_bottom = 2
 
 [node name="CardSlot_TextureRect" type="TextureRect" parent="offset_Node2D/MarginContainer/MarginContainer"]
-self_modulate = Color(0, 0, 0, 0.607843)
+self_modulate = Color(0, 0, 0, 0.411765)
 layout_mode = 2
 texture = ExtResource("2_3g54p")
 expand_mode = 1
@@ -47,22 +52,16 @@ layout_mode = 2
 texture = ExtResource("3_1jovx")
 expand_mode = 1
 
-[node name="Label" type="Label" parent="offset_Node2D/MarginContainer"]
-visible = false
-layout_mode = 2
-size_flags_vertical = 8
-theme_override_constants/outline_size = 5
-text = "40/40"
-horizontal_alignment = 1
-
 [node name="Highlight_TextureRect2" type="TextureRect" parent="offset_Node2D/MarginContainer"]
-visible = false
 self_modulate = Color(1, 1, 1, 0.607843)
 layout_mode = 2
 texture = ExtResource("2_3g54p")
 expand_mode = 1
 
-[node name="Area2D" type="Area2D" parent="offset_Node2D"]
-
-[node name="CollisionShape2D" type="CollisionShape2D" parent="offset_Node2D/Area2D"]
-shape = SubResource("RectangleShape2D_5bdh4")
+[node name="Label" type="Label" parent="offset_Node2D/MarginContainer"]
+layout_mode = 2
+size_flags_vertical = 8
+theme_override_constants/outline_size = 5
+theme_override_font_sizes/font_size = 24
+text = "40/40"
+horizontal_alignment = 1

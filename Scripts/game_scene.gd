@@ -8,6 +8,9 @@ enum MAINPHASE1_STATE{IDLE, HAND_MENU, SUMMON_MENU}
 #region VARIABLES
 @export var player1: Player_Node
 @export var player2: Player_Node
+@export var cardLayer_red: Texture2D
+@export var cardLayer_blue: Texture2D
+@export var cardLayer_yellow: Texture2D
 var turnCounter: int = 0
 #-------------------------------------------------------------------------------
 var player1_color: Color = Color.LIGHT_SKY_BLUE
@@ -57,7 +60,7 @@ const cardDatabase_path: String = "res://Cards/Resources"
 const cardDatabase_hability_path: String = "res://Cards/Scripts"
 @export var cardDatabase: Dictionary = {}
 #-------------------------------------------------------------------------------
-var card_width: float = 90
+var card_width: float = 120
 #-------------------------------------------------------------------------------
 var nothing_pressed: Callable = func(): pass
 var nothing_released: Callable = func(): pass
@@ -329,7 +332,7 @@ func GetResource_Name(_resource: Card_Resource) -> String:
 #-------------------------------------------------------------------------------
 func SetDeckNumber1(_deck_node: Deck_Node):
 	var _num: int = _deck_node.card_Class_Array.size()
-	_deck_node.label.text = str(_num)+" / "+str(_deck_node.maxDeckNum)
+	_deck_node.label.text = str(_num)+"/"+str(_deck_node.maxDeckNum)
 	if(_num <= 0):
 		_deck_node.card_TextureRect.hide()
 #-------------------------------------------------------------------------------
@@ -346,17 +349,17 @@ func Set_Card_Node(_frame_node: Frame_Node, _card_Resource:Card_Resource):
 	#-------------------------------------------------------------------------------
 	match(_card_Resource.myCARD_TYPE):
 		Card_Resource.CARD_TYPE.RED:
-			_frame_node.frame.self_modulate = Color.LIGHT_PINK
+			_frame_node.frame.texture = cardLayer_red
 			_frame_node.topLabel.text = Get_Level(_card_Resource)
 			_frame_node.bottonLabel.text = Get_Attack_and_Defense(_card_Resource)
 		#-------------------------------------------------------------------------------
 		Card_Resource.CARD_TYPE.BLUE:
-			_frame_node.frame.self_modulate = Color.LIGHT_BLUE
+			_frame_node.frame.texture = cardLayer_blue
 			_frame_node.topLabel.text = Get_Magic_Card_Type(_card_Resource)
 			_frame_node.bottonLabel.text = ""
 		#-------------------------------------------------------------------------------
 		Card_Resource.CARD_TYPE.YELLOW:
-			_frame_node.frame.self_modulate = Color.LIGHT_GOLDENROD
+			_frame_node.frame.texture = cardLayer_yellow
 			_frame_node.topLabel.text = Get_Level(_card_Resource)
 			_frame_node.bottonLabel.text = Get_Attack_and_Defense(_card_Resource)
 		#-------------------------------------------------------------------------------
@@ -494,25 +497,39 @@ func SetPlayer(_user:Player_Node, _opponent:Player_Node):
 	#-------------------------------------------------------------------------------
 	_user.mainDeck.highlighted = func(): Highlight_Deck_True(_user.mainDeck)
 	_user.mainDeck.lowlighted = func(): Highlight_Deck_False(_user.mainDeck)
+	_user.mainDeck.label.hide()
+	_user.mainDeck.highlight_TextureRect.hide()
 	#-------------------------------------------------------------------------------
 	_user.extraDeck.highlighted = func(): Highlight_Deck_True(_user.extraDeck)
 	_user.extraDeck.lowlighted = func(): Highlight_Deck_False(_user.extraDeck)
+	_user.extraDeck.label.hide()
+	_user.extraDeck.highlight_TextureRect.hide()
 	#-------------------------------------------------------------------------------
 	_user.grave.highlighted = func(): Highlight_Deck_True(_user.grave)
 	_user.grave.lowlighted = func(): Highlight_Deck_False(_user.grave)
+	_user.grave.label.hide()
+	_user.grave.highlight_TextureRect.hide()
 	#-------------------------------------------------------------------------------
 	_user.removed.highlighted = func(): Highlight_Deck_True(_user.removed)
 	_user.removed.lowlighted = func(): Highlight_Deck_False(_user.removed)
+	_user.removed.label.hide()
+	_user.removed.highlight_TextureRect.hide()
 	#-------------------------------------------------------------------------------
 	for _i in _user.monsterZone.size():
-		_user.monsterZone[_i].highlighted = func(): Highlight_Cardslot_True(_user.monsterZone[_i])
-		_user.monsterZone[_i].lowlighted = func(): Highlight_Cardslot_False(_user.monsterZone[_i])
-		_user.monsterZone[_i].holding = func(): CardSlot_Node_PressHolding(_user.monsterZone[_i])
+		var _monsterZone: CardSlot_Node = _user.monsterZone[_i]
+		_monsterZone.highlighted = func(): Highlight_Cardslot_True(_monsterZone)
+		_monsterZone.lowlighted = func(): Highlight_Cardslot_False(_monsterZone)
+		_monsterZone.holding = func(): CardSlot_Node_PressHolding(_monsterZone)
+		_monsterZone.highlight_TextureRect.hide()
+		_monsterZone.summoning_TextureRect.hide()
 	#-------------------------------------------------------------------------------
 	for _i in _user.magicZone.size():
-		_user.magicZone[_i].highlighted = func(): Highlight_Cardslot_True(_user.magicZone[_i])
-		_user.magicZone[_i].lowlighted = func(): Highlight_Cardslot_False(_user.magicZone[_i])
-		_user.magicZone[_i].holding = func(): CardSlot_Node_PressHolding(_user.magicZone[_i])
+		var _magicZone: CardSlot_Node = _user.magicZone[_i]
+		_magicZone.highlighted = func(): Highlight_Cardslot_True(_magicZone)
+		_magicZone.lowlighted = func(): Highlight_Cardslot_False(_magicZone)
+		_magicZone.holding = func(): CardSlot_Node_PressHolding(_magicZone)
+		_magicZone.highlight_TextureRect.hide()
+		_magicZone.summoning_TextureRect.hide()
 #-------------------------------------------------------------------------------
 func Draw_Cards(_player:Player_Node, _iMax: int):
 	await get_tree().create_timer(0.5).timeout
@@ -724,8 +741,8 @@ func CommonPhase_HandMenu_Common(_cardNode: Card_Node):
 	#-------------------------------------------------------------------------------
 	if(myPHASE_STATE == PHASE_STATE.MAIN_PHASE1 or myPHASE_STATE == PHASE_STATE.MAIN_PHASE2):
 		if(_cardNode.card_Class.card_Resource.myCARD_TYPE == Card_Resource.CARD_TYPE.BLUE):
-			button_Summon.global_position = _cardNode.global_position + Vector2(-40, -150)
-			button_Set.global_position = _cardNode.global_position + Vector2(40, -150)
+			button_Summon.global_position = _cardNode.global_position + Vector2(-50, -180)
+			button_Set.global_position = _cardNode.global_position + Vector2(50, -180)
 			#-------------------------------------------------------------------------------
 			button_Summon.label.text = "Activar"
 			button_Set.label.text = "Colocar"
@@ -737,8 +754,8 @@ func CommonPhase_HandMenu_Common(_cardNode: Card_Node):
 			Show_Button_Node(button_Set)
 		else:
 			if(_cardNode.card_Class.user.summonCounter > 0):
-				button_Summon.global_position = _cardNode.global_position + Vector2(-40, -150)
-				button_Set.global_position = _cardNode.global_position + Vector2(40, -150)
+				button_Summon.global_position = _cardNode.global_position + Vector2(-50, -180)
+				button_Set.global_position = _cardNode.global_position + Vector2(50, -180)
 				#-------------------------------------------------------------------------------
 				button_Summon.label.text = "Convocar"
 				button_Set.label.text = "Colocar"
@@ -857,7 +874,7 @@ func CommonPhase_FieldMenu_Common(_cardSlot_node: CardSlot_Node):
 			match(_cardSlot_node.myZONE_TYPE):
 				CardSlot_Node.ZONE_TYPE.MONSTER_ZONE:
 					if(_cardSlot_node.card_in_slot != null):
-						button_position.global_position = _cardSlot_node.global_position + Vector2(0, -70)
+						button_position.global_position = _cardSlot_node.global_position + Vector2(0, -90)
 						button_position.label.text = "Change\nPosition"
 						button_position.released = func(): pass
 						Show_Button_Node(button_position)
@@ -881,7 +898,7 @@ func CommonPhase_FieldMenu_Common(_cardSlot_node: CardSlot_Node):
 			match(_cardSlot_node.myZONE_TYPE):
 				CardSlot_Node.ZONE_TYPE.MONSTER_ZONE:
 					if(_cardSlot_node.card_in_slot != null):
-						button_attack.global_position = _cardSlot_node.global_position + Vector2(0, -70)
+						button_attack.global_position = _cardSlot_node.global_position + Vector2(0, -90)
 						button_attack.label.text = "Atacar"
 						button_attack.released = func(): pass
 						Show_Button_Node(button_attack)
@@ -1156,7 +1173,7 @@ func MoveCard_fromHand_toSlot(_card_node: Card_Node, _hand: Hand_Node, _cardSlot
 			pass
 		else:
 			_card_node.frame_Node.back.show()
-			_card_node.frame_Node.back.self_modulate.a = 0.9
+			_card_node.frame_Node.back.self_modulate.a = 0.7
 	else:
 		if(_card_node.card_Class.isInAttackPosition):
 			pass
