@@ -16,6 +16,9 @@ var turnCounter: int = 0
 var player1_color: Color = Color.LIGHT_SKY_BLUE
 var player2_color: Color = Color.LIGHT_PINK
 #-------------------------------------------------------------------------------
+const _cardClass_path: String = "res://Cards/Class/"
+const _cardResource_path: String = "res://Cards/Resource/"
+#-------------------------------------------------------------------------------
 @export var descriptionMenu: Control
 @export var descriptionMenu_Frame: Frame_Node
 #-------------------------------------------------------------------------------
@@ -318,14 +321,19 @@ func Highlight_Deck_False(_deck_node: Deck_Node):
 #endregion
 #-------------------------------------------------------------------------------
 #region DECK_HIGHLIGHTED FUNCTIONS
-func LoadDeck(_user: Player_Node):
+func LoadDeck(_user: Player_Node):			#IMPORTANTE: El Nombre del Card_Class debe coincidir con el nombre del Card_Resource en los archivos.
 	#-------------------------------------------------------------------------------
-	for _cardResource in _user.mainDeck.card_Resource:
-		var _card_Class: Card_Class = _cardResource.card_Class.new() as Card_Class
-		_card_Class.card_Resource = _cardResource
-		_user.mainDeck.card_Class_Array.append(_card_Class)
+	for _cardResource in _user.mainDeck_Card_Resource_Array:
+		var _cardClass: Card_Class = Create_CardClass(_cardResource)
+		_cardClass.card_Resource = _cardResource
+		_user.mainDeck.card_Class_Array.append(_cardClass)
 	#-------------------------------------------------------------------------------
 	_user.mainDeck.card_Class_Array.shuffle()
+#-------------------------------------------------------------------------------
+func Create_CardClass(_cardResource: Card_Resource) -> Card_Class:			#IMPORTANTE: El Nombre del Card_Class debe coincidir con el nombre del Card_Resource en los archivos.
+	var _path: String = _cardClass_path + GetResource_Name(_cardResource) + ".gd"
+	var _cardClass: Card_Class = load(_path).new() as Card_Class
+	return _cardClass
 #-------------------------------------------------------------------------------
 func GetResource_Name(_resource: Card_Resource) -> String:
 	return _resource.resource_path.get_file().trim_suffix('.tres')
@@ -1117,11 +1125,15 @@ func CommonPhase_SummonMenu_Player(_player:Player_Node, _card_Node: Card_Node):
 	#-------------------------------------------------------------------------------
 #-------------------------------------------------------------------------------
 func CommonPhase_SummonMenu_SummonMonster(_cardSlot_Node: CardSlot_Node, _card_Node: Card_Node):
+	_card_Node.card_Class.NormalSummon()
+	#-------------------------------------------------------------------------------
 	Set_SummonCounter_Minus(_card_Node.card_Class.user)
 	CommonPhase_Exit_SummonMenu_Enter_Idle(_cardSlot_Node, _card_Node)
 	Desactivate_MonsterZone(_card_Node.card_Class.user)
 #-------------------------------------------------------------------------------
 func CommonPhase_SummonMenu_ActiveteCard(_cardSlot_Node: CardSlot_Node, _card_Node: Card_Node):
+	_card_Node.card_Class.NormalActivation()
+	#-------------------------------------------------------------------------------
 	CommonPhase_Exit_SummonMenu_Enter_Idle(_cardSlot_Node, _card_Node)
 	Desactivate_MagicZone(_card_Node.card_Class.user)
 #-------------------------------------------------------------------------------
@@ -1162,7 +1174,7 @@ func MoveCard_fromHand_toSlot(_card_node: Card_Node, _hand: Hand_Node, _cardSlot
 	Update_hand_position(_hand)
 	#-------------------------------------------------------------------------------
 	var _timer: float = 0.2
-	var _size: float = 0.77
+	var _size: float = 0.75
 	#-------------------------------------------------------------------------------
 	var _tween: Tween = get_tree().create_tween()
 	_tween.set_parallel(true)

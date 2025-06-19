@@ -1,7 +1,6 @@
-[gd_resource type="Resource" script_class="Card_Resource" load_steps=4 format=3 uid="uid://b7nt51y8b36tl"]
+[gd_resource type="Resource" script_class="Card_Resource" load_steps=3 format=3 uid="uid://b7nt51y8b36tl"]
 
 [ext_resource type="Texture2D" uid="uid://dtorh5nkdc7yj" path="res://Cards/Artwork/dragonmaid (3).png" id="1_wx0tr"]
-[ext_resource type="Script" uid="uid://bxjc8itqimaq8" path="res://Scripts/Card_Scripts/Card_Class.gd" id="2_d44dt"]
 [ext_resource type="Script" uid="uid://bjpdhij6bwvkf" path="res://Scripts/Card_Scripts/Card_Resource.gd" id="3_juna1"]
 
 [resource]
@@ -11,7 +10,6 @@ myCARD_TYPE = 1
 myRESTRICTION = 0
 limit = 3
 myARCHTYPE = Array[int]([])
-card_Class = ExtResource("2_d44dt")
 attack = 0
 defense = 0
 myELEMENT = 0

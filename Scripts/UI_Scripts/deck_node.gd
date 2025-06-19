@@ -8,7 +8,6 @@ enum DECK_TYPE{MAIN_DECK, EXTRA_DECK, GRAVE_DECK, REMOVE_DECK}
 @export var highlight_TextureRect: TextureRect
 @export var card_TextureRect: TextureRect
 @export var label: Label
-@export var card_Resource: Array[Card_Resource]
 #-------------------------------------------------------------------------------
 var card_Class_Array: Array[Card_Class]
 var maxDeckNum: int

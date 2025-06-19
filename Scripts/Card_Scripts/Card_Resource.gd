@@ -17,7 +17,7 @@ enum ITEM_TYPE{NORMAL, EQUIP, QUICK, INFINITE}
 #-------------------------------------------------------------------------------
 @export_range (1, 3) var limit: int = 3
 @export var myARCHTYPE: Array[ARCHTYPE]
-@export var card_Class: GDScript
+@export var card_Class: Card_Class
 #-------------------------------------------------------------------------------
 @export_category("RED and YELLOW")
 @export var attack: int = 0
@@ -31,4 +31,5 @@ enum ITEM_TYPE{NORMAL, EQUIP, QUICK, INFINITE}
 @export_category("BLUE")
 @export var myITEM_TYPE: ITEM_TYPE
 #endregion
+#-------------------------------------------------------------------------------
 #-------------------------------------------------------------------------------

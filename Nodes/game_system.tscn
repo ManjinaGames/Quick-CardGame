@@ -264,6 +264,7 @@ script = ExtResource("3_bgfx6")
 [node name="Player1_Node" type="Node2D" parent="." node_paths=PackedStringArray("mainDeck", "extraDeck", "grave", "removed", "hand", "magicZone", "monsterZone", "label_LifePoints", "label_Summons", "opponent")]
 position = Vector2(800, 704)
 script = ExtResource("1_tc6i7")
+mainDeck_Card_Resource_Array = Array[ExtResource("7_bcwnx")]([ExtResource("8_qvpfs"), ExtResource("8_qvpfs"), ExtResource("8_qvpfs"), ExtResource("8_qvpfs"), ExtResource("8_qvpfs"), ExtResource("13_raf5w"), ExtResource("13_raf5w"), ExtResource("13_raf5w"), ExtResource("13_raf5w"), ExtResource("13_raf5w")])
 mainDeck = NodePath("mainDeck_Node")
 extraDeck = NodePath("extraDeck_Node")
 grave = NodePath("graveDeck_Node")
@@ -277,7 +278,6 @@ opponent = NodePath("../Player2_Node")
 
 [node name="mainDeck_Node" parent="Player1_Node" instance=ExtResource("1_5nl73")]
 position = Vector2(472, 0)
-card_Resource = Array[ExtResource("7_bcwnx")]([ExtResource("8_qvpfs"), ExtResource("13_raf5w"), ExtResource("8_qvpfs"), ExtResource("13_raf5w"), ExtResource("8_qvpfs"), ExtResource("13_raf5w"), ExtResource("8_qvpfs"), ExtResource("13_raf5w"), ExtResource("8_qvpfs"), ExtResource("13_raf5w")])
 
 [node name="extraDeck_Node" parent="Player1_Node" instance=ExtResource("1_5nl73")]
 position = Vector2(-472, 0)
@@ -332,6 +332,7 @@ script = ExtResource("3_bgfx6")
 [node name="Player2_Node" type="Node2D" parent="." node_paths=PackedStringArray("mainDeck", "extraDeck", "grave", "removed", "hand", "magicZone", "monsterZone", "label_LifePoints", "label_Summons", "opponent")]
 position = Vector2(800, 192)
 script = ExtResource("1_tc6i7")
+mainDeck_Card_Resource_Array = Array[ExtResource("7_bcwnx")]([ExtResource("8_qvpfs"), ExtResource("8_qvpfs"), ExtResource("8_qvpfs"), ExtResource("8_qvpfs"), ExtResource("8_qvpfs"), ExtResource("13_raf5w"), ExtResource("13_raf5w"), ExtResource("13_raf5w"), ExtResource("13_raf5w"), ExtResource("13_raf5w")])
 mainDeck = NodePath("mainDeck_Node")
 extraDeck = NodePath("extraDeck_Node")
 grave = NodePath("graveDeck_Node")
@@ -350,7 +351,6 @@ card_defense_rotation = -90.0
 
 [node name="mainDeck_Node" parent="Player2_Node" instance=ExtResource("1_5nl73")]
 position = Vector2(-472, 0)
-card_Resource = Array[ExtResource("7_bcwnx")]([ExtResource("8_qvpfs"), ExtResource("8_qvpfs"), ExtResource("8_qvpfs"), ExtResource("8_qvpfs"), ExtResource("8_qvpfs"), ExtResource("8_qvpfs"), ExtResource("8_qvpfs"), ExtResource("8_qvpfs"), ExtResource("8_qvpfs"), ExtResource("8_qvpfs"), ExtResource("8_qvpfs")])
 
 [node name="extraDeck_Node" parent="Player2_Node" instance=ExtResource("1_5nl73")]
 position = Vector2(472, 0)

@@ -1,4 +1,4 @@
-extends TextureRect
+extends Control
 class_name Frame_Node
 #region VARIABLES
 @export var frame: TextureRect

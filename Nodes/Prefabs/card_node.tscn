@@ -23,32 +23,7 @@ offset_top = -100.0
 offset_right = 68.0
 offset_bottom = 100.0
 
-[node name="Top_Label" parent="offset_Node2D/Frame_Node" index="2"]
-anchor_left = 0.11
-anchor_top = 0.135
-anchor_right = 0.89
-anchor_bottom = 0.198
-offset_left = 0.039999
-offset_top = 0.079998
-offset_right = -0.0400085
-offset_bottom = -0.0160027
-text = "Lv.3"
-
-[node name="Botton_Label" parent="offset_Node2D/Frame_Node" index="3"]
-anchor_left = 0.096
-anchor_top = 0.766
-anchor_right = 0.912
-anchor_bottom = 0.917
-offset_left = -0.0559998
-offset_top = -0.0720062
-offset_right = -0.0320053
-offset_bottom = -0.0640106
-text = "[Dragon - EARTH]
-ATK/500         DEF/1600F"
-
 [node name="Area2D" type="Area2D" parent="offset_Node2D"]
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="offset_Node2D/Area2D"]
 shape = SubResource("RectangleShape2D_yvodw")
-
-[editable path="offset_Node2D/Frame_Node"]

@@ -1,6 +1,10 @@
 extends Node2D
 class_name Player_Node
 #region VARIABLES
+#-------------------------------------------------------------------------------
+@export var mainDeck_Card_Resource_Array: Array[Card_Resource]
+@export var extraDeck_Card_Resource_Array: Array[Card_Resource]
+#-------------------------------------------------------------------------------
 @export var mainDeck: Deck_Node
 @export var extraDeck: Deck_Node
 @export var grave: Deck_Node

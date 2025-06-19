@@ -2,7 +2,7 @@
 
 [ext_resource type="Script" uid="uid://bjpdhij6bwvkf" path="res://Scripts/Card_Scripts/Card_Resource.gd" id="1_48r4a"]
 [ext_resource type="Texture2D" uid="uid://btcvbno5ace5e" path="res://Cards/Artwork/dragonmaid (1).png" id="1_vuogt"]
-[ext_resource type="Script" uid="uid://bxjc8itqimaq8" path="res://Scripts/Card_Scripts/Card_Class.gd" id="2_iw2dc"]
+[ext_resource type="Script" uid="uid://duemkmamrb4hr" path="res://Cards/Class/dragonmaid (1).gd" id="2_iw2dc"]
 
 [resource]
 script = ExtResource("1_48r4a")
