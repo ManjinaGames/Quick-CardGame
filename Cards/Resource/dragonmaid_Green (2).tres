@@ -1,0 +1,18 @@
+[gd_resource type="Resource" script_class="Card_Resource" load_steps=3 format=3 uid="uid://df6gvkc6jx6le"]
+
+[ext_resource type="Texture2D" uid="uid://c46rt7uypbll1" path="res://Cards/Artwork/dragonmaid_Green (2).png" id="1_l3k3k"]
+[ext_resource type="Script" uid="uid://bjpdhij6bwvkf" path="res://Scripts/Card_Scripts/Card_Resource.gd" id="1_st7i8"]
+
+[resource]
+script = ExtResource("1_st7i8")
+artwork = ExtResource("1_l3k3k")
+myCARD_TYPE = 1
+limit = 3
+myARCHTYPE = Array[int]([])
+attack = 0
+defense = 0
+myELEMENT = 0
+myCLASS = 0
+level = 1
+myITEM_TYPE = 2
+metadata/_custom_type_script = "uid://bjpdhij6bwvkf"

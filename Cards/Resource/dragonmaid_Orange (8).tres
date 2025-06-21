@@ -1,0 +1,19 @@
+[gd_resource type="Resource" script_class="Card_Resource" load_steps=3 format=3 uid="uid://ohpnt8e6puo1"]
+
+[ext_resource type="Script" uid="uid://bjpdhij6bwvkf" path="res://Scripts/Card_Scripts/Card_Resource.gd" id="1_1e43p"]
+[ext_resource type="Texture2D" uid="uid://bp28bl16ke7dy" path="res://Cards/Artwork/dragonmaid_Orange (8).png" id="1_u2271"]
+
+[resource]
+script = ExtResource("1_1e43p")
+artwork = ExtResource("1_u2271")
+myCARD_TYPE = 0
+limit = 3
+isFusionMonster = false
+attack = 2600
+defense = 1600
+myMONSTER_ELEMENT = 0
+myMONSTER_TYPE = 5
+level = 7
+isTrapCard = false
+myMAGIC_TYPE = 0
+metadata/_custom_type_script = "uid://bjpdhij6bwvkf"

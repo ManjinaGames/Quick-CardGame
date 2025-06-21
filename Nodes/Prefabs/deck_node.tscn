@@ -59,6 +59,7 @@ texture = ExtResource("2_3g54p")
 expand_mode = 1
 
 [node name="Label" type="Label" parent="offset_Node2D/MarginContainer"]
+z_index = 5
 layout_mode = 2
 size_flags_vertical = 8
 theme_override_constants/outline_size = 5

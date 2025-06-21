@@ -1,4 +1,4 @@
-[gd_scene load_steps=21 format=3 uid="uid://cfwl8u6p4ahrw"]
+[gd_scene load_steps=41 format=3 uid="uid://cfwl8u6p4ahrw"]
 
 [ext_resource type="PackedScene" uid="uid://dv6whgihfngrl" path="res://Nodes/Prefabs/deck_node.tscn" id="1_5nl73"]
 [ext_resource type="Script" uid="uid://f0w3blfg5exs" path="res://Scripts/game_scene.gd" id="1_75qs1"]
@@ -8,30 +8,51 @@
 [ext_resource type="PackedScene" uid="uid://cv17k8wd7crtk" path="res://Nodes/Prefabs/frame_node.tscn" id="3_5bdh4"]
 [ext_resource type="Script" uid="uid://cfyggikamp6i5" path="res://Scripts/UI_Scripts/hand_node.gd" id="3_bgfx6"]
 [ext_resource type="Texture2D" uid="uid://reubdhcu1se3" path="res://Assets/Images/gree_card.png" id="3_raf5w"]
-[ext_resource type="Texture2D" uid="uid://v1kwoq6cx1kv" path="res://Assets/Images/yellow_card.png" id="4_edhu7"]
 [ext_resource type="Script" uid="uid://bdna46pk7w50g" path="res://Scripts/phase_menu.gd" id="4_yvodw"]
+[ext_resource type="Texture2D" uid="uid://d2yn4fbdxbcm6" path="res://Assets/Images/purple_card.png" id="5_5dha6"]
+[ext_resource type="Texture2D" uid="uid://rcgs4il5ls4f" path="res://Assets/Images/red_card.png" id="5_btr66"]
 [ext_resource type="Script" uid="uid://bjpdhij6bwvkf" path="res://Scripts/Card_Scripts/Card_Resource.gd" id="7_bcwnx"]
 [ext_resource type="PackedScene" uid="uid://wqaq6kbv7hh4" path="res://Nodes/Prefabs/card_node.tscn" id="7_d52tv"]
-[ext_resource type="Resource" uid="uid://2c8n8fbuchmk" path="res://Cards/Resource/dragonmaid (1).tres" id="8_qvpfs"]
+[ext_resource type="Resource" uid="uid://ctrw0shfchbb0" path="res://Cards/Resource/dragonmaid_Green (1).tres" id="10_btr66"]
+[ext_resource type="Resource" uid="uid://df6gvkc6jx6le" path="res://Cards/Resource/dragonmaid_Green (2).tres" id="11_erqhb"]
 [ext_resource type="Texture2D" uid="uid://bliqx8v8tdiqq" path="res://Assets/Images/kenney_board-game-icons/Double (128px)/card_lift.png" id="11_g6gf4"]
+[ext_resource type="Resource" uid="uid://c05tppnwjy23l" path="res://Cards/Resource/dragonmaid_Green (3).tres" id="12_5dha6"]
 [ext_resource type="Texture2D" uid="uid://lng8gt1k82p0" path="res://Assets/Images/kenney_board-game-icons/Double (128px)/card_outline_place.png" id="12_pu66q"]
 [ext_resource type="Texture2D" uid="uid://d1mldbn2m665c" path="res://Assets/Images/kenney_board-game-icons/Double (128px)/book_closed.png" id="13_bcwnx"]
-[ext_resource type="Resource" uid="uid://b7nt51y8b36tl" path="res://Cards/Resource/dragonmaid (3).tres" id="13_raf5w"]
+[ext_resource type="Resource" uid="uid://soixd4sq4aav" path="res://Cards/Resource/dragonmaid_Green (4).tres" id="13_lb5xn"]
+[ext_resource type="Resource" uid="uid://caqoymliis707" path="res://Cards/Resource/dragonmaid_Green (5).tres" id="14_8pkgd"]
 [ext_resource type="Texture2D" uid="uid://ct72h82st0ux4" path="res://Assets/Images/kenney_board-game-icons/Double (128px)/sword.png" id="14_qvpfs"]
+[ext_resource type="Resource" uid="uid://6312pl2ga1m8" path="res://Cards/Resource/dragonmaid_Green (6).tres" id="15_ph88x"]
+[ext_resource type="Resource" uid="uid://drf6mks06df8g" path="res://Cards/Resource/dragonmaid_Orange (1).tres" id="16_kpcsh"]
 [ext_resource type="Texture2D" uid="uid://cqgg13e4seqsw" path="res://Assets/Images/kenney_board-game-icons/Double (128px)/card_tap_down.png" id="16_pu66q"]
+[ext_resource type="Resource" uid="uid://da172vem0ctmk" path="res://Cards/Resource/dragonmaid_Orange (2).tres" id="17_kombn"]
+[ext_resource type="Resource" uid="uid://dsg8rowi8es5e" path="res://Cards/Resource/dragonmaid_Orange (3).tres" id="18_0tgis"]
 [ext_resource type="PackedScene" uid="uid://b51u1s2h4886m" path="res://Nodes/Prefabs/button_node.tscn" id="18_qvpfs"]
+[ext_resource type="Resource" uid="uid://cqh5sxfk2ot8t" path="res://Cards/Resource/dragonmaid_Orange (4).tres" id="19_h02ql"]
+[ext_resource type="Resource" uid="uid://dsyi8jtqp068y" path="res://Cards/Resource/dragonmaid_Orange (5).tres" id="20_hi72e"]
+[ext_resource type="Resource" uid="uid://dqhmfovrf8h7n" path="res://Cards/Resource/dragonmaid_Orange (6).tres" id="21_l6iag"]
+[ext_resource type="Resource" uid="uid://cor1dbjl4l36q" path="res://Cards/Resource/dragonmaid_Orange (7).tres" id="22_gvk4o"]
+[ext_resource type="Resource" uid="uid://ohpnt8e6puo1" path="res://Cards/Resource/dragonmaid_Orange (8).tres" id="23_wffoa"]
+[ext_resource type="Resource" uid="uid://w7eeo5r54613" path="res://Cards/Resource/dragonmaid_Orange (9).tres" id="24_7e3t8"]
+[ext_resource type="Resource" uid="uid://d35nntd4mcjhk" path="res://Cards/Resource/dragonmaid_Pink (1).tres" id="25_hcvco"]
+[ext_resource type="Resource" uid="uid://c13k54p7fdseu" path="res://Cards/Resource/dragonmaid_Pink (2).tres" id="26_dbfs0"]
+[ext_resource type="Resource" uid="uid://bo37cxtl62m6k" path="res://Cards/Resource/dragonmaid_Pink (3).tres" id="27_1goao"]
+[ext_resource type="Resource" uid="uid://jf3gsrfcvu5p" path="res://Cards/Resource/dragonmaid_Pink (4).tres" id="28_fqmwk"]
+[ext_resource type="Resource" uid="uid://c6g4abbvwytdh" path="res://Cards/Resource/dragonmaid_Purple (1).tres" id="29_2kmqf"]
+[ext_resource type="Resource" uid="uid://cllmvb7e0lu6u" path="res://Cards/Resource/dragonmaid_Purple (2).tres" id="30_dght4"]
 
 [node name="GameSystem" type="Node2D" node_paths=PackedStringArray("player1", "player2", "descriptionMenu", "descriptionMenu_Frame", "banner_panel", "banner_label", "button_Summon", "button_Set", "button_attack", "button_position", "button_phase", "phase_menu", "debugInfo")]
 script = ExtResource("1_75qs1")
 player1 = NodePath("Player1_Node")
 player2 = NodePath("Player2_Node")
-cardLayer_red = ExtResource("2_qvpfs")
-cardLayer_blue = ExtResource("3_raf5w")
-cardLayer_yellow = ExtResource("4_edhu7")
+cardLayer_pink = ExtResource("5_btr66")
+cardLayer_green = ExtResource("3_raf5w")
+cardLayer_orange = ExtResource("2_qvpfs")
+cardLayer_purple = ExtResource("5_5dha6")
 descriptionMenu = NodePath("CanvasLayer/Description_Panel")
 descriptionMenu_Frame = NodePath("CanvasLayer/Description_Panel/Description_Frame_Node")
 banner_panel = NodePath("CanvasLayer/Banner_PanelContainer")
-banner_label = NodePath("CanvasLayer/Banner_PanelContainer/Label")
+banner_label = NodePath("CanvasLayer/Banner_PanelContainer/Banner_Label")
 button_Summon = NodePath("Button_Node_Summon")
 button_Set = NodePath("Button_Node_Set")
 button_attack = NodePath("Button_Nod_Attack")
@@ -100,7 +121,7 @@ offset_bottom = 34.5
 grow_horizontal = 2
 grow_vertical = 2
 
-[node name="Label" type="Label" parent="CanvasLayer/Banner_PanelContainer"]
+[node name="Banner_Label" type="Label" parent="CanvasLayer/Banner_PanelContainer"]
 layout_mode = 2
 theme_override_constants/outline_size = 5
 theme_override_font_sizes/font_size = 100
@@ -258,13 +279,14 @@ theme_override_font_sizes/font_size = 10
 text = "asdasdasd"
 
 [node name="Player1_Hand_Node" type="Node2D" parent="."]
-position = Vector2(800, 830)
+position = Vector2(800, 850)
 script = ExtResource("3_bgfx6")
 
 [node name="Player1_Node" type="Node2D" parent="." node_paths=PackedStringArray("mainDeck", "extraDeck", "grave", "removed", "hand", "magicZone", "monsterZone", "label_LifePoints", "label_Summons", "opponent")]
-position = Vector2(800, 704)
+position = Vector2(800, 700)
 script = ExtResource("1_tc6i7")
-mainDeck_Card_Resource_Array = Array[ExtResource("7_bcwnx")]([ExtResource("8_qvpfs"), ExtResource("8_qvpfs"), ExtResource("8_qvpfs"), ExtResource("8_qvpfs"), ExtResource("8_qvpfs"), ExtResource("13_raf5w"), ExtResource("13_raf5w"), ExtResource("13_raf5w"), ExtResource("13_raf5w"), ExtResource("13_raf5w")])
+mainDeck_Card_Resource_Array = Array[ExtResource("7_bcwnx")]([ExtResource("10_btr66"), ExtResource("11_erqhb"), ExtResource("12_5dha6"), ExtResource("13_lb5xn"), ExtResource("14_8pkgd"), ExtResource("15_ph88x"), ExtResource("16_kpcsh"), ExtResource("17_kombn"), ExtResource("18_0tgis"), ExtResource("19_h02ql"), ExtResource("20_hi72e"), ExtResource("21_l6iag"), ExtResource("22_gvk4o"), ExtResource("23_wffoa"), ExtResource("24_7e3t8"), ExtResource("25_hcvco"), ExtResource("26_dbfs0"), ExtResource("27_1goao"), ExtResource("28_fqmwk"), ExtResource("29_2kmqf"), ExtResource("30_dght4")])
+extraDeck_Card_Resource_Array = Array[ExtResource("7_bcwnx")]([ExtResource("29_2kmqf"), ExtResource("30_dght4")])
 mainDeck = NodePath("mainDeck_Node")
 extraDeck = NodePath("extraDeck_Node")
 grave = NodePath("graveDeck_Node")
@@ -326,13 +348,13 @@ position = Vector2(320, 0)
 myZONE_TYPE = 1
 
 [node name="Player2_Hand_Node" type="Node2D" parent="."]
-position = Vector2(800, 70)
+position = Vector2(800, 50)
 script = ExtResource("3_bgfx6")
 
 [node name="Player2_Node" type="Node2D" parent="." node_paths=PackedStringArray("mainDeck", "extraDeck", "grave", "removed", "hand", "magicZone", "monsterZone", "label_LifePoints", "label_Summons", "opponent")]
-position = Vector2(800, 192)
+position = Vector2(800, 200)
 script = ExtResource("1_tc6i7")
-mainDeck_Card_Resource_Array = Array[ExtResource("7_bcwnx")]([ExtResource("8_qvpfs"), ExtResource("8_qvpfs"), ExtResource("8_qvpfs"), ExtResource("8_qvpfs"), ExtResource("8_qvpfs"), ExtResource("13_raf5w"), ExtResource("13_raf5w"), ExtResource("13_raf5w"), ExtResource("13_raf5w"), ExtResource("13_raf5w")])
+mainDeck_Card_Resource_Array = Array[ExtResource("7_bcwnx")]([ExtResource("10_btr66"), ExtResource("11_erqhb"), ExtResource("12_5dha6"), ExtResource("13_lb5xn"), ExtResource("14_8pkgd"), ExtResource("15_ph88x"), ExtResource("16_kpcsh"), ExtResource("17_kombn"), ExtResource("18_0tgis"), ExtResource("19_h02ql"), ExtResource("29_2kmqf"), ExtResource("30_dght4")])
 mainDeck = NodePath("mainDeck_Node")
 extraDeck = NodePath("extraDeck_Node")
 grave = NodePath("graveDeck_Node")
@@ -344,8 +366,8 @@ label_LifePoints = NodePath("../CanvasLayer/MarginContainer/Player2_VBoxContaine
 label_Summons = NodePath("../CanvasLayer/MarginContainer/Player2_VBoxContainer/Summon_Label")
 isPlayer1 = false
 opponent = NodePath("../Player1_Node")
-card_highlight_posY_offset = 25.0
-card_selected_posY_offset = 53.0
+card_highlight_posY_offset = 26.0
+card_selected_posY_offset = 72.0
 card_rotation = 180.0
 card_defense_rotation = -90.0
 
@@ -399,7 +421,7 @@ position = Vector2(320, 0)
 myZONE_TYPE = 1
 
 [node name="Button_Node_Phase" parent="." instance=ExtResource("18_qvpfs")]
-position = Vector2(1450, 450)
+position = Vector2(1385, 450)
 
 [node name="Icon_TextureRect" parent="Button_Node_Phase/Node2D/Background_TextureRect" index="1"]
 texture = ExtResource("13_bcwnx")

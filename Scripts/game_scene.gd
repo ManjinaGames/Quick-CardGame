@@ -8,9 +8,11 @@ enum MAINPHASE1_STATE{IDLE, HAND_MENU, SUMMON_MENU}
 #region VARIABLES
 @export var player1: Player_Node
 @export var player2: Player_Node
-@export var cardLayer_red: Texture2D
-@export var cardLayer_blue: Texture2D
-@export var cardLayer_yellow: Texture2D
+#-------------------------------------------------------------------------------
+@export var cardLayer_pink: Texture2D
+@export var cardLayer_green: Texture2D
+@export var cardLayer_orange: Texture2D
+@export var cardLayer_purple: Texture2D
 var turnCounter: int = 0
 #-------------------------------------------------------------------------------
 var player1_color: Color = Color.LIGHT_SKY_BLUE
@@ -356,26 +358,31 @@ func Set_Card_Node(_frame_node: Frame_Node, _card_Resource:Card_Resource):
 	_frame_node.artwork.texture = _card_Resource.artwork
 	#-------------------------------------------------------------------------------
 	match(_card_Resource.myCARD_TYPE):
-		Card_Resource.CARD_TYPE.RED:
-			_frame_node.frame.texture = cardLayer_red
+		Card_Resource.CARD_TYPE.MONSTER_CARD:
+			if(_card_Resource.isFusionMonster):
+				_frame_node.frame.texture = cardLayer_purple
+			#-------------------------------------------------------------------------------
+			else:
+				_frame_node.frame.texture = cardLayer_orange
+			#-------------------------------------------------------------------------------
 			_frame_node.topLabel.text = Get_Level(_card_Resource)
 			_frame_node.bottonLabel.text = Get_Attack_and_Defense(_card_Resource)
 		#-------------------------------------------------------------------------------
-		Card_Resource.CARD_TYPE.BLUE:
-			_frame_node.frame.texture = cardLayer_blue
+		Card_Resource.CARD_TYPE.MAGIC_CARD:
+			if(_card_Resource.isTrapCard):
+				_frame_node.frame.texture = cardLayer_pink
+			#-------------------------------------------------------------------------------
+			else:
+				_frame_node.frame.texture = cardLayer_green
+			#-------------------------------------------------------------------------------
 			_frame_node.topLabel.text = Get_Magic_Card_Type(_card_Resource)
 			_frame_node.bottonLabel.text = ""
-		#-------------------------------------------------------------------------------
-		Card_Resource.CARD_TYPE.YELLOW:
-			_frame_node.frame.texture = cardLayer_yellow
-			_frame_node.topLabel.text = Get_Level(_card_Resource)
-			_frame_node.bottonLabel.text = Get_Attack_and_Defense(_card_Resource)
 		#-------------------------------------------------------------------------------
 	#-------------------------------------------------------------------------------
 #-------------------------------------------------------------------------------
 func Get_Attack_and_Defense(_card_Resource: Card_Resource) -> String:
 	var _s: String = ""
-	_s += "["+str(Card_Resource.ELEMENT.keys()[_card_Resource.myELEMENT])+" - "+Card_Resource.CLASS.keys()[_card_Resource.myCLASS]+"]"+"\n"
+	_s += "["+str(Card_Resource.MONSTER_ELEMENT.keys()[_card_Resource.myMONSTER_ELEMENT])+" - "+Card_Resource.MONSTER_TYPE.keys()[_card_Resource.myMONSTER_TYPE]+"]"+"\n"
 	_s += "ATK/"+str(_card_Resource.attack)+"      "+"DEF/"+str(_card_Resource.defense)
 	return _s
 #-------------------------------------------------------------------------------
@@ -385,17 +392,17 @@ func Get_Level(_card_Resource: Card_Resource) -> String:
 #-------------------------------------------------------------------------------
 func Get_Magic_Card_Type(_card_Resource: Card_Resource) -> String:
 	var _s: String = ""
-	match(_card_Resource.myITEM_TYPE):
-		Card_Resource.ITEM_TYPE.NORMAL:
+	match(_card_Resource.myMAGIC_TYPE):
+		Card_Resource.MAGIC_TYPE.NORMAL:
 			_s = "(Normal Item Card)"
 		#-------------------------------------------------------------------------------
-		Card_Resource.ITEM_TYPE.EQUIP:
+		Card_Resource.MAGIC_TYPE.EQUIP:
 			_s = "(Equip Item Card)"
 		#-------------------------------------------------------------------------------
-		Card_Resource.ITEM_TYPE.QUICK:
+		Card_Resource.MAGIC_TYPE.QUICK:
 			_s = "(Quick Item Card)"
 		#-------------------------------------------------------------------------------
-		Card_Resource.ITEM_TYPE.INFINITE:
+		Card_Resource.MAGIC_TYPE.INFINITE:
 			_s = "(Infinite Item Card)"
 		#-------------------------------------------------------------------------------
 	#-------------------------------------------------------------------------------
@@ -748,7 +755,7 @@ func CommonPhase_HandMenu_Common(_cardNode: Card_Node):
 	nothing_released = func(): CommonPhase_Exit_HandMenu_Enter_Idle(_cardNode)
 	#-------------------------------------------------------------------------------
 	if(myPHASE_STATE == PHASE_STATE.MAIN_PHASE1 or myPHASE_STATE == PHASE_STATE.MAIN_PHASE2):
-		if(_cardNode.card_Class.card_Resource.myCARD_TYPE == Card_Resource.CARD_TYPE.BLUE):
+		if(_cardNode.card_Class.card_Resource.myCARD_TYPE == Card_Resource.CARD_TYPE.MAGIC_CARD):
 			button_Summon.global_position = _cardNode.global_position + Vector2(-50, -180)
 			button_Set.global_position = _cardNode.global_position + Vector2(50, -180)
 			#-------------------------------------------------------------------------------
@@ -1069,7 +1076,7 @@ func CommonPhase_SummonMenu(_card_Node:Card_Node):
 	var _user_magicZone: Array[CardSlot_Node] = _card_Node.card_Class.user.magicZone
 	var _user_monsterZone: Array[CardSlot_Node] = _card_Node.card_Class.user.monsterZone
 	#-------------------------------------------------------------------------------
-	if(_card_Node.card_Class.card_Resource.myCARD_TYPE == Card_Resource.CARD_TYPE.BLUE):
+	if(_card_Node.card_Class.card_Resource.myCARD_TYPE == Card_Resource.CARD_TYPE.MAGIC_CARD):
 		for _i in _user_magicZone.size():
 			if(_user_magicZone[_i].card_in_slot == null):
 				_user_magicZone[_i].summoning_TextureRect.show()
@@ -1150,7 +1157,7 @@ func CommonPhase_Exit_SummonMenu_Enter_HandMenu_2(_card_Node1: Card_Node, _card_
 	Deselect_Zones(_card_Node2)
 #-------------------------------------------------------------------------------
 func Deselect_Zones(_card_Node: Card_Node):
-	if(_card_Node.card_Class.card_Resource.myCARD_TYPE == Card_Resource.CARD_TYPE.BLUE):
+	if(_card_Node.card_Class.card_Resource.myCARD_TYPE == Card_Resource.CARD_TYPE.MAGIC_CARD):
 		Desactivate_MagicZone(_card_Node.card_Class.user)
 	#-------------------------------------------------------------------------------
 	else:
@@ -1180,7 +1187,7 @@ func MoveCard_fromHand_toSlot(_card_node: Card_Node, _hand: Hand_Node, _cardSlot
 	_tween.set_parallel(true)
 	_tween.tween_property(_card_node.offset_Node2D, "position", Vector2(0, 0), _timer)
 	_tween.tween_property(_card_node.offset_Node2D, "scale", Vector2(_size, _size), _timer)
-	if(_card_node.card_Class.card_Resource.myCARD_TYPE == Card_Resource.CARD_TYPE.BLUE):
+	if(_card_node.card_Class.card_Resource.myCARD_TYPE == Card_Resource.CARD_TYPE.MAGIC_CARD):
 		if(_card_node.card_Class.isInAttackPosition):
 			pass
 		else:

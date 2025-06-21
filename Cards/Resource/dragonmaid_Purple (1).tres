@@ -1,0 +1,19 @@
+[gd_resource type="Resource" script_class="Card_Resource" load_steps=3 format=3 uid="uid://c6g4abbvwytdh"]
+
+[ext_resource type="Texture2D" uid="uid://c01cppk2beqwv" path="res://Cards/Artwork/dragonmaid_Purple (1).png" id="1_2heuo"]
+[ext_resource type="Script" uid="uid://bjpdhij6bwvkf" path="res://Scripts/Card_Scripts/Card_Resource.gd" id="1_bnee2"]
+
+[resource]
+script = ExtResource("1_bnee2")
+artwork = ExtResource("1_2heuo")
+myCARD_TYPE = 0
+limit = 3
+isFusionMonster = true
+attack = 3500
+defense = 2000
+myMONSTER_ELEMENT = 4
+myMONSTER_TYPE = 5
+level = 9
+isTrapCard = false
+myMAGIC_TYPE = 0
+metadata/_custom_type_script = "uid://bjpdhij6bwvkf"

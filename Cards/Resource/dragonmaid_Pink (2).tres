@@ -1,0 +1,20 @@
+[gd_resource type="Resource" script_class="Card_Resource" load_steps=3 format=3 uid="uid://c13k54p7fdseu"]
+
+[ext_resource type="Texture2D" uid="uid://k1gkcey0cblj" path="res://Cards/Artwork/dragonmaid_Pink (2).png" id="1_j2hac"]
+[ext_resource type="Script" uid="uid://bjpdhij6bwvkf" path="res://Scripts/Card_Scripts/Card_Resource.gd" id="1_poliu"]
+
+[resource]
+script = ExtResource("1_poliu")
+artwork = ExtResource("1_j2hac")
+myCARD_TYPE = 1
+limit = 3
+myARCHTYPE = Array[int]([])
+isFusionMonster = false
+attack = 0
+defense = 0
+myELEMENT = 0
+myCLASS = 0
+level = 1
+isTrapCard = true
+myITEM_TYPE = 3
+metadata/_custom_type_script = "uid://bjpdhij6bwvkf"

@@ -1,7 +1,7 @@
 [gd_scene load_steps=5 format=3 uid="uid://cv17k8wd7crtk"]
 
+[ext_resource type="Texture2D" uid="uid://cqhme8nluaqgc" path="res://Assets/Images/null.png" id="2_17ycl"]
 [ext_resource type="Script" uid="uid://dxq3uxcyp6l5x" path="res://Scripts/UI_Scripts/frame_node.gd" id="2_y0emq"]
-[ext_resource type="Texture2D" uid="uid://btcvbno5ace5e" path="res://Cards/Artwork/dragonmaid (1).png" id="3_y0emq"]
 [ext_resource type="Texture2D" uid="uid://bofs7iqsssf3h" path="res://Assets/Images/card_back.png" id="4_jlipt"]
 [ext_resource type="Texture2D" uid="uid://ce6p5s4kcm466" path="res://Assets/Images/orange_card.png" id="4_t26n4"]
 
@@ -38,7 +38,7 @@ offset_top = 0.0399933
 offset_right = 0.0799866
 grow_horizontal = 2
 grow_vertical = 2
-texture = ExtResource("3_y0emq")
+texture = ExtResource("2_17ycl")
 expand_mode = 1
 
 [node name="frame_TextureRect" type="TextureRect" parent="."]
