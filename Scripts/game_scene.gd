@@ -27,11 +27,13 @@ const _cardResource_path: String = "res://Cards/Resource/"
 @export var banner_panel: PanelContainer
 @export var banner_label: Label
 #-------------------------------------------------------------------------------
-@export var button_Summon: Button_Node
-@export var button_Set: Button_Node
-@export var button_attack: Button_Node
-@export var button_position: Button_Node
+@export var button_Array: Array[Button_Node]
 @export var button_phase: Button_Node
+#-------------------------------------------------------------------------------
+@export var button_Icon_Summon: Texture2D
+@export var button_Icon_Set: Texture2D
+@export var button_Icon_attack: Texture2D
+@export var button_Icon_position: Texture2D
 #-------------------------------------------------------------------------------
 @export var phase_menu: Phase_Menu
 #-------------------------------------------------------------------------------
@@ -265,9 +267,13 @@ func Organize_Area2Ds():
 #Here are the Selected/Highlighted Funcs.
 #-------------------------------------------------------------------------------
 #region SELECTED FUNCTIONS
+func Hide_Buton_Node_Array(_button_node_array: Array[Button_Node]):
+	for _b in _button_node_array:
+		Hide_Button_Node(_b)
+#-------------------------------------------------------------------------------
 func Hide_Button_Node(_button_node: Button_Node):
 	_button_node.collisionShape2D.disabled = true
-	button_Summon.released = func():pass
+	_button_node.released = func():pass
 	_button_node.hide()
 #-------------------------------------------------------------------------------
 func Show_Button_Node(_button_node: Button_Node):
@@ -365,8 +371,11 @@ func Set_Card_Node(_frame_node: Frame_Node, _card_Resource:Card_Resource):
 			else:
 				_frame_node.frame.texture = cardLayer_orange
 			#-------------------------------------------------------------------------------
-			_frame_node.topLabel.text = Get_Level(_card_Resource)
-			_frame_node.bottonLabel.text = Get_Attack_and_Defense(_card_Resource)
+			_frame_node.label_CardType.text = Get_Monster_Element_Type_Level(_card_Resource)
+			_frame_node.label_Attack.text = "ATK/"+str(_card_Resource.attack)
+			_frame_node.label_Defense.text = "DEF/"+str(_card_Resource.defense)
+			_frame_node.label_Name.text = "Name of the Monster Card"
+			_frame_node.label_Description.text = "Description of the Monster Card"
 		#-------------------------------------------------------------------------------
 		Card_Resource.CARD_TYPE.MAGIC_CARD:
 			if(_card_Resource.isTrapCard):
@@ -375,38 +384,47 @@ func Set_Card_Node(_frame_node: Frame_Node, _card_Resource:Card_Resource):
 			else:
 				_frame_node.frame.texture = cardLayer_green
 			#-------------------------------------------------------------------------------
-			_frame_node.topLabel.text = Get_Magic_Card_Type(_card_Resource)
-			_frame_node.bottonLabel.text = ""
+			_frame_node.label_CardType.text = Get_Magic_Card_Type(_card_Resource)
+			_frame_node.label_Attack.text = ""
+			_frame_node.label_Defense.text = ""
+			_frame_node.label_Name.text = "Name of the Magic/Trap Card"
+			_frame_node.label_Description.text = "Description of the Magic/Trap Card"
 		#-------------------------------------------------------------------------------
 	#-------------------------------------------------------------------------------
 #-------------------------------------------------------------------------------
-func Get_Attack_and_Defense(_card_Resource: Card_Resource) -> String:
-	var _s: String = ""
-	_s += "["+str(Card_Resource.MONSTER_ELEMENT.keys()[_card_Resource.myMONSTER_ELEMENT])+" - "+Card_Resource.MONSTER_TYPE.keys()[_card_Resource.myMONSTER_TYPE]+"]"+"\n"
-	_s += "ATK/"+str(_card_Resource.attack)+"      "+"DEF/"+str(_card_Resource.defense)
-	return _s
-#-------------------------------------------------------------------------------
-func Get_Level(_card_Resource: Card_Resource) -> String:
-	var _s:String = "Lv."+str(_card_Resource.level)
+func Get_Monster_Element_Type_Level(_card_Resource: Card_Resource) -> String:
+	var _element: String = str(Card_Resource.MONSTER_ELEMENT.keys()[_card_Resource.myMONSTER_ELEMENT])
+	var _type: String = Card_Resource.MONSTER_TYPE.keys()[_card_Resource.myMONSTER_TYPE]
+	var _level: String = str(_card_Resource.level)
+	#-------------------------------------------------------------------------------
+	var _s:String = "["+_element+" - "+_type+" - "+"Lv."+_level+"]"
 	return _s
 #-------------------------------------------------------------------------------
 func Get_Magic_Card_Type(_card_Resource: Card_Resource) -> String:
-	var _s: String = ""
+	var _cardType1: String = ""
+	var _cardType2: String = ""
+	#-------------------------------------------------------------------------------
+	if(_card_Resource.isTrapCard):
+		_cardType2 = "Trap Card)"
+	#-------------------------------------------------------------------------------
+	else:
+		_cardType2 = "Magic Card)"
+	#-------------------------------------------------------------------------------
 	match(_card_Resource.myMAGIC_TYPE):
 		Card_Resource.MAGIC_TYPE.NORMAL:
-			_s = "(Normal Item Card)"
+			_cardType1 = "(Normal "
 		#-------------------------------------------------------------------------------
 		Card_Resource.MAGIC_TYPE.EQUIP:
-			_s = "(Equip Item Card)"
+			_cardType1 = "(Equip "
 		#-------------------------------------------------------------------------------
 		Card_Resource.MAGIC_TYPE.QUICK:
-			_s = "(Quick Item Card)"
+			_cardType1 = "(Quick "
 		#-------------------------------------------------------------------------------
 		Card_Resource.MAGIC_TYPE.INFINITE:
-			_s = "(Infinite Item Card)"
+			_cardType1 = "(Infinite "
 		#-------------------------------------------------------------------------------
 	#-------------------------------------------------------------------------------
-	return _s
+	return _cardType1+_cardType2
 #endregion
 #-------------------------------------------------------------------------------
 #Here are the Description Funcs.
@@ -466,19 +484,13 @@ func SetStage():
 	SetPlayer(player1, player2)
 	SetPlayer(player2, player1)
 	#-------------------------------------------------------------------------------
-	SetButton(button_Summon)
-	SetButton(button_Set)
-	SetButton(button_attack)
-	SetButton(button_position)
+	SetButton_Array(button_Array)
 	SetButton(button_phase)
 	#-------------------------------------------------------------------------------
 	banner_panel.hide()
 	phase_menu.hide()
 	#-------------------------------------------------------------------------------
-	Hide_Button_Node(button_Summon)
-	Hide_Button_Node(button_Set)
-	Hide_Button_Node(button_attack)
-	Hide_Button_Node(button_position)
+	Hide_Buton_Node_Array(button_Array)
 	#-------------------------------------------------------------------------------
 	nothing_released = func(): pass
 	nothing_cancel = func(): pass
@@ -489,6 +501,10 @@ func SetStage():
 	await Draw_Cards(player2, 5)
 	#-------------------------------------------------------------------------------
 	await StartPhase()
+#-------------------------------------------------------------------------------
+func SetButton_Array(_button_Array: Array[Button_Node]):
+	for _b in _button_Array:
+		SetButton(_b)
 #-------------------------------------------------------------------------------
 func SetButton(_button: Button_Node):
 	_button.highlighted = func(): Highlight_Button_True(_button)
@@ -689,8 +705,7 @@ func Turn_Opponent():
 func CommonPhase_Idle():
 	myGAMEMENU_STATE = GAMEMENU_STATE.IDLE_STATE
 	#-------------------------------------------------------------------------------
-	Hide_Button_Node(button_Summon)
-	Hide_Button_Node(button_Set)
+	Hide_Buton_Node_Array(button_Array)
 	#-------------------------------------------------------------------------------
 	button_phase.released = func(): CommonPhase_Exit_Idle_Enter_PhaseMenu()
 	#-------------------------------------------------------------------------------
@@ -756,39 +771,37 @@ func CommonPhase_HandMenu_Common(_cardNode: Card_Node):
 	#-------------------------------------------------------------------------------
 	if(myPHASE_STATE == PHASE_STATE.MAIN_PHASE1 or myPHASE_STATE == PHASE_STATE.MAIN_PHASE2):
 		if(_cardNode.card_Class.card_Resource.myCARD_TYPE == Card_Resource.CARD_TYPE.MAGIC_CARD):
-			button_Summon.global_position = _cardNode.global_position + Vector2(-50, -180)
-			button_Set.global_position = _cardNode.global_position + Vector2(50, -180)
+			button_Array[0].global_position = _cardNode.global_position + Vector2(-50, -180)
+			button_Array[0].icon.texture = button_Icon_Summon
+			button_Array[0].label.text = "Activar"
+			button_Array[0].released = func(): CommonPhase_Exit_HandMenu_Enter_SummonMenu(_cardNode, true)
+			Show_Button_Node(button_Array[0])
 			#-------------------------------------------------------------------------------
-			button_Summon.label.text = "Activar"
-			button_Set.label.text = "Colocar"
-			#-------------------------------------------------------------------------------
-			button_Summon.released = func(): CommonPhase_Exit_HandMenu_Enter_SummonMenu(_cardNode, true)
-			button_Set.released = func(): CommonPhase_Exit_HandMenu_Enter_SummonMenu(_cardNode, false)
-			#-------------------------------------------------------------------------------
-			Show_Button_Node(button_Summon)
-			Show_Button_Node(button_Set)
+			button_Array[1].global_position = _cardNode.global_position + Vector2(50, -180)
+			button_Array[1].icon.texture = button_Icon_Set
+			button_Array[1].label.text = "Colocar"
+			button_Array[1].released = func(): CommonPhase_Exit_HandMenu_Enter_SummonMenu(_cardNode, false)
+			Show_Button_Node(button_Array[1])
 		else:
 			if(_cardNode.card_Class.user.summonCounter > 0):
-				button_Summon.global_position = _cardNode.global_position + Vector2(-50, -180)
-				button_Set.global_position = _cardNode.global_position + Vector2(50, -180)
+				button_Array[0].global_position = _cardNode.global_position + Vector2(-50, -180)
+				button_Array[0].icon.texture = button_Icon_Summon
+				button_Array[0].label.text = "Convocar"
+				button_Array[0].released = func(): CommonPhase_Exit_HandMenu_Enter_SummonMenu(_cardNode, true)
+				Show_Button_Node(button_Array[0])
 				#-------------------------------------------------------------------------------
-				button_Summon.label.text = "Convocar"
-				button_Set.label.text = "Colocar"
-				#-------------------------------------------------------------------------------
-				button_Summon.released = func(): CommonPhase_Exit_HandMenu_Enter_SummonMenu(_cardNode, true)
-				button_Set.released = func(): CommonPhase_Exit_HandMenu_Enter_SummonMenu(_cardNode, false)
-				#-------------------------------------------------------------------------------
-				Show_Button_Node(button_Summon)
-				Show_Button_Node(button_Set)
+				button_Array[1].global_position = _cardNode.global_position + Vector2(50, -180)
+				button_Array[1].icon.texture = button_Icon_Set
+				button_Array[1].label.text = "Colocar"
+				button_Array[1].released = func(): CommonPhase_Exit_HandMenu_Enter_SummonMenu(_cardNode, false)
+				Show_Button_Node(button_Array[1])
 			#-------------------------------------------------------------------------------
 			else:
-				Hide_Button_Node(button_Summon)
-				Hide_Button_Node(button_Set)
+				Hide_Buton_Node_Array(button_Array)
 		#-------------------------------------------------------------------------------
 	#-------------------------------------------------------------------------------
 	else:
-		Hide_Button_Node(button_Summon)
-		Hide_Button_Node(button_Set)
+		Hide_Buton_Node_Array(button_Array)
 	#-------------------------------------------------------------------------------
 #-------------------------------------------------------------------------------
 func CommonPhase_HandMenu_Player(_player: Player_Node, _cardNode: Card_Node):
@@ -853,8 +866,7 @@ func HandCard_Canceled_Common(_cardNode: Card_Node):
 #-------------------------------------------------------------------------------
 func CommonPhase_Exit_HandMenu_Enter_PhaseMenu(_card_node: Card_Node):
 	Restablish_Highlight_of_Card_in_Hand(_card_node)
-	Hide_Button_Node(button_Summon)
-	Hide_Button_Node(button_Set)
+	Hide_Buton_Node_Array(button_Array)
 	#-------------------------------------------------------------------------------
 	CommonPhase_PhaseMenu()
 #-------------------------------------------------------------------------------
@@ -877,8 +889,7 @@ func CommonPhase_FieldMenu_Common(_cardSlot_node: CardSlot_Node):
 	#-------------------------------------------------------------------------------
 	button_phase.released = func(): CommonPhase_Exit_FieldMenu_Enter_PhaseMenu(_cardSlot_node)
 	#-------------------------------------------------------------------------------
-	Hide_Button_Node(button_Summon)
-	Hide_Button_Node(button_Set)
+	Hide_Buton_Node_Array(button_Array)
 	#-------------------------------------------------------------------------------
 	nothing_cancel = func(): CommonPhase_Exit_FieldMenu_Enter_Idle(_cardSlot_node)
 	nothing_released = func(): CommonPhase_Exit_FieldMenu_Enter_Idle(_cardSlot_node)
@@ -889,22 +900,21 @@ func CommonPhase_FieldMenu_Common(_cardSlot_node: CardSlot_Node):
 			match(_cardSlot_node.myZONE_TYPE):
 				CardSlot_Node.ZONE_TYPE.MONSTER_ZONE:
 					if(_cardSlot_node.card_in_slot != null):
-						button_position.global_position = _cardSlot_node.global_position + Vector2(0, -90)
-						button_position.label.text = "Change\nPosition"
-						button_position.released = func(): pass
-						Show_Button_Node(button_position)
+						button_Array[0].global_position = _cardSlot_node.global_position + Vector2(0, -90)
+						button_Array[0].icon.texture = button_Icon_position
+						button_Array[0].label.text = "Change\nPosition"
+						button_Array[0].released = func(): pass
+						Show_Button_Node(button_Array[0])
 						#-------------------------------------------------------------------------------
 						nothing_cancel = func(): CommonPhase_Exit_FieldMenu_Enter_Idle(_cardSlot_node)
 						nothing_released = func(): CommonPhase_Exit_FieldMenu_Enter_Idle(_cardSlot_node)
 					#-------------------------------------------------------------------------------
 					else:
-						Hide_Button_Node(button_attack)
-						Hide_Button_Node(button_position)
+						Hide_Buton_Node_Array(button_Array)
 					#-------------------------------------------------------------------------------
 				#-------------------------------------------------------------------------------
 				CardSlot_Node.ZONE_TYPE.MAGIC_ZONE:
-					Hide_Button_Node(button_attack)
-					Hide_Button_Node(button_position)
+					Hide_Buton_Node_Array(button_Array)
 				#-------------------------------------------------------------------------------
 			#-------------------------------------------------------------------------------
 		#-------------------------------------------------------------------------------
@@ -913,22 +923,21 @@ func CommonPhase_FieldMenu_Common(_cardSlot_node: CardSlot_Node):
 			match(_cardSlot_node.myZONE_TYPE):
 				CardSlot_Node.ZONE_TYPE.MONSTER_ZONE:
 					if(_cardSlot_node.card_in_slot != null):
-						button_attack.global_position = _cardSlot_node.global_position + Vector2(0, -90)
-						button_attack.label.text = "Atacar"
-						button_attack.released = func(): pass
-						Show_Button_Node(button_attack)
+						button_Array[0].global_position = _cardSlot_node.global_position + Vector2(0, -90)
+						button_Array[0].icon.texture = button_Icon_attack
+						button_Array[0].label.text = "Atacar"
+						button_Array[0].released = func(): pass
+						Show_Button_Node(button_Array[0])
 						#-------------------------------------------------------------------------------
 						nothing_cancel = func(): CommonPhase_Exit_FieldMenu_Enter_Idle(_cardSlot_node)
 						nothing_released = func(): CommonPhase_Exit_FieldMenu_Enter_Idle(_cardSlot_node)
 					#-------------------------------------------------------------------------------
 					else:
-						Hide_Button_Node(button_attack)
-						Hide_Button_Node(button_position)
+						Hide_Buton_Node_Array(button_Array)
 					#-------------------------------------------------------------------------------
 				#-------------------------------------------------------------------------------
 				CardSlot_Node.ZONE_TYPE.MAGIC_ZONE:
-					Hide_Button_Node(button_attack)
-					Hide_Button_Node(button_position)
+					Hide_Buton_Node_Array(button_Array)
 				#-------------------------------------------------------------------------------
 			#-------------------------------------------------------------------------------
 		#-------------------------------------------------------------------------------
@@ -974,8 +983,7 @@ func CommonPhase_Exit_FieldMenu_Enter_PhaseMenu(_cardSlot_node: CardSlot_Node):
 	CommonPhase_PhaseMenu()
 #-------------------------------------------------------------------------------
 func CommonPhase_Exit_FieldMenu(_cardSlot_node: CardSlot_Node):
-	Hide_Button_Node(button_attack)
-	Hide_Button_Node(button_position)
+	Hide_Buton_Node_Array(button_Array)
 #endregion
 #-------------------------------------------------------------------------------
 #region COMMON_PHASE - DECK MENU
@@ -991,10 +999,7 @@ func CommonPhase_DeckMenu_Common(_deck_node: Deck_Node):
 	#-------------------------------------------------------------------------------
 	button_phase.released = func(): CommonPhase_Exit_DeckMenu_Enter_PhaseMenu(_deck_node)
 	#-------------------------------------------------------------------------------
-	Hide_Button_Node(button_Summon)
-	Hide_Button_Node(button_Set)
-	Hide_Button_Node(button_attack)
-	Hide_Button_Node(button_position)
+	Hide_Buton_Node_Array(button_Array)
 	#-------------------------------------------------------------------------------
 	nothing_cancel = func(): CommonPhase_Exit_DeckMenu_Enter_Idle(_deck_node)
 	nothing_released = func(): CommonPhase_Exit_DeckMenu_Enter_Idle(_deck_node)
@@ -1060,16 +1065,14 @@ func CommonPhase_Exit_DeckMenu_Enter_PhaseMenu(_deck_node: Deck_Node):
 	CommonPhase_PhaseMenu()
 #-------------------------------------------------------------------------------
 func CommonPhase_Exit_DeckMenu(_deck_node: Deck_Node):
-	Hide_Button_Node(button_attack)
-	Hide_Button_Node(button_position)
+	Hide_Buton_Node_Array(button_Array)
 #endregion
 #-------------------------------------------------------------------------------
 #region COMMON_PHASE - SUMMON MENU
 func CommonPhase_SummonMenu(_card_Node:Card_Node):
 	myGAMEMENU_STATE = GAMEMENU_STATE.SUMMON_MENU
 	#-------------------------------------------------------------------------------
-	Hide_Button_Node(button_Summon)
-	Hide_Button_Node(button_Set)
+	Hide_Buton_Node_Array(button_Array)
 	#-------------------------------------------------------------------------------
 	button_phase.released = func(): CommonPhase_Exit_SummonMenu_Enter_PhaseMenu(_card_Node)
 	#-------------------------------------------------------------------------------

@@ -5,28 +5,31 @@
 [ext_resource type="Texture2D" uid="uid://bofs7iqsssf3h" path="res://Assets/Images/card_back.png" id="4_jlipt"]
 [ext_resource type="Texture2D" uid="uid://ce6p5s4kcm466" path="res://Assets/Images/orange_card.png" id="4_t26n4"]
 
-[node name="Control" type="Control" node_paths=PackedStringArray("frame", "artwork", "topLabel", "bottonLabel", "back")]
+[node name="frame_node" type="Control" node_paths=PackedStringArray("frame", "artwork", "label_Name", "label_CardType", "label_Description", "label_Attack", "label_Defense", "back")]
 layout_mode = 3
 anchors_preset = 8
 anchor_left = 0.5
 anchor_top = 0.5
 anchor_right = 0.5
 anchor_bottom = 0.5
-offset_left = -104.0
-offset_top = -144.0
-offset_right = 104.0
-offset_bottom = 144.0
+offset_left = -72.0
+offset_top = -100.0
+offset_right = 72.0
+offset_bottom = 100.0
 grow_horizontal = 2
 grow_vertical = 2
 pivot_offset = Vector2(104, 144)
 script = ExtResource("2_y0emq")
-frame = NodePath("frame_TextureRect")
-artwork = NodePath("artwork_TextureRect")
-topLabel = NodePath("Top_Label")
-bottonLabel = NodePath("Botton_Label")
-back = NodePath("back_TextureRect")
+frame = NodePath("TextureRect_Frame")
+artwork = NodePath("TextureRect_Artwork")
+label_Name = NodePath("Label_Name")
+label_CardType = NodePath("Label_CardType")
+label_Description = NodePath("Label_Description")
+label_Attack = NodePath("HBoxContainer/Label_Attack")
+label_Defense = NodePath("HBoxContainer/Label_Defense")
+back = NodePath("TextureRect_Back")
 
-[node name="artwork_TextureRect" type="TextureRect" parent="."]
+[node name="TextureRect_Artwork" type="TextureRect" parent="."]
 layout_mode = 1
 anchors_preset = -1
 anchor_left = 0.13
@@ -41,7 +44,7 @@ grow_vertical = 2
 texture = ExtResource("2_17ycl")
 expand_mode = 1
 
-[node name="frame_TextureRect" type="TextureRect" parent="."]
+[node name="TextureRect_Frame" type="TextureRect" parent="."]
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
@@ -51,7 +54,24 @@ grow_vertical = 2
 texture = ExtResource("4_t26n4")
 expand_mode = 1
 
-[node name="Top_Label" type="Label" parent="."]
+[node name="Label_Name" type="Label" parent="."]
+layout_mode = 1
+anchors_preset = -1
+anchor_left = 0.111
+anchor_top = 0.055
+anchor_right = 0.896
+anchor_bottom = 0.13
+offset_left = 0.0159979
+offset_right = -0.0240021
+grow_horizontal = 2
+grow_vertical = 2
+size_flags_vertical = 1
+theme_override_colors/font_color = Color(0, 0, 0, 1)
+theme_override_font_sizes/font_size = 7
+text = "Dragon Maid - Laudary"
+vertical_alignment = 1
+
+[node name="Label_CardType" type="Label" parent="."]
 layout_mode = 1
 anchors_preset = -1
 anchor_left = 0.116
@@ -65,34 +85,61 @@ offset_bottom = 0.119999
 grow_horizontal = 2
 grow_vertical = 2
 size_flags_vertical = 1
-theme_override_constants/outline_size = 4
-theme_override_font_sizes/font_size = 7
-text = "(Magic Card)"
+theme_override_colors/font_color = Color(0, 0, 0, 1)
+theme_override_font_sizes/font_size = 6
+text = "[Dragon - EARTH - Lv.2]"
 horizontal_alignment = 2
 vertical_alignment = 1
 
-[node name="Botton_Label" type="Label" parent="."]
+[node name="Label_Description" type="Label" parent="."]
 layout_mode = 1
 anchors_preset = -1
-anchor_left = 0.102
-anchor_top = 0.771
-anchor_right = 0.903
-anchor_bottom = 0.911
-offset_left = -0.0320015
-offset_top = 0.119995
-offset_right = -0.0480194
-offset_bottom = -0.0800171
+anchor_left = 0.118
+anchor_top = 0.775
+anchor_right = 0.896
+anchor_bottom = 0.97
+offset_left = 0.00799942
+offset_right = -0.0240021
 grow_horizontal = 2
-grow_vertical = 2
 size_flags_vertical = 1
-theme_override_constants/outline_size = 4
-theme_override_font_sizes/font_size = 8
-text = "[Dragon - EARTH]
-ATK/500        DEF/1600"
+theme_override_colors/font_color = Color(0, 0, 0, 1)
+theme_override_font_sizes/font_size = 2
+text = "Bla bla bla bla bla bla bla bla bla bla bla bla bla bla bla bla bla bla bla bla bla bla bla bla bla bla bla bla bla bla bla bla bla bla bla bla bla bla bla bla bla bla bla bla bla bla bla bla bla bla bla bla bla bla bla bla bla bla bla bla bla bla bla bla bla bla bla bla bla bla bla bla bla bla bla bla bla bla bla bla bla bla bla bla bla."
+autowrap_mode = 2
+
+[node name="HBoxContainer" type="HBoxContainer" parent="."]
+layout_mode = 1
+anchors_preset = -1
+anchor_left = 0.106
+anchor_top = 0.91
+anchor_right = 0.904
+anchor_bottom = 0.958
+offset_left = -0.264
+offset_top = 1.0
+offset_right = -0.175995
+offset_bottom = -0.600006
+
+[node name="Label_Attack" type="Label" parent="HBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 1
+theme_override_colors/font_color = Color(0, 0, 0, 1)
+theme_override_font_sizes/font_size = 5
+text = "ATK/500"
 horizontal_alignment = 1
 vertical_alignment = 1
 
-[node name="back_TextureRect" type="TextureRect" parent="."]
+[node name="Label_Defense" type="Label" parent="HBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 1
+theme_override_colors/font_color = Color(0, 0, 0, 1)
+theme_override_font_sizes/font_size = 5
+text = " DEF/1600"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="TextureRect_Back" type="TextureRect" parent="."]
 visible = false
 layout_mode = 1
 anchors_preset = 15

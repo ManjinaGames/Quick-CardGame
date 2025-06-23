@@ -19,9 +19,7 @@ frame_Node = NodePath("offset_Node2D/Frame_Node")
 [node name="Frame_Node" parent="offset_Node2D" instance=ExtResource("2_xcohy")]
 self_modulate = Color(1, 0.486275, 0.513726, 1)
 offset_left = -68.0
-offset_top = -100.0
 offset_right = 68.0
-offset_bottom = 100.0
 
 [node name="Area2D" type="Area2D" parent="offset_Node2D"]
 

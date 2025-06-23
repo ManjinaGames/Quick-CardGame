@@ -1,4 +1,4 @@
-[gd_scene load_steps=41 format=3 uid="uid://cfwl8u6p4ahrw"]
+[gd_scene load_steps=42 format=3 uid="uid://cfwl8u6p4ahrw"]
 
 [ext_resource type="PackedScene" uid="uid://dv6whgihfngrl" path="res://Nodes/Prefabs/deck_node.tscn" id="1_5nl73"]
 [ext_resource type="Script" uid="uid://f0w3blfg5exs" path="res://Scripts/game_scene.gd" id="1_75qs1"]
@@ -13,6 +13,7 @@
 [ext_resource type="Texture2D" uid="uid://rcgs4il5ls4f" path="res://Assets/Images/red_card.png" id="5_btr66"]
 [ext_resource type="Script" uid="uid://bjpdhij6bwvkf" path="res://Scripts/Card_Scripts/Card_Resource.gd" id="7_bcwnx"]
 [ext_resource type="PackedScene" uid="uid://wqaq6kbv7hh4" path="res://Nodes/Prefabs/card_node.tscn" id="7_d52tv"]
+[ext_resource type="Texture2D" uid="uid://erwfxmpd6h85" path="res://Assets/Images/kenney_board-game-icons/Double (128px)/card_rotate.png" id="9_lb5xn"]
 [ext_resource type="Resource" uid="uid://ctrw0shfchbb0" path="res://Cards/Resource/dragonmaid_Green (1).tres" id="10_btr66"]
 [ext_resource type="Resource" uid="uid://df6gvkc6jx6le" path="res://Cards/Resource/dragonmaid_Green (2).tres" id="11_erqhb"]
 [ext_resource type="Texture2D" uid="uid://bliqx8v8tdiqq" path="res://Assets/Images/kenney_board-game-icons/Double (128px)/card_lift.png" id="11_g6gf4"]
@@ -41,7 +42,7 @@
 [ext_resource type="Resource" uid="uid://c6g4abbvwytdh" path="res://Cards/Resource/dragonmaid_Purple (1).tres" id="29_2kmqf"]
 [ext_resource type="Resource" uid="uid://cllmvb7e0lu6u" path="res://Cards/Resource/dragonmaid_Purple (2).tres" id="30_dght4"]
 
-[node name="GameSystem" type="Node2D" node_paths=PackedStringArray("player1", "player2", "descriptionMenu", "descriptionMenu_Frame", "banner_panel", "banner_label", "button_Summon", "button_Set", "button_attack", "button_position", "button_phase", "phase_menu", "debugInfo")]
+[node name="GameSystem" type="Node2D" node_paths=PackedStringArray("player1", "player2", "descriptionMenu", "descriptionMenu_Frame", "banner_panel", "banner_label", "button_Array", "button_phase", "phase_menu", "debugInfo")]
 script = ExtResource("1_75qs1")
 player1 = NodePath("Player1_Node")
 player2 = NodePath("Player2_Node")
@@ -53,18 +54,19 @@ descriptionMenu = NodePath("CanvasLayer/Description_Panel")
 descriptionMenu_Frame = NodePath("CanvasLayer/Description_Panel/Description_Frame_Node")
 banner_panel = NodePath("CanvasLayer/Banner_PanelContainer")
 banner_label = NodePath("CanvasLayer/Banner_PanelContainer/Banner_Label")
-button_Summon = NodePath("Button_Node_Summon")
-button_Set = NodePath("Button_Node_Set")
-button_attack = NodePath("Button_Nod_Attack")
-button_position = NodePath("Button_Node_Position")
+button_Array = [NodePath("Button_Node_0"), NodePath("Button_Node_1"), NodePath("Button_Node_2"), NodePath("Button_Node_3")]
 button_phase = NodePath("Button_Node_Phase")
+button_Icon_Summon = ExtResource("11_g6gf4")
+button_Icon_Set = ExtResource("12_pu66q")
+button_Icon_attack = ExtResource("14_qvpfs")
+button_Icon_position = ExtResource("9_lb5xn")
 phase_menu = NodePath("CanvasLayer/Phase_Menu")
 card_Node_Prefab = ExtResource("7_d52tv")
 debugInfo = NodePath("CanvasLayer/MarginContainer2/Label")
 
 [node name="CanvasLayer" type="CanvasLayer" parent="."]
 
-[node name="MarginContainer" type="MarginContainer" parent="CanvasLayer"]
+[node name="UI_MarginContainer" type="MarginContainer" parent="CanvasLayer"]
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
@@ -75,41 +77,179 @@ theme_override_constants/margin_top = 30
 theme_override_constants/margin_right = 30
 theme_override_constants/margin_bottom = 30
 
-[node name="Player1_VBoxContainer" type="VBoxContainer" parent="CanvasLayer/MarginContainer"]
+[node name="Player1_VBoxContainer" type="VBoxContainer" parent="CanvasLayer/UI_MarginContainer"]
 layout_mode = 2
-size_flags_horizontal = 8
+size_flags_horizontal = 0
 size_flags_vertical = 8
 
-[node name="Summon_Label" type="Label" parent="CanvasLayer/MarginContainer/Player1_VBoxContainer"]
+[node name="Summon_Label" type="Label" parent="CanvasLayer/UI_MarginContainer/Player1_VBoxContainer"]
 layout_mode = 2
 theme_override_constants/outline_size = 5
 text = "1/1 NS"
 horizontal_alignment = 2
 
-[node name="LifePoints_Label" type="Label" parent="CanvasLayer/MarginContainer/Player1_VBoxContainer"]
+[node name="LifePoints_Label" type="Label" parent="CanvasLayer/UI_MarginContainer/Player1_VBoxContainer"]
 layout_mode = 2
 theme_override_constants/outline_size = 7
 theme_override_font_sizes/font_size = 30
 text = "8000 LP"
 horizontal_alignment = 2
 
-[node name="Player2_VBoxContainer" type="VBoxContainer" parent="CanvasLayer/MarginContainer"]
+[node name="Player2_VBoxContainer" type="VBoxContainer" parent="CanvasLayer/UI_MarginContainer"]
 layout_mode = 2
 size_flags_horizontal = 8
 size_flags_vertical = 0
 
-[node name="LifePoints_Label" type="Label" parent="CanvasLayer/MarginContainer/Player2_VBoxContainer"]
+[node name="LifePoints_Label" type="Label" parent="CanvasLayer/UI_MarginContainer/Player2_VBoxContainer"]
 layout_mode = 2
 theme_override_constants/outline_size = 7
 theme_override_font_sizes/font_size = 30
 text = "8000 LP"
 horizontal_alignment = 2
 
-[node name="Summon_Label" type="Label" parent="CanvasLayer/MarginContainer/Player2_VBoxContainer"]
+[node name="Summon_Label" type="Label" parent="CanvasLayer/UI_MarginContainer/Player2_VBoxContainer"]
 layout_mode = 2
 theme_override_constants/outline_size = 5
 text = "1/1 NS"
 horizontal_alignment = 2
+
+[node name="PanelContainer" type="PanelContainer" parent="CanvasLayer/UI_MarginContainer"]
+custom_minimum_size = Vector2(100, 626)
+layout_mode = 2
+size_flags_horizontal = 8
+size_flags_vertical = 4
+
+[node name="MarginContainer" type="MarginContainer" parent="CanvasLayer/UI_MarginContainer/PanelContainer"]
+clip_contents = true
+layout_mode = 2
+theme_override_constants/margin_top = 4
+theme_override_constants/margin_bottom = 4
+
+[node name="ScrollContainer" type="ScrollContainer" parent="CanvasLayer/UI_MarginContainer/PanelContainer/MarginContainer"]
+clip_contents = false
+layout_mode = 2
+follow_focus = true
+
+[node name="VBoxContainer" type="VBoxContainer" parent="CanvasLayer/UI_MarginContainer/PanelContainer/MarginContainer/ScrollContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+alignment = 1
+
+[node name="Button" type="Button" parent="CanvasLayer/UI_MarginContainer/PanelContainer/MarginContainer/ScrollContainer/VBoxContainer"]
+custom_minimum_size = Vector2(70, 100)
+layout_mode = 2
+size_flags_horizontal = 4
+size_flags_vertical = 4
+focus_mode = 0
+text = "Card"
+
+[node name="MarginContainer" type="MarginContainer" parent="CanvasLayer/UI_MarginContainer/PanelContainer/MarginContainer/ScrollContainer/VBoxContainer/Button"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_constants/margin_left = 3
+theme_override_constants/margin_top = 3
+theme_override_constants/margin_right = 3
+theme_override_constants/margin_bottom = 3
+
+[node name="frame_node" parent="CanvasLayer/UI_MarginContainer/PanelContainer/MarginContainer/ScrollContainer/VBoxContainer/Button/MarginContainer" instance=ExtResource("3_5bdh4")]
+layout_mode = 2
+mouse_filter = 2
+
+[node name="Label_Name" parent="CanvasLayer/UI_MarginContainer/PanelContainer/MarginContainer/ScrollContainer/VBoxContainer/Button/MarginContainer/frame_node" index="2"]
+theme_override_font_sizes/font_size = 3
+
+[node name="Label_CardType" parent="CanvasLayer/UI_MarginContainer/PanelContainer/MarginContainer/ScrollContainer/VBoxContainer/Button/MarginContainer/frame_node" index="3"]
+theme_override_font_sizes/font_size = 2
+
+[node name="Label_Description" parent="CanvasLayer/UI_MarginContainer/PanelContainer/MarginContainer/ScrollContainer/VBoxContainer/Button/MarginContainer/frame_node" index="4"]
+theme_override_font_sizes/font_size = 1
+
+[node name="Label_Attack" parent="CanvasLayer/UI_MarginContainer/PanelContainer/MarginContainer/ScrollContainer/VBoxContainer/Button/MarginContainer/frame_node/HBoxContainer" index="0"]
+theme_override_font_sizes/font_size = 1
+
+[node name="Label_Defense" parent="CanvasLayer/UI_MarginContainer/PanelContainer/MarginContainer/ScrollContainer/VBoxContainer/Button/MarginContainer/frame_node/HBoxContainer" index="1"]
+theme_override_font_sizes/font_size = 1
+
+[node name="Button2" type="Button" parent="CanvasLayer/UI_MarginContainer/PanelContainer/MarginContainer/ScrollContainer/VBoxContainer"]
+custom_minimum_size = Vector2(70, 100)
+layout_mode = 2
+size_flags_horizontal = 4
+size_flags_vertical = 4
+focus_mode = 0
+text = "Card"
+
+[node name="Button3" type="Button" parent="CanvasLayer/UI_MarginContainer/PanelContainer/MarginContainer/ScrollContainer/VBoxContainer"]
+custom_minimum_size = Vector2(70, 100)
+layout_mode = 2
+size_flags_horizontal = 4
+size_flags_vertical = 4
+focus_mode = 0
+text = "Card"
+
+[node name="Button4" type="Button" parent="CanvasLayer/UI_MarginContainer/PanelContainer/MarginContainer/ScrollContainer/VBoxContainer"]
+custom_minimum_size = Vector2(70, 100)
+layout_mode = 2
+size_flags_horizontal = 4
+size_flags_vertical = 4
+focus_mode = 0
+text = "Card"
+
+[node name="Button5" type="Button" parent="CanvasLayer/UI_MarginContainer/PanelContainer/MarginContainer/ScrollContainer/VBoxContainer"]
+custom_minimum_size = Vector2(70, 100)
+layout_mode = 2
+size_flags_horizontal = 4
+size_flags_vertical = 4
+focus_mode = 0
+text = "Card"
+
+[node name="Button6" type="Button" parent="CanvasLayer/UI_MarginContainer/PanelContainer/MarginContainer/ScrollContainer/VBoxContainer"]
+custom_minimum_size = Vector2(70, 100)
+layout_mode = 2
+size_flags_horizontal = 4
+size_flags_vertical = 4
+focus_mode = 0
+text = "Card"
+
+[node name="Button7" type="Button" parent="CanvasLayer/UI_MarginContainer/PanelContainer/MarginContainer/ScrollContainer/VBoxContainer"]
+custom_minimum_size = Vector2(70, 100)
+layout_mode = 2
+size_flags_horizontal = 4
+size_flags_vertical = 4
+focus_mode = 0
+text = "Card"
+
+[node name="Button8" type="Button" parent="CanvasLayer/UI_MarginContainer/PanelContainer/MarginContainer/ScrollContainer/VBoxContainer"]
+custom_minimum_size = Vector2(70, 100)
+layout_mode = 2
+size_flags_horizontal = 4
+size_flags_vertical = 4
+focus_mode = 0
+text = "Card"
+
+[node name="Button9" type="Button" parent="CanvasLayer/UI_MarginContainer/PanelContainer/MarginContainer/ScrollContainer/VBoxContainer"]
+custom_minimum_size = Vector2(70, 100)
+layout_mode = 2
+size_flags_horizontal = 4
+size_flags_vertical = 4
+focus_mode = 0
+text = "Card"
+
+[node name="Button10" type="Button" parent="CanvasLayer/UI_MarginContainer/PanelContainer/MarginContainer/ScrollContainer/VBoxContainer"]
+custom_minimum_size = Vector2(70, 100)
+layout_mode = 2
+size_flags_horizontal = 4
+size_flags_vertical = 4
+focus_mode = 0
+text = "Card"
+
+[node name="Panel" type="Panel" parent="CanvasLayer/UI_MarginContainer"]
+layout_mode = 2
+size_flags_horizontal = 8
 
 [node name="Banner_PanelContainer" type="PanelContainer" parent="CanvasLayer"]
 anchors_preset = 14
@@ -166,30 +306,35 @@ theme_override_constants/separation = 15
 
 [node name="Button" type="Button" parent="CanvasLayer/Phase_Menu/MarginContainer/VBoxContainer/HBoxContainer"]
 layout_mode = 2
+focus_mode = 0
 theme_override_font_sizes/font_size = 50
 text = "Star
 Phase"
 
 [node name="Button2" type="Button" parent="CanvasLayer/Phase_Menu/MarginContainer/VBoxContainer/HBoxContainer"]
 layout_mode = 2
+focus_mode = 0
 theme_override_font_sizes/font_size = 50
 text = "Main
 Phase 1"
 
 [node name="Button3" type="Button" parent="CanvasLayer/Phase_Menu/MarginContainer/VBoxContainer/HBoxContainer"]
 layout_mode = 2
+focus_mode = 0
 theme_override_font_sizes/font_size = 50
 text = "Battle
 Phase"
 
 [node name="Button4" type="Button" parent="CanvasLayer/Phase_Menu/MarginContainer/VBoxContainer/HBoxContainer"]
 layout_mode = 2
+focus_mode = 0
 theme_override_font_sizes/font_size = 50
 text = "Main
 Phase 2"
 
 [node name="Button5" type="Button" parent="CanvasLayer/Phase_Menu/MarginContainer/VBoxContainer/HBoxContainer"]
 layout_mode = 2
+focus_mode = 0
 theme_override_font_sizes/font_size = 50
 text = "End
 Phase"
@@ -198,6 +343,7 @@ Phase"
 visible = false
 layout_mode = 2
 size_flags_horizontal = 4
+focus_mode = 0
 theme_override_font_sizes/font_size = 50
 text = "Cancel
 "
@@ -221,19 +367,20 @@ offset_right = 576.0
 offset_bottom = 382.0
 grow_horizontal = 1
 
-[node name="Top_Label" parent="CanvasLayer/Description_Panel/Description_Frame_Node" index="2"]
-theme_override_font_sizes/font_size = 30
+[node name="Label_Name" parent="CanvasLayer/Description_Panel/Description_Frame_Node" index="2"]
+theme_override_font_sizes/font_size = 24
 
-[node name="Botton_Label" parent="CanvasLayer/Description_Panel/Description_Frame_Node" index="3"]
-anchor_left = 0.062
-anchor_top = 0.75
-anchor_right = 0.937
-anchor_bottom = 0.906
-offset_left = 0.255999
-offset_top = -6.10352e-05
-offset_right = 0.255981
-offset_bottom = 0.192017
-theme_override_font_sizes/font_size = 30
+[node name="Label_CardType" parent="CanvasLayer/Description_Panel/Description_Frame_Node" index="3"]
+theme_override_font_sizes/font_size = 20
+
+[node name="Label_Description" parent="CanvasLayer/Description_Panel/Description_Frame_Node" index="4"]
+theme_override_font_sizes/font_size = 12
+
+[node name="Label_Attack" parent="CanvasLayer/Description_Panel/Description_Frame_Node/HBoxContainer" index="0"]
+theme_override_font_sizes/font_size = 20
+
+[node name="Label_Defense" parent="CanvasLayer/Description_Panel/Description_Frame_Node/HBoxContainer" index="1"]
+theme_override_font_sizes/font_size = 20
 
 [node name="Description_Label" type="Label" parent="CanvasLayer/Description_Panel"]
 layout_mode = 1
@@ -294,8 +441,8 @@ removed = NodePath("removeDeck_Node")
 hand = NodePath("../Player1_Hand_Node")
 magicZone = [NodePath("magicCardSlot_Node"), NodePath("magicCardSlot_Node2"), NodePath("magicCardSlot_Node3"), NodePath("magicCardSlot_Node4"), NodePath("magicCardSlot_Node5")]
 monsterZone = [NodePath("monsterCardSlot_Node"), NodePath("monsterCardSlot_Node2"), NodePath("monsterCardSlot_Node3"), NodePath("monsterCardSlot_Node4"), NodePath("monsterCardSlot_Node5")]
-label_LifePoints = NodePath("../CanvasLayer/MarginContainer/Player1_VBoxContainer/LifePoints_Label")
-label_Summons = NodePath("../CanvasLayer/MarginContainer/Player1_VBoxContainer/Summon_Label")
+label_LifePoints = NodePath("../CanvasLayer/UI_MarginContainer/Player1_VBoxContainer/LifePoints_Label")
+label_Summons = NodePath("../CanvasLayer/UI_MarginContainer/Player1_VBoxContainer/Summon_Label")
 opponent = NodePath("../Player2_Node")
 
 [node name="mainDeck_Node" parent="Player1_Node" instance=ExtResource("1_5nl73")]
@@ -362,8 +509,8 @@ removed = NodePath("removeDeck_Node")
 hand = NodePath("../Player2_Hand_Node")
 magicZone = [NodePath("magicCardSlot_Node"), NodePath("magicCardSlot_Node2"), NodePath("magicCardSlot_Node3"), NodePath("magicCardSlot_Node4"), NodePath("magicCardSlot_Node5")]
 monsterZone = [NodePath("monsterCardSlot_Node"), NodePath("monsterCardSlot_Node2"), NodePath("monsterCardSlot_Node3"), NodePath("monsterCardSlot_Node4"), NodePath("monsterCardSlot_Node5")]
-label_LifePoints = NodePath("../CanvasLayer/MarginContainer/Player2_VBoxContainer/LifePoints_Label")
-label_Summons = NodePath("../CanvasLayer/MarginContainer/Player2_VBoxContainer/Summon_Label")
+label_LifePoints = NodePath("../CanvasLayer/UI_MarginContainer/Player2_VBoxContainer/LifePoints_Label")
+label_Summons = NodePath("../CanvasLayer/UI_MarginContainer/Player2_VBoxContainer/Summon_Label")
 isPlayer1 = false
 opponent = NodePath("../Player1_Node")
 card_highlight_posY_offset = 26.0
@@ -430,46 +577,47 @@ texture = ExtResource("13_bcwnx")
 text = "Phase
 Button"
 
-[node name="Button_Node_Summon" parent="." instance=ExtResource("18_qvpfs")]
+[node name="Button_Node_0" parent="." instance=ExtResource("18_qvpfs")]
 position = Vector2(80, 0)
 
-[node name="Icon_TextureRect" parent="Button_Node_Summon/Node2D/Background_TextureRect" index="1"]
+[node name="Icon_TextureRect" parent="Button_Node_0/Node2D/Background_TextureRect" index="1"]
 texture = ExtResource("11_g6gf4")
 
-[node name="Label" parent="Button_Node_Summon/Node2D" index="1"]
+[node name="Label" parent="Button_Node_0/Node2D" index="1"]
 text = "Summon"
 
-[node name="Button_Node_Set" parent="." instance=ExtResource("18_qvpfs")]
+[node name="Button_Node_1" parent="." instance=ExtResource("18_qvpfs")]
 position = Vector2(184, 0)
 
-[node name="Icon_TextureRect" parent="Button_Node_Set/Node2D/Background_TextureRect" index="1"]
+[node name="Icon_TextureRect" parent="Button_Node_1/Node2D/Background_TextureRect" index="1"]
 texture = ExtResource("12_pu66q")
 
-[node name="Label" parent="Button_Node_Set/Node2D" index="1"]
+[node name="Label" parent="Button_Node_1/Node2D" index="1"]
 text = "Set"
 
-[node name="Button_Nod_Attack" parent="." instance=ExtResource("18_qvpfs")]
+[node name="Button_Node_2" parent="." instance=ExtResource("18_qvpfs")]
 position = Vector2(288, 0)
 
-[node name="Icon_TextureRect" parent="Button_Nod_Attack/Node2D/Background_TextureRect" index="1"]
+[node name="Icon_TextureRect" parent="Button_Node_2/Node2D/Background_TextureRect" index="1"]
 texture = ExtResource("14_qvpfs")
 
-[node name="Label" parent="Button_Nod_Attack/Node2D" index="1"]
+[node name="Label" parent="Button_Node_2/Node2D" index="1"]
 text = "Attack"
 
-[node name="Button_Node_Position" parent="." instance=ExtResource("18_qvpfs")]
+[node name="Button_Node_3" parent="." instance=ExtResource("18_qvpfs")]
 position = Vector2(392, 0)
 
-[node name="Icon_TextureRect" parent="Button_Node_Position/Node2D/Background_TextureRect" index="1"]
+[node name="Icon_TextureRect" parent="Button_Node_3/Node2D/Background_TextureRect" index="1"]
 texture = ExtResource("16_pu66q")
 
-[node name="Label" parent="Button_Node_Position/Node2D" index="1"]
+[node name="Label" parent="Button_Node_3/Node2D" index="1"]
 text = "Change
 Position"
 
+[editable path="CanvasLayer/UI_MarginContainer/PanelContainer/MarginContainer/ScrollContainer/VBoxContainer/Button/MarginContainer/frame_node"]
 [editable path="CanvasLayer/Description_Panel/Description_Frame_Node"]
 [editable path="Button_Node_Phase"]
-[editable path="Button_Node_Summon"]
-[editable path="Button_Node_Set"]
-[editable path="Button_Nod_Attack"]
-[editable path="Button_Node_Position"]
+[editable path="Button_Node_0"]
+[editable path="Button_Node_1"]
+[editable path="Button_Node_2"]
+[editable path="Button_Node_3"]
